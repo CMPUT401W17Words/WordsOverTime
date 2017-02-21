@@ -1,0 +1,21 @@
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+
+# Create your models here.
+@python_2_unicode_compatible
+class Graph(models.Model):
+  import matplotlib.pyplot as plt
+  import matplotlib as mpl
+  import numpy as np
+
+  # Make an example plot with two subplots...
+  fig = plt.figure()
+  ax1 = fig.add_subplot(2,1,1)
+  ax1.plot(range(10), 'b-')
+
+  ax2 = fig.add_subplot(2,1,2)
+  ax2.plot(range(20), 'r^')
+
+  # Save the full figure...
+  fig.savefig('full_figure.png')
+  graph_image = ImageField
