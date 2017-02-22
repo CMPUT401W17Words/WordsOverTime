@@ -5,7 +5,7 @@ from .models import Question
 
 # Create your views here.
 def index(request):
-  return render(request, 'words/index.html')
+  return render(request, 'words/401.html')
  
 
 #class IndexView(generic.DetailView):
