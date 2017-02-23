@@ -1,6 +1,22 @@
-# use http://stackoverflow.com/questions/2783313/how-can-i-get-around-mysql-errcode-13-with-select-into-outfile to configure app armor
+#install mysql:
+#sudo apt-get update
+#sudo apt-get install mysql-server
+#sudo mysql_secure_installation
 
+
+#on your local computer, use this command to send the file.
+#ex: pscp -l username -i "C:\Path\to\key.ppk" "c:\file.foo" 199.116.235.53:file.foo
+# pscp -l ubuntu -i "C:\Users\Owner\Desktop\401\putty words over time key.ppk" "C:\Users\Owner\Desktop\401\sentiment_dict_3mil.tgz" 199.116.235.53:/home/ubuntu/files/sentiment_dict_3mil.tgz
+# pscp -l ubuntu -i "C:\Users\Owner\Desktop\401\putty words over time key.ppk" "C:\Users\Owner\Desktop\401\articles-can.tgz" 199.116.235.53:/home/ubuntu/files/articles-can.tgz
+
+#Unpack the tgz with
+# tar zxvf sentiment_dict_3mil.tgz
+# tar zxvf articles-can.tgz
+
+#start mysql
 #mysql -u root -p
+
+
 
 
 Create database Client_Generated_Data;
@@ -21,8 +37,10 @@ CREATE TABLE sentiment_dict_3mil
  PRIMARY KEY (Word)
 );
 
-load data local infile "C:\\sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' (Word, Valence, Arousal, Dominance, Concreteness, AoA);
+#This command should load the file off of the system you're sshing from, but it doesn't for some reason. interent says permission issues?
+#load data local infile "C:\\sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
 
+load data infile "/home/ubuntu/files/sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
 
 drop table if exists articles-can;
 
@@ -40,4 +58,8 @@ create table articles-can
  PRIMARY KEY (articleID)
 )
 
-load data local infile "C:\\articles-can.csv" into table Client_Generated_Data.articles-can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' (articleID, language, province, city, country, publicationdate, wordcount, parsedarticle);
+#load data local infile "C:\\articles-can.csv" into table Client_Generated_Data.articles-can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publicationdate, wordcount, parsedarticle);
+
+load data infile "/home/ubuntu/files/articles-can.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
+
+
