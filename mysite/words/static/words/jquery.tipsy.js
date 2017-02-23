@@ -2,6 +2,7 @@
 // version 1.0.0a
 // (c) 2008-2010 jason frame [jason@onehackoranother.com]
 // released under the MIT license
+// Code taken from github user jaz303 on February 23, 2017 from https://github.com/jaz303/tipsy
 
 (function($) {
     
