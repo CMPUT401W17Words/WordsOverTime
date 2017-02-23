@@ -1,5 +1,6 @@
 /**
- * User: nross
+ * Code taken from bl.ocks.org/mccannf/1629644 on February 23, 2017.
+ * Written by Nate Ross, found here: http://natescodevault.com/category/js/
  */
 var w = 900,
     h = 450;
