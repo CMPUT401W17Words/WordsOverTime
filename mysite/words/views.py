@@ -5,7 +5,10 @@ from .models import Question
 
 # Create your views here.
 def index(request):
-  return render(request, 'words/graph.html')
+  return render(request, 'words/graph2.html')
+
+def graph(request):
+  return render(request, 'graph/401.html')
  
 
 #class IndexView(generic.DetailView):
