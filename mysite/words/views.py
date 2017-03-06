@@ -15,4 +15,5 @@ def results(request):
     if form.is_valid():
       data = myform.cleaned_data
       #process data with field = data['field']
+      #generate a Request object (see requesthandler.py)
   return HttpResponseRedirect()

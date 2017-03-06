@@ -31,7 +31,7 @@ def enterData(corpusCsv, sentimentCsv):
         count = 0
         for line in file:
             docData[line['articleID']] = []
-            docData[line['articleID']].append(line['publicationDate'])
+            docData[line['articleID']].append(line['publicationDate']) # THIS LINE MAY BE BUGGED. depends on if the string date can be converted to an sql date properly
             words = line['parsedArticle'].split()
             tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
             #print(tfidfs)
