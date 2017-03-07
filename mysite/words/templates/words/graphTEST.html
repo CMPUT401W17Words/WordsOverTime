@@ -34,7 +34,24 @@ function log(text) {
   return text;
 }
 
+function postData(input) {
+    $.ajax({
+        type: "POST",
+        url: "/tfidf2.py",
+        data: { param: input },
+        success: callbackFunc
+    });
+}
 
+var testDictionary = {}
+
+function callbackFunc(response) {
+    // do something with the response
+    testDictionary = response.data;
+    console.log(response);
+}
+
+postData('data to process');
 
 $(document).ready(function() {
   var margin = {top: 30, right: 10, bottom: 50, left: 60},
@@ -74,7 +91,7 @@ $(document).ready(function() {
 
 
 
-
+    
   $(window).resize(function() {
     var margin = chart.margin();
 
@@ -105,6 +122,8 @@ $(document).ready(function() {
               margin.top + margin.bottom + 2 : h;
   }
 
+						   
+						   
 
   //data
   function generateData() {
@@ -112,16 +131,23 @@ $(document).ready(function() {
         sin2 = [],
         cos = [],
         cos2 = [],
+	    test = [],		
+        test2 = [],			   
         r1 = Math.random(),
         r2 = Math.random(),
         r3 = Math.random(),
         r4 = Math.random();
 
+    for (var key in testDictionary) {
+        test2.push(testDictionary[key]);
+    }
+
     for (var i = 0; i < 100; i++) {
-      sin.push([ 0.1]);
+      sin.push([ i, 0]);
       cos.push([ i, r2 * Math.cos( r3 + i / (10 * (r3 + .5) ))]);
       sin2.push([ i, r3 * Math.sin( r1 + i / (10 * (r2 + .5) ))]);
       cos2.push([ i, r4 * Math.cos( r4 + i / (10 * (r1 + .5) ))]);
+	  test.push([ i, test2[i % 4]);		
     }
 
     return [
@@ -140,6 +166,10 @@ $(document).ready(function() {
       {
         data: cos2,
         label: "Cosine2 Wave"
+      },
+	  {
+    	data: test,
+		label: "Test"
       }
     ];
   }

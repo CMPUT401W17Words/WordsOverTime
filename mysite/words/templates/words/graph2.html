@@ -105,23 +105,28 @@ $(document).ready(function() {
               margin.top + margin.bottom + 2 : h;
   }
 
+						   
+						   
 
   //data
   function generateData() {
     var sin = [],
         sin2 = [],
         cos = [],
-        cos2 = [],
+        cos2 = [],			   
         r1 = Math.random(),
         r2 = Math.random(),
         r3 = Math.random(),
         r4 = Math.random();
+
+        test = {{ test }};
 
     for (var i = 0; i < 100; i++) {
       sin.push([ i, 0.1 ]);
       cos.push([ i, r2 * Math.cos( r3 + i / (10 * (r3 + .5) ))]);
       sin2.push([ i, r3 * Math.sin( r1 + i / (10 * (r2 + .5) ))]);
       cos2.push([ i, r4 * Math.cos( r4 + i / (10 * (r1 + .5) ))]);
+      test.push([ i, test[ i % 4 ]]);
     }
 
     return [
@@ -140,7 +145,11 @@ $(document).ready(function() {
       {
         data: cos2,
         label: "Cosine2 Wave"
-      }
+      },
+            {
+			data: test,
+			label: "Test"
+			}
     ];
   }
 

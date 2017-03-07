@@ -5,10 +5,12 @@ from .models import Question
 
 # Create your views here.
 def index(request):
-  return render(request, 'words/graph2.html')
+    return render(request, 'words/401.html')
 
 def graph(request):
-  return render(request, 'graph/401.html')
+    testList = [0.1,0.1,0.1,0.1]
+    context = {'test': testList}
+    return render(request, 'words/graph2.html', context)
  
 
 #class IndexView(generic.DetailView):
