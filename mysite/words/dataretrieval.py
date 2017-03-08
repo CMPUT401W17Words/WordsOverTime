@@ -17,7 +17,10 @@ def getDocuments(startDate, endDate):
 
 def getWordsInDocument(doc):
     words = WordInDocument.objects.filter(document__article_id=doc.article_id)
-    return list(words)
+    result = []
+    for w in words:
+        result.append(w.word.word)
+    return result
 
 # split a list of documents into sublists based on a specified time granularity        
 def splitDocuments(documents, granularity):

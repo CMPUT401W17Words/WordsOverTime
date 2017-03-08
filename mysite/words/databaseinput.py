@@ -95,8 +95,8 @@ def enterData(corpusCsv, sentimentCsv):
         word.save()
 
     for k,v in docData.items(): # Document models
-        doc = Document(article_id=k, publicationDate=v[0], average_arousal=v[1], average_valence=v[2],
-                       average_arousal_five_highest=v[3], average_valence_five_highest=v[4])
+        doc = Document(article_id=k, publicationDate=v[0])#, average_arousal=v[1], average_valence=v[2],
+                       #average_arousal_five_highest=v[3], average_valence_five_highest=v[4])
         doc.save()
     
     for k,v in wordDocData.items(): # WordInDocument models

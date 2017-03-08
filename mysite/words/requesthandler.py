@@ -33,9 +33,14 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
-        for k,v in docHistogram:
+        for k,v in docHistogram.items():
+            # v is a list of Documents
+            chunk = []
+            for doc in v:
+                wordss = words.dataretrieval.getWordsInDocument(doc)
+                chunk.append(wordss)
             xValues.append(k)
-            yValues.append(dataanalyzer.cosDistanceOfPair(v, self.word1, self.word2))
+            yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, self.word1, self.word2))
         return Result(self.granularity, 'Cosine Distance of '+self.word1+' and '+self.word2, xValues, yValues)  
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):

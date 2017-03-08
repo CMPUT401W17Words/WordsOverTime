@@ -43,4 +43,4 @@ class WordInDocument(models.Model):
   document = models.ForeignKey(Document, on_delete=models.CASCADE)
   #documentFrequency = models.DecimalField(max_digits=14, decimal_places=12)
   #tf = models.DecimalField(max_digits=14, decimal_places=12)
-  tfidf = models.DecimalField(max_digits=14, decimal_places=12)
+  #tfidf = models.DecimalField(max_digits=14, decimal_places=12)
