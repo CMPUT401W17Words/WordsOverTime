@@ -1,0 +1,84 @@
+(for Word_Data/Document_Data, we need to precompute the data)
+(this can be seen in sentiment_dict_3mil.sql by D'Arcy)
+
+(a lot of this is post-computing the data, at which point we basically need to
+set these queries up in Django to utilize the where fields)
+
+-User Story: Store corpus into DB:
+For articles:
+load data local infile "file" into table Client_Generated_Data.articles_can
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1
+LINES (articleID, language, province, city, country, publication_date,
+wordcount, parsed_article);
+
+-User Story: Split corpus by location:
+select *
+from Document_Data or Word_Data (depends on usage)
+where Province = "" and city = "" and country = ""
+
+(need to manipulate the string -> if any of prov/city/country are blank,
+don't put it in there)
+
+-User Story: Split corpus by time:
+select *
+from Document_Data or Word_Data (depends on usage)
+where DATE(publication_date) BETWEEN "time 1" and "time 2"
+(needs to be yyyy-mm-dd)
+
+-User Story: Input list of words, receive similar words
+(unsure of this - don't really get what data is supposed to be sent up to
+Django)
+
+-User story: Selecting part of the corpus and receiving word frequency
+select t1.wordCount/t2.count
+from (select SUM(word_count) as wordCount from Word_Data where word = "word")
+as t1, (select SUM(word_count) as count from Word_Data) as t2
+
+(this is for full corpus -> just need to select part of Word_Data for part of
+it)
+(replace Word_Data with one of the split by location/time queries as necessary)
+
+-User story: Choosing part of the corpus and receiving average TF/IDF
+(need TF (defined), documents with the word and total document count)
+select SUM(term_frequency), word_doc, no_word_doc
+from Word_Data, (select COUNT(*) from Document_Data where word = "word"),
+(select COUNT(*) from Document_Data)
+where word = "word"
+
+-User story: Getting average valence for a document
+(if need to get doc first from words):
+select articleID
+from Word_Data
+where word = "word"
+
+(else continue)
+select average_valence_doc
+from Document_Data
+where articleID = articleID
+
+-User story: Getting average arousal for a document
+(if need to get doc first from words):
+select articleID
+from Word_Data
+where word = "word"
+
+(else continue)
+select average_valence_doc
+from Document_Data
+where articleID = articleID
+
+-User story: Visual rep. of data for given keywords
+select *
+from Word_Data
+where word = "word1"
+union
+... (repeat above query for remaining words)
+
+(then you do with the data as you will)
+
+-User story: Visual rep. of data for selected date/location
+(see split corpus by date/time)
+
+-Receive CSV file for output
+(would this actually need our requirement? Can't the Django side configure a
+CSV file from the given info and output it?)
