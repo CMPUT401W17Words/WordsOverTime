@@ -126,6 +126,11 @@ $(document).ready(function() {
 
     var xValues = {{ xValues }};
     var keywords = "{{ keywords }}";
+    var splitWords = keywords.split(" ");
+    //for(var key in splitWords){
+    //    alert(splitWords[key]);
+    //}
+    //alert(keywords[0]);
     var yValues = {{ yValues }};
     dataPoints = [];
 

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views import generic
 from .models import Question
 import random
+from datetime import datetime, date, time
 
 from .forms import MainForm
 
@@ -37,21 +38,24 @@ def graph(request):
     #testDict2 = {}
     #testDict2["foobar"] = testList2
     keyWords = []
-    startDate = 0
-    endDate = 0
+    startDate = date.today()
+    endDate = date.today()
     form = MainForm(request.POST)
     if form.is_valid():
         keyWords = form.cleaned_data['keywords']
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
     years = []
-    for i in range (int(startDate), int(endDate)):
-        years.append(i)
+    yearDiff = endDate.year - startDate.year
+    for i in range (0, yearDiff):
+        years.append(startDate.year + i)
 
     yValues = []
     for i in range(0, len(years)):
-        randomNum = random.randit(1,4)
+        randomNum = random.randint(1,4)
         yValues.append(randomNum)
+
+    splitKeywords = keyWords.split()
 
     #yValuesList = []
     #for j in range (0, len(keyWords)):
