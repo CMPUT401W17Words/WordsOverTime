@@ -19,6 +19,9 @@ django.setup()
 corpusPath = r'C:\Users\L\Documents\School\CMPUT\401\articles-can\articles-can.csv'
 sentimentPath = r'C:\Users\L\Documents\School\CMPUT\401\sentiment_dict_3mil\sentiment_dict_3mil.csv'
 
+corpusPath2 = r'C:\Users\Master Chief\Documents\School\articles-can\articles-can.csv'
+sentimentPath2 = r'C:\Users\Master Chief\Documents\School\sentiment_dict_3mil\sentiment_dict_3mil.csv'
+
 # main function that will input corpus and sentiment info into the database
 def enterData(corpusCsv, sentimentCsv):
     wordData = {} # represent models as dictionaries of primary key to list of other data
@@ -135,9 +138,9 @@ def loadSentiment(sentimentCsv):
             if (count %100==0): 
                 #print(count)
                 sys.stdout.flush()
-            if (count > 10000):
+            if (count > 1000):
                 break        
     return sentDict
 
 def run():
-    enterData(corpusPath,sentimentPath)
+    enterData(corpusPath2,sentimentPath2)

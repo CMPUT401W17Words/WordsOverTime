@@ -43,7 +43,9 @@ class DataRetrievalTests(TestCase):
                 self.assertTrue(len(v)==1)
     
 class RequestHandlerTests(TestCase):
-    
+    def setUp(self):
+        words.databaseinput.run()
+       
     def testCosDistanceOverTime(self):
         dateRange = (date(2000, 5, 19), date(2008, 10, 11))
         granularity = 'Year'
