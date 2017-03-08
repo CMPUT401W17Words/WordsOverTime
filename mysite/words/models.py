@@ -31,10 +31,10 @@ class Document(models.Model):
   #word_three = models.ForeignKey('WordInDocument', on_delete=models.CASCADE)
   #word_four = models.ForeignKey('WordInDocument', on_delete=models.CASCADE)
   #word_five = models.ForeignKey('WordInDocument', on_delete=models.CASCADE)
-  average_arousal = models.DecimalField(max_digits=14, decimal_places=12)  
-  average_valence = models.DecimalField(max_digits=14, decimal_places=12)  
-  average_arousal_five_highest = models.DecimalField(max_digits=14, decimal_places=12)  
-  average_valence_five_highest   = models.DecimalField(max_digits=14, decimal_places=12)
+  #average_arousal = models.DecimalField(max_digits=14, decimal_places=12)  
+  #average_valence = models.DecimalField(max_digits=14, decimal_places=12)  
+  #average_arousal_five_highest = models.DecimalField(max_digits=14, decimal_places=12)  
+  #average_valence_five_highest   = models.DecimalField(max_digits=14, decimal_places=12)
 
 class WordInDocument(models.Model):
   class Meta:

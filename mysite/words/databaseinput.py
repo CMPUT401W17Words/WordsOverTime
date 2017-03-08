@@ -1,14 +1,20 @@
+# This module inputs the corpus and sentiment CSV files into Django's built-in SQLite database
+# It will not be the final method of database input
+# It can be used for quick testing of the data processing modules
+# Uses the first 1000 corpus entries and 10000 sentiment entries
+
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 import sys
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+
+import csv 
 import django
-django.setup()
 import gensim
 
 from words.models import Word, Document, WordInDocument
-import dataprocessor # gensim wrapper to process data before entering into database
-import csv # python library for dealing with csv files
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+django.setup()
 
 corpusPath = r'C:\Users\L\Documents\School\CMPUT\401\articles-can\articles-can.csv'
 sentimentPath = r'C:\Users\L\Documents\School\CMPUT\401\sentiment_dict_3mil\sentiment_dict_3mil.csv'
@@ -19,7 +25,7 @@ def enterData(corpusCsv, sentimentCsv):
     docData = {}
     wordDocData = {}    
     
-    fullCorpus = dataprocessor.MainCorpus(corpusCsv)
+    fullCorpus = MainCorpus(corpusCsv)
     tfidf = gensim.models.tfidfmodel.TfidfModel(fullCorpus)
     sentDict = loadSentiment(sentimentCsv)
     
@@ -92,7 +98,26 @@ def enterData(corpusCsv, sentimentCsv):
     
     for k,v in wordDocData.items(): # WordInDocument models
         wordDoc = WordInDocument(word=k[0],document=k[1],tfidf=v[0])
-        wordDoc.save()             
+        wordDoc.save()
+
+# generate corpus from file path   
+class MainCorpus(gensim.corpora.textcorpus.TextCorpus):
+    def __init__(self, path):
+        gensim.corpora.textcorpus.TextCorpus.__init__(self)
+        self.file_path = path
+    def get_texts(self):
+        with open(self.file_path, 'r') as csvfile:
+            file = csv.DictReader(csvfile)
+            count = 0
+            for line in file:
+                words = []
+                #print(line["parsedArticle"])
+                for word in line["parsedArticle"].split():
+                    words.append(word)
+                yield words
+                count = count + 1
+                if (count > 1000):
+                    break
     
 # load sentiment dictionary from file path                
 def loadSentiment(sentimentCsv):
@@ -104,7 +129,7 @@ def loadSentiment(sentimentCsv):
             try:
                 sentDict[line['Word']] = (float(line['Valence']), float(line['Arousal']))
             except ValueError:
-                print("error on line")
+                pass
                 #print(line)
             count = count + 1
             if (count %100==0): 
@@ -114,4 +139,5 @@ def loadSentiment(sentimentCsv):
                 break        
     return sentDict
 
-enterData(corpusPath,sentimentPath)
+def run():
+    enterData(corpusPath,sentimentPath)
