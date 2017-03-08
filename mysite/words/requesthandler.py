@@ -49,7 +49,19 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         self.word = word
         self.n = n
     def execute(self):
-        return Result(None)  
+        docs = words.dataretrieval.getDocuments(self.dateRange[0], self.dateRange[1])[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            # v is a list of Documents
+            chunk = []
+            for doc in v:
+                wordss = words.dataretrieval.getWordsInDocument(doc)
+                chunk.append(wordss)
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, self.word, self.n))
+        return Result(self.granularity, 'N closest neighbors of '+self.word, xValues, yValues)   
 
 class Result():
     def __init__(self, xTitle, yTitle, xValues, yValues):

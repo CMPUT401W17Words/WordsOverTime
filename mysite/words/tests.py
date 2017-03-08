@@ -64,13 +64,17 @@ class RequestHandlerTests(TestCase):
         self.doc2 = Document(article_id=2, publicationDate=date(2007, 5, 19))
         self.doc3 = Document(article_id=3, publicationDate=date(2008, 10, 11))
         self.doc4 = Document(article_id=4, publicationDate=date(2000, 5, 19))
+        self.doc8 = Document(article_id=8, publicationDate=date(2000, 5, 21))
+        self.doc9 = Document(article_id=9, publicationDate=date(2007, 7, 11))
         self.docs = [self.doc1,
                      self.doc3,
                      Document(article_id=5, publicationDate=date(1990, 12, 17)),
                      self.doc4,
                      self.doc2,
                      Document(article_id=7, publicationDate=date(2010, 1, 17)),
-                     Document(article_id=6, publicationDate=date(2008, 11, 1))]
+                     Document(article_id=6, publicationDate=date(2008, 11, 1)),
+                     self.doc8,
+                     self.doc9]
         word1 = Word(word='rabbit')
         word2 = Word(word='bird')
         self.words = [word1, word2]
@@ -83,7 +87,10 @@ class RequestHandlerTests(TestCase):
                            WordInDocument(word=word1, document=self.doc2),
                            WordInDocument(word=word1, document=self.doc4),
                            WordInDocument(word=word2, document=self.doc4),
-                           WordInDocument(word=word1, document=self.doc3)]
+                           WordInDocument(word=word1, document=self.doc3),
+                           WordInDocument(word=word2, document=self.doc3),                           
+                           WordInDocument(word=word2, document=self.doc8),
+                           WordInDocument(word=word2, document=self.doc9)]
         for wid in self.wordInDocs:
             wid.save()
        
@@ -95,9 +102,19 @@ class RequestHandlerTests(TestCase):
         doc = (Document.objects.get(article_id=1))
         #print(doc.article_id, doc.publicationDate)
         #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word1)
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2)
         result = request.execute()
         print(result.xValues)
         print(result.yValues)
+        
+    def testCosDistanceOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        word = 'rabbit'
+        N = 1
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N)
+        result = request.execute()
+        print(result.xValues)
+        print(result.yValues)        
         
         
