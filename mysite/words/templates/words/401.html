@@ -21,9 +21,9 @@
             </div>
             
             <div id="mainbody" align="center">
-                  <form  enctype="text/plain">
+                  <form action = "/words/graph/" method = "post">
                         <br/>
-                        <input type="text" name="words" value="comma seperated words" size="20">
+                        <input type="text" id = "keywords" name="keywords" value="comma seperated words" size="20">
                       
                         <br/>
                         <select>
@@ -41,9 +41,9 @@
                         <input type="checkbox" name = "docAnaly"/>Document Analytics
                         
                         <br/>
-                        From<input type="text" name="from" value="Dec2010" size="7">
+                        From<input type="text" id = "startDate" name="startDate" value="Dec2010" size="7">
                         <br/>
-                        To<input type="text" name="to" value="Feb2017" size="7">
+                        To<input type="text" id = "endDate" name="endDate" value="Feb2017" size="7">
                       
                         <br/>
                         <input type="checkbox" name = "byLocation"/>Advanced Search by Location
@@ -72,6 +72,8 @@
                         To<input type="text" name="to" value="Feb2017" size="7">
                         To<input type="text" name="to" value="Feb2017" size="7">
                         To<input type="text" name="to" value="Feb2017" size="7"><br/>
+            {% csrf_token %}
+			<input type = "submit" value = "Submit"/>
 			
            </form>
             </div>
@@ -94,8 +96,6 @@
                  
                  
             </div>
-<!-- For linking to graph page, just a placeholder -->
-		<a href="graph">GRAPH</a>
 
             <div id = "footer">
                 <h1 style="color: aliceblue">Social media links</h1>
