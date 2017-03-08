@@ -15,7 +15,6 @@ def averageTfidfOfWord(chunk, word):
     return
     
 def cosDistanceOfPair(chunk, word1, word2, cbow=True):
-    print(chunk)
     model = gensim.models.Word2Vec(chunk, min_count=1)
     return model.similarity(word1, word2)
     

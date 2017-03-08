@@ -43,7 +43,8 @@ def enterData(corpusCsv, sentimentCsv):
             docData[line['articleID']].append(line['publicationDate']) # THIS LINE MAY BE BUGGED. depends on if the string date can be converted to an sql date properly
             words = line['parsedArticle'].split()
             tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
-            #print(tfidfs)
+            print(tfidfs, 'TFIDFS')
+            print(len(tfidfs), 'TFIDFS')
             arousal = 0.0
             valence = 0.0
             arousal_five = []
@@ -99,8 +100,10 @@ def enterData(corpusCsv, sentimentCsv):
                        #average_arousal_five_highest=v[3], average_valence_five_highest=v[4])
         doc.save()
     
+    print(len(wordDocData), 'LOL')
     for k,v in wordDocData.items(): # WordInDocument models
-        wordDoc = WordInDocument(word=k[0],document=k[1],tfidf=v[0])
+        print(Word.objects.get(word=k[0]).word, Document.objects.get(article_id=k[1]).article_id)
+        wordDoc = WordInDocument(word=Word.objects.get(word=k[0]),document=Document.objects.get(article_id=k[1]))
         wordDoc.save()
 
 # generate corpus from file path   
