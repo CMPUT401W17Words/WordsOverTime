@@ -1,5 +1,6 @@
 # This is the "coordinator" module that calls on other modules to process a client request
 
+import csv
 from words.models import Document
 import words.dataretrieval
 import words.dataanalyzer
@@ -69,6 +70,12 @@ class Result():
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
         self.xValues = xValues # xValues and yValues are parallel lists that together construct a scatterplot
         self.yValues = yValues
+    def generateCSV(self, filePath):
+        with open(filePath, 'w') as csvfile:
+            resultWriter = csv.writer(csvfile, dialect='excel')
+            resultWriter.writerow([self.xTitle, self.yTitle])
+            for i in range(len(self.xValues)):
+                resultWriter.writerow([self.xValues[i], self.yValues[i]])
 
 # granularity parameter is for now a string that can be Year or Month
     

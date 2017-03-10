@@ -13,11 +13,14 @@ import gensim
 from words.models import Word, Document, WordInDocument
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
 django.setup()
 
 corpusPath = r'C:\Users\L\Documents\School\CMPUT\401\articles-can\articles-can.csv'
 sentimentPath = r'C:\Users\L\Documents\School\CMPUT\401\sentiment_dict_3mil\sentiment_dict_3mil.csv'
+
+corpusPath3 = r'C:\Users\L\Documents\School\CMPUT\401\mock_corpus.csv'
+sentimentPath3 = r'C:\Users\L\Documents\School\CMPUT\401\mock_sentiment.csv'
 
 corpusPath2 = r'C:\Users\Master Chief\Documents\School\articles-can\articles-can.csv'
 sentimentPath2 = r'C:\Users\Master Chief\Documents\School\sentiment_dict_3mil\sentiment_dict_3mil.csv'
@@ -29,9 +32,13 @@ def enterData(corpusCsv, sentimentCsv):
     wordDocData = {}    
     
     fullCorpus = MainCorpus(corpusCsv)
-    tfidf = gensim.models.tfidfmodel.TfidfModel(fullCorpus)
+    for text in fullCorpus:
+        print(text)
+    corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
+    tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
     sentDict = loadSentiment(sentimentCsv)
     
+    print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
     for word in fullCorpus.dictionary.token2id.keys(): # get each word in the corpus
         wordData[word] = []
         
@@ -40,11 +47,11 @@ def enterData(corpusCsv, sentimentCsv):
         count = 0
         for line in file:
             docData[line['articleID']] = []
-            docData[line['articleID']].append(line['publicationDate']) # THIS LINE MAY BE BUGGED. depends on if the string date can be converted to an sql date properly
+            docData[line['articleID']].append(line['publicationDate'])
             words = line['parsedArticle'].split()
             tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
-            print(tfidfs, 'TFIDFS')
-            print(len(tfidfs), 'TFIDFS')
+            #print(tfidfs, 'TFIDFS')
+            #print(len(tfidfs), 'TFIDFS')
             arousal = 0.0
             valence = 0.0
             arousal_five = []
@@ -100,9 +107,9 @@ def enterData(corpusCsv, sentimentCsv):
                        #average_arousal_five_highest=v[3], average_valence_five_highest=v[4])
         doc.save()
     
-    print(len(wordDocData), 'LOL')
+    #print(len(wordDocData), 'LOL')
     for k,v in wordDocData.items(): # WordInDocument models
-        print(Word.objects.get(word=k[0]).word, Document.objects.get(article_id=k[1]).article_id)
+        #print(Word.objects.get(word=k[0]).word, Document.objects.get(article_id=k[1]).article_id)
         wordDoc = WordInDocument(word=Word.objects.get(word=k[0]),document=Document.objects.get(article_id=k[1]))
         wordDoc.save()
 
@@ -146,4 +153,4 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run():
-    enterData(corpusPath2,sentimentPath2)
+    enterData(corpusPath3,sentimentPath3)
