@@ -270,3 +270,35 @@ DELIMITER ;
 
 call rowperrow();
 
+
+#for each document if word in allwords in document then add to count
+#select count(*) from Word_Data where word = X and articleID = Y;
+# total documents / num docs containing word
+
+DROP PROCEDURE IF EXISTS IDFCALC; 
+DELIMITER ;;
+
+CREATE PROCEDURE IDFCALC()
+BEGIN
+  DECLARE cursor_ID INT;
+  DECLARE cursor_VAL VARCHAR;
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE cursor_i CURSOR FOR SELECT ID,VAL FROM table_A;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+  OPEN cursor_i;
+  read_loop: LOOP
+    FETCH cursor_i INTO cursor_ID, cursor_VAL;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+    INSERT INTO table_B(ID, VAL) VALUES(cursor_ID, cursor_VAL);
+  END LOOP;
+  CLOSE cursor_i;
+END;
+;;
+
+
+CREATE USER darcyprojectuser@localhost IDENTIFIED BY '12345';
+GRANT ALL PRIVILEGES ON Client_Generated_Data.* TO darcyprojectuser@localhost;
+GRANT ALL PRIVILEGES ON Precalculated_Data.* TO darcyprojectuser@localhost;
+FLUSH PRIVILEGES;
