@@ -5,11 +5,7 @@ from .models import Question
 
 # Create your views here.
 def index(request):
-  latest_question_list = Question.objects.order_by('-pub_date')[:5]
-  context = {
-    'latest_question_list': latest_question_list
-  }
-  return render(request, 'words/index.html', context)
+  return render(request, 'words/index.html')
  
 
 #class IndexView(generic.DetailView):
