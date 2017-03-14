@@ -1,29 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import generic
-from .models import Question
 import random
 from datetime import datetime, date, time
 
 from .forms import MainForm
-
-def getKeywords(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = MainForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = MainForm()
-
-    return render(request, 'words/401.html', {'form': form})
+from .requesthandler import *
 
 
 # Create your views here.
@@ -43,17 +25,30 @@ def graph(request):
     form = MainForm(request.POST)
     if form.is_valid():
         keyWords = form.cleaned_data['keywords']
+        print (keyWords)
+        keyWordsList = keyWords.split()
+        
+        
+        print (keyWordsList)
+        
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
-    years = []
-    yearDiff = endDate.year - startDate.year
-    for i in range (0, yearDiff):
-        years.append(startDate.year + i)
+    print (keyWords)
+    #keyWordsList = ['rabbit', 'bird']
+    req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
+    result = req.execute()
 
-    yValues = []
-    for i in range(0, len(years)):
-        randomNum = random.randint(1,4)
-        yValues.append(randomNum)
+    years = result.xValues
+    #years = []
+    #yearDiff = endDate.year - startDate.year
+    #for i in range (0, yearDiff):
+    #    years.append(startDate.year + i)
+
+    yValues = result.yValues
+    #yValues = []
+    #for i in range(0, len(years)):
+    #    randomNum = random.randint(1,4)
+    #    yValues.append(randomNum)
 
     splitKeywords = keyWords.split()
 
@@ -65,8 +60,10 @@ def graph(request):
     #        yValuesList[j].append(randomNum)
         
     
-    xAxis = "Date"
-    yAxis = "Valence"
+    xAxis = result.xTitle
+    yAxis = result.yTitle
+    #xAxis = "Date"
+    #yAxis = "Valence"
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
