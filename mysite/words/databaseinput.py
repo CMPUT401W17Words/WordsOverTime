@@ -10,7 +10,7 @@ import csv
 import django
 import gensim
 
-from words.models import Word, Document, WordInDocument
+from words.models import Document_Data, Word_Data
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
@@ -27,9 +27,9 @@ sentimentPath2 = r'C:\Users\Master Chief\Documents\School\sentiment_dict_3mil\se
 
 # main function that will input corpus and sentiment info into the database
 def enterData(corpusCsv, sentimentCsv):
-    wordData = {} # represent models as dictionaries of primary key to list of other data
-    docData = {}
-    wordDocData = {}    
+    #wordData = {} # represent models as dictionaries of primary key to list of other data
+    #docData = {}
+    #wordDocData = {}    
     
     fullCorpus = MainCorpus(corpusCsv)
     for text in fullCorpus:
@@ -39,15 +39,20 @@ def enterData(corpusCsv, sentimentCsv):
     sentDict = loadSentiment(sentimentCsv)
     
     print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
-    for word in fullCorpus.dictionary.token2id.keys(): # get each word in the corpus
-        wordData[word] = []
+    #for word in fullCorpus.dictionary.token2id.keys(): # get each word in the corpus
+        #wordData[word] = []
         
     with open(corpusCsv, 'r') as csvfile: # iterate over docs in the CSV file
         file = csv.DictReader(csvfile)
         count = 0
         for line in file:
-            docData[line['articleID']] = []
-            docData[line['articleID']].append(line['publicationDate'])
+            #docData[line['articleID']] = []
+            #docData[line['articleID']].append(line['language'])
+            #docData[line['articleID']].append(line['province'])
+            #docData[line['articleID']].append(line['city'])
+            #docData[line['articleID']].append(line['country'])
+            #docData[line['articleID']].append(line['publicationDate'])
+            #docData[line['articleID']].append(line['wordCount'])
             words = line['parsedArticle'].split()
             tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
             #print(tfidfs, 'TFIDFS')
@@ -55,63 +60,98 @@ def enterData(corpusCsv, sentimentCsv):
             arousal = 0.0
             valence = 0.0
             arousal_five = []
-            valence_five = []        
+            valence_five = []
+            tfidf_five =[]
             for item in tfidfs: # get each word in the doc and its tfidf
                 word = fullCorpus.dictionary[item[0]]
                 value = item[1]
                 #print(word,value)
-                wordDocData[(word,line['articleID'])] = []
-                wordDocData[(word,line['articleID'])].append(value)
-            for word in words: # get sentiment info
+                #wordDocData[(word,line['articleID'])] = []
+                #wordDocData[(word,line['articleID'])].append(value)
+            #for word in words: # get sentiment info
+                word, created = Word_Data.objects.get_or_create(word=word, articleID = line['articleID'], word_count = 1, term_frequency = math.log10(1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
+                if not created:
+                    wrd = Word_Data(word=word, articleID = line['articleID'], word_count = word.word_count + 1, term_frequency = math.log10((word.word_count + 1)/doc_word_count))#, inverse_term_frequency = 0)
+                    wrd.save()                   
                 if word in sentDict:
-                    currentArousal = sentDict[word][0]
-                    currentValence = sentDict[word][1]
+                    #currenttfidf = tfidfs [word][0]
+                    currentValence = sentDict[word][0]
+                    currentArousal = sentDict[word][1]
                     arousal = arousal + currentArousal
                     valence = valence + currentValence
-                    if (len(arousal_five)<5):
-                        arousal_five.append(currentArousal)
+                    if (len(tfidf_five)<5):
+                        tfidf_five.append([word,value,currentValence,currentArousal])
                     else:
-                        arousal_five.sort()
+                        tfidf_five = sorted(tfidf_five, key=lambda entry: entry[1])
                         for i in range(5):
-                            if (arousal_five[i]<currentArousal):
-                                arousal_five[i] = currentArousal
-                                break                    
-                    if (len(valence_five)<5):
-                        valence_five.append(currentValence)
-                    else:
-                        valence_five.sort()
-                        for i in range(5):
-                            if (valence_five[i]<currentValence):
-                                valence_five[i] = currentValence
-                                break
+                            if (tfidf_five[i][1]<value):
+                                tfidf_five[i] = [word, value]
+                                break  
+                            
+                            
+                    #if (len(arousal_five)<5):
+                        #arousal_five.append(currentArousal)
+                    #else:
+                        ##arousal_five.sort()
+                        #for i in range(5):
+                            #if (arousal_five[i]<currentArousal):
+                                #arousal_five[i] = currentArousal
+                                #break                    
+                    #if (len(valence_five)<5):
+                        #valence_five.append(currentValence)
+                    #else:
+                        #valence_five.sort()
+                        #for i in range(5):
+                            #if (valence_five[i]<currentValence):
+                                #valence_five[i] = currentValence
+                                #break
             arousal_average_five = 0.0
             valence_average_five = 0.0
-            for i in range(len(arousal_five)):
-                arousal_average_five = arousal_average_five + arousal_five[i]
-            for i in range(len(valence_five)):
-                valence_average_five = valence_average_five + valence_five[i]     
-            docData[line['articleID']].append(arousal/len(words))
-            docData[line['articleID']].append(valence/len(words))
-            docData[line['articleID']].append(arousal_average_five)
-            docData[line['articleID']].append(valence_average_five)
+            for i in range(len(tfidf_five)):
+                valence_average_five = valence_average_five + tfidf_five[i][2]
+                arousal_average_five = arousal_average_five + tfidf_five[i][3]
+            doc_word_count = len(words)
+            valence_average_five = valence_average_five/len(tfidf)
+            arousal_average_five = arousal_average_five/len(tfidf)
+            while (len(tfidf_five)<5):
+                tfidf_five.append(["",0,0,0])            
+            #docData[line['articleID']].append(len(words))
+            #docData[line['articleID']].append("")
+            #docData[line['articleID']].append("")
+            #docData[line['articleID']].append("")
+            #docData[line['articleID']].append("")
+            #docData[line['articleID']].append("")
+            #docData[line['articleID']].append(arousal/len(words))
+            #docData[line['articleID']].append(valence/len(words))
+            #docData[line['articleID']].append(arousal_average_five)
+            #docData[line['articleID']].append(valence_average_five)
+            Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
+                          city = line['city'], country = line['country'], publication_Date = line['publicationDate'], 
+                          word_count = doc_word_count, word_one = tfidf_five[0][0], word_two = tfidf_five[1][0], word_three = tfidf_five[2][0], word_four = tfidf_five[3][0], 
+                          word_five = tfidf_five[4][0], average_arousal_doc = arousal/doc_word_count, average_valence_doc = valence/doc_word_count,
+                          average_arousal_words = arousal_average_five, average_valence_words = valence_average_five)  
+            doc.save()
+
             count = count + 1
             if (count > 1000):
                 break
             
-    for k,v in wordData.items(): # create Word models and enter into db
-        word = Word(word=k)
-        word.save()
+    #for k,v in wordData.items(): # create Word models and enter into db
+        #word = Word_data(word=k, articleID = line['articleID'], word_count = 1, term_frequency = 0, inverse_term_frequency = 0)
+        #word.save()
 
-    for k,v in docData.items(): # Document models
-        doc = Document(article_id=k, publicationDate=v[0])#, average_arousal=v[1], average_valence=v[2],
-                       #average_arousal_five_highest=v[3], average_valence_five_highest=v[4])
-        doc.save()
+    #for k,v in docData.items(): # Document models
+        #doc = Document_Data(article_id=k, language = v[0], province = v[1], city = v[2], country = v[4], 
+                        #publication_Date = v[5], count = v[6], word_one = v[7], word_two = v[8], word_three = v[9],
+                        #word_four = v[10], word_five = v[11], average_arousal_doc = v[12], average_valence_doc = v[13],
+                        #average_arousal_words=v[14], average_valence_words=v[15])
+        #doc.save()
     
     #print(len(wordDocData), 'LOL')
-    for k,v in wordDocData.items(): # WordInDocument models
-        #print(Word.objects.get(word=k[0]).word, Document.objects.get(article_id=k[1]).article_id)
-        wordDoc = WordInDocument(word=Word.objects.get(word=k[0]),document=Document.objects.get(article_id=k[1]))
-        wordDoc.save()
+    #for k,v in wordDocData.items(): # WordInDocument models
+        ##print(Word.objects.get(word=k[0]).word, Document.objects.get(article_id=k[1]).article_id)
+        #wordDoc = Word_Data(word=Word_Data.objects.get(word=k[0]),document=Document_Data.objects.get(article_id=k[1]))
+        #wordDoc.save()
 
 # generate corpus from file path   
 class MainCorpus(gensim.corpora.textcorpus.TextCorpus):

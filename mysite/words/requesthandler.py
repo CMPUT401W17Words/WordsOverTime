@@ -1,17 +1,17 @@
 # This is the "coordinator" module that calls on other modules to process a client request
 
 import csv
-from words.models import Document
+from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
 
-class Request():
+class Request(object):
     def execute(self):
         return Result(None)
     
 class OverTimeRequest(Request):
     def __init__(self, dateRange, granularity):
-        super(OverTimeRequest, self).__init__()
+        Request.__init__(self)
         self.dateRange = dateRange
         self.granularity = granularity
     def execute(self):
@@ -19,14 +19,14 @@ class OverTimeRequest(Request):
     
 class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word):
-        super(TfidfOverTimeRequest, self).__init__(dateRange, granularity)
+        OverTimeRequest.__init__(self,dateRange, granularity)
         self.word = word
     def execute(self):
         return Result(None)
     
 class CosDistanceOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word1, word2):
-        super(CosDistanceOverTimeRequest, self).__init__(dateRange, granularity)
+        OverTimeRequest.__init__(self,dateRange, granularity)
         self.word1 = word1
         self.word2 = word2
     def execute(self):
@@ -46,7 +46,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word, n):
-        super(NClosestNeighboursOverTimeRequest, self).__init__(dateRange, granularity)
+        OverTimeRequest.__init__(self, dateRange, granularity)
         self.word = word
         self.n = n
     def execute(self):

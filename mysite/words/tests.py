@@ -5,32 +5,32 @@ from django.test import TestCase
 import words.dataretrieval
 import words.requesthandler
 import words.databaseinput
-from words.models import Document, Word, WordInDocument
+from words.models import Document_Data, Word_Data
 
 # Create your tests here.
 
 class DataRetrievalTests(TestCase):
     
     def setUp(self):
-        self.doc1 = Document(article_id=1, publicationDate=date(2010, 6, 7))
-        self.doc2 = Document(article_id=2, publicationDate=date(2007, 5, 19))
+        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
         self.docs = [self.doc1,
-                     Document(article_id=3, publicationDate=date(2008, 10, 11)),
-                     Document(article_id=5, publicationDate=date(1990, 12, 17)),
-                     Document(article_id=4, publicationDate=date(2000, 5, 19)),
+                     Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
                      self.doc2,
-                     Document(article_id=7, publicationDate=date(2010, 1, 17)),
-                     Document(article_id=6, publicationDate=date(2008, 11, 1))]
-        word1 = Word(word='rabbit')
-        word2 = Word(word='bird')
+                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)]
+        word1 = Word_Data(word='rabbit')
+        word2 = Word_Data(word='bird')
         self.words = [word1, word2]
         for doc in self.docs:
             doc.save()
         for word in self.words:
             word.save()
-        self.wordInDocs = [WordInDocument(word=word1, document=self.doc1),
-                           WordInDocument(word=word2, document=self.doc1),
-                           WordInDocument(word=word2, document=self.doc2)]
+        self.wordInDocs = [Word_Data(word=word1, document=self.doc1, word_count = 1),
+                           Word_Data(word=word2, document=self.doc1, word_count = 1),
+                           Word_Data(word=word2, document=self.doc2, word_count = 1)]
         for wid in self.wordInDocs:
             wid.save()
         
@@ -40,8 +40,8 @@ class DataRetrievalTests(TestCase):
         docs = words.dataretrieval.getDocuments(startDate, endDate)[0]
         self.assertIs(len(docs)==3, True)
         for doc in docs:
-            self.assertGreaterEqual(doc.publicationDate, startDate)
-            self.assertLessEqual(doc.publicationDate, endDate)
+            self.assertGreaterEqual(doc.publication_Date, startDate)
+            self.assertLessEqual(doc.publication_Date, endDate)
     
     def testGetWordsInDocument(self):
         wds = words.dataretrieval.getWordsInDocument(self.doc2)
@@ -61,19 +61,19 @@ class RequestHandlerTests(TestCase):
     def setUp(self):
         self.csvFilePath = 'outputDump.csv'
         #words.databaseinput.run()
-        self.doc1 = Document(article_id=1, publicationDate=date(2010, 6, 7))
-        self.doc2 = Document(article_id=2, publicationDate=date(2007, 5, 19))
-        self.doc3 = Document(article_id=3, publicationDate=date(2008, 10, 11))
-        self.doc4 = Document(article_id=4, publicationDate=date(2000, 5, 19))
-        self.doc8 = Document(article_id=8, publicationDate=date(2000, 5, 21))
-        self.doc9 = Document(article_id=9, publicationDate=date(2007, 7, 11))
+        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
         self.docs = [self.doc1,
                      self.doc3,
-                     Document(article_id=5, publicationDate=date(1990, 12, 17)),
+                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
                      self.doc4,
                      self.doc2,
-                     Document(article_id=7, publicationDate=date(2010, 1, 17)),
-                     Document(article_id=6, publicationDate=date(2008, 11, 1)),
+                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
                      self.doc8,
                      self.doc9]
         word1 = Word(word='rabbit')
@@ -81,31 +81,31 @@ class RequestHandlerTests(TestCase):
         self.words = [word1, word2]
         for doc in self.docs:
             doc.save()
-        for word in self.words:
-            word.save()
-        self.wordInDocs = [WordInDocument(word=word1, document=self.doc1),
-                           WordInDocument(word=word2, document=self.doc1),
-                           WordInDocument(word=word1, document=self.doc2),
-                           WordInDocument(word=word1, document=self.doc4),
-                           WordInDocument(word=word2, document=self.doc4),
-                           WordInDocument(word=word1, document=self.doc3),
-                           WordInDocument(word=word2, document=self.doc3),                           
-                           WordInDocument(word=word2, document=self.doc8),
-                           WordInDocument(word=word2, document=self.doc9)]
+        #for word in self.words:
+            #word.save()
+        self.wordInDocs = [Word_Data(word=word1, document=self.doc1, word_count = 1,),
+                           Word_Data(word=word2, document=self.doc1, word_count = 1,),
+                           Word_Data(word=word1, document=self.doc2, word_count = 1,),
+                           Word_Data(word=word1, document=self.doc4, word_count = 1,),
+                           Word_Data(word=word2, document=self.doc4, word_count = 1,),
+                           Word_Data(word=word1, document=self.doc3, word_count = 1,),
+                           Word_Data(word=word2, document=self.doc3, word_count = 1,),                           
+                           Word_Data(word=word2, document=self.doc8, word_count = 1,),
+                           Word_Data(word=word2, document=self.doc9, word_count = 1,)]
         for wid in self.wordInDocs:
             wid.save()
             
     def testDatabaseEntry(self):
-        print(len(Document.objects.all()))
-        print(len(WordInDocument.objects.all()))
-        print(len(Word.objects.all()))
+        print(len(Document_Data.objects.all()))
+        #print(len(WordInDocument.objects.all()))
+        print(len(Word_Data.objects.all()))
        
     def testCosDistanceOverTime(self):
         dateRange = (date(2000, 5, 19), date(2008, 10, 11))
         granularity = 'Year'
         word1 = 'rabbit'
         word2 = 'bird'
-        doc = (Document.objects.get(article_id=1))
+        doc = (Document_Data.objects.get(article_id=1))
         #print(doc.article_id, doc.publicationDate)
         #print(words.dataretrieval.getWordsInDocument(doc))
         request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2)

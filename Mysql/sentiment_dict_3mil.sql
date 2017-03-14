@@ -42,11 +42,11 @@
 
 # run this with 'SOURCE /path/to/precalculated.sql'
 
-Create database Client_Generated_Data;
+Create database Generated_Data;
 
-Create database Precalculated_Data;
 
-USE Client_Generated_Data;
+
+USE Generated_Data;
 
 DROP TABLE IF EXISTS sentiment_dict_3mil;
 
@@ -62,7 +62,7 @@ CREATE TABLE sentiment_dict_3mil
  PRIMARY KEY (Word)
 );
 
-load data local infile "/mnt/vol/sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
+#load data local infile "/mnt/vol/sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
 
 drop table if exists articles_can;
 
@@ -81,10 +81,8 @@ create table articles_can
  PRIMARY KEY (id)
 );
 
-load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
+#load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
 
-
-USE Precalculated_Data;
 
 DROP TABLE IF EXISTS Document_Data;
 
@@ -116,13 +114,14 @@ CREATE TABLE Word_Data
 (
  word varchar(255) NOT NULL,
  articleID int unsigned NOT NULL,
- language varchar(255) NOT NULL,
- Province char(2) NOT NULL,
- city varchar(255) NOT NULL,
- country char(3) NOT NULL,
- publication_Date date NOT NULL,
+ #language varchar(255) NOT NULL,
+ #Province char(2) NOT NULL,
+ #city varchar(255) NOT NULL,
+ #country char(3) NOT NULL,
+ #publication_Date date NOT NULL,
  word_count int unsigned NOT NULL,
  term_frequency decimal(14,12), # log(word count / document word count)
+ tfidf  decimal(14,12),
 
  PRIMARY KEY (Word, articleID)
 );
@@ -133,7 +132,7 @@ DROP TABLE IF EXISTS Corpus_Data;
 CREATE TABLE Corpus_Data
 (
  corpusID int unsigned NOT NULL,
- inverse_document_Frequency decimal(14,12) NOT NULL,
+ #inverse_document_Frequency decimal(14,12) NOT NULL,
  start_date date NOT NULL,
  end_date date NOT NULL,
 
@@ -298,7 +297,6 @@ END;
 ;;
 
 
-CREATE USER darcyprojectuser@localhost IDENTIFIED BY '12345';
-GRANT ALL PRIVILEGES ON Client_Generated_Data.* TO darcyprojectuser@localhost;
-GRANT ALL PRIVILEGES ON Precalculated_Data.* TO darcyprojectuser@localhost;
+CREATE USER projectuser@localhost IDENTIFIED BY '12345';
+GRANT ALL PRIVILEGES ON Generated_Data.* TO projectuser@localhost;
 FLUSH PRIVILEGES;
