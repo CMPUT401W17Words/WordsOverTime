@@ -88,6 +88,14 @@ def graph(request):
     }
     return render(request, 'words/graph2.html', context)
  
-
 #class IndexView(generic.DetailView):
   #template_name = "words/index.html"
+  
+def results(request):
+  if request.method == 'POST':
+    form = ContactForm(request.POST) 
+    if form.is_valid():
+      data = myform.cleaned_data
+      #process data with field = data['field']
+      #generate a Request object (see requesthandler.py)
+  return HttpResponseRedirect()
