@@ -83,6 +83,7 @@ def enterData(corpusCsv, sentimentCsv):
                 #wordDocData[(word,line['articleID'])].append(value)
             value = 0
             doc_word_count = len(words)
+            print(doc_word_count)
             for word in words: # get sentiment info
                 word, created = Word_Data.objects.get_or_create(word=word, articleID = line['articleID'], word_count = 1, term_frequency = math.log10(1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                 if not created:
