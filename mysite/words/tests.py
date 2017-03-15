@@ -68,19 +68,19 @@ class RequestHandlerTests(TestCase):
     
     def setUp(self):
         self.csvFilePath = 'outputDump.csv'
-        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 4, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 10, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 8, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 2, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 13, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 8, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
         self.docs = [self.doc1,
                      self.doc3,
-                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
                      self.doc4,
                      self.doc2,
-                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
                      self.doc8,
                      self.doc9]
         word1 = 'rabbit'
