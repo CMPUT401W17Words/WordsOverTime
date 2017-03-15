@@ -25,6 +25,15 @@ sentimentPath3 = r'C:\Users\L\Documents\School\CMPUT\401\mock_sentiment.csv'
 corpusPath2 = r'C:\Users\Master Chief\Documents\School\articles-can\articles-can.csv'
 sentimentPath2 = r'C:\Users\Master Chief\Documents\School\sentiment_dict_3mil\sentiment_dict_3mil.csv'
 
+corpusPath4 = r'/mnt/vol/articles-can.csv'
+sentimentPath4 = r'/mnt/vol/sentiment_dict_3mil.csv'
+
+def enterSentiment():
+    pass
+
+def enterArticles():
+    pass
+
 # main function that will input corpus and sentiment info into the database
 def enterData(corpusCsv, sentimentCsv):
     #wordData = {} # represent models as dictionaries of primary key to list of other data
@@ -193,4 +202,4 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run():
-    enterData(corpusPath3,sentimentPath3)
+    enterData(corpusPath2,sentimentPath2)

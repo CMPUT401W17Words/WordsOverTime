@@ -204,3 +204,9 @@ class DataAnalyzerTests(TestCase):
     
     def setUp(self):
         pass
+    
+class DataInputTests(TestCase):
+    
+    def testDataInput():
+        databaseinput.run()
+        
