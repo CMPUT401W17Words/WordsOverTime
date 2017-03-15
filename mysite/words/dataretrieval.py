@@ -28,6 +28,22 @@ def getWordsInDocument(doc):
             result.append(w.word)
     return result
 
+def getNumWordsInCorpus(documents):
+    total = 0
+    for doc in documents:
+        words = Word_Data.objects.filter(article_id=doc.article_id)
+        for word in words:
+            total = total + word.word_count
+    return total
+            
+def getNumWordInCorpus(documents, inputWord):
+    total = 0
+    for doc in documents:
+        words = Word_Data.objects.filter(article_id=doc.article_id, word=inputWord)
+        for word in words:
+            total = total + word.word_count
+    return total
+
 # split a list of documents into sublists based on a specified time granularity        
 def splitDocuments(documents, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
