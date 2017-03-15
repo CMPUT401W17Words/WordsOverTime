@@ -124,11 +124,11 @@ def enterData(corpusCsv, sentimentCsv):
                                 #break
             arousal_average_five = 0.0
             valence_average_five = 0.0
-            for i in range(len(tfidf_five)):
-                valence_average_five = valence_average_five + tfidf_five[i][2]
-                arousal_average_five = arousal_average_five + tfidf_five[i][3]
-            valence_average_five = valence_average_five/len(tfidf)
-            arousal_average_five = arousal_average_five/len(tfidf)
+            #for i in range(len(tfidf_five)):
+                #valence_average_five = valence_average_five + tfidf_five[i][2]
+                #arousal_average_five = arousal_average_five + tfidf_five[i][3]
+            #valence_average_five = valence_average_five/len(tfidf)
+            #arousal_average_five = arousal_average_five/len(tfidf)
             while (len(tfidf_five)<5):
                 tfidf_five.append(["",0,0,0])            
             #docData[line['articleID']].append(len(words))
