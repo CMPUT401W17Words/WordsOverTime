@@ -2,6 +2,9 @@
 # It will not be the final method of database input
 # It can be used for quick testing of the data processing modules
 # Uses the first 1000 corpus entries and 10000 sentiment entries
+
+# 
+
 import io
 
 import os
@@ -84,7 +87,7 @@ def enterData(corpusCsv, sentimentCsv):
                 #wordDocData[(word,line['articleID'])].append(value)
             value = 0
             doc_word_count = len(words)
-            print(doc_word_count)
+            #print(doc_word_count)
             for word in words: # get sentiment info
                 # TODO: log10 term frequency
                 word, created = Word_Data.objects.get_or_create(word=word, article_id = line['articleID'], word_count = 1, term_frequency = (1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
