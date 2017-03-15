@@ -2,6 +2,7 @@
 # It will not be the final method of database input
 # It can be used for quick testing of the data processing modules
 # Uses the first 1000 corpus entries and 10000 sentiment entries
+import io
 
 import os
 import sys
@@ -185,7 +186,7 @@ class MainCorpus(gensim.corpora.textcorpus.TextCorpus):
 # load sentiment dictionary from file path                
 def loadSentiment(sentimentCsv):
     sentDict = {}
-    with open(sentimentCsv, 'r', encoding="utf8") as csvfile:
+    with io.open(sentimentCsv, 'r', encoding="utf8") as csvfile:
         file = csv.DictReader(csvfile)
         count = 0
         for line in file:
