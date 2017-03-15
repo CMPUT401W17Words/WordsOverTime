@@ -15,6 +15,7 @@ import django
 import gensim
 
 from words.models import Document_Data, Word_Data
+from django.db.models import F
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
@@ -88,8 +89,9 @@ def enterData(corpusCsv, sentimentCsv):
                 # TODO: log10 term frequency
                 word, created = Word_Data.objects.get_or_create(word=word, article_id = line['articleID'], word_count = 1, term_frequency = (1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                 if not created:
-                    wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
-                    wrd.save()                   
+                    #wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
+                    #wrd.save()
+                    Word_Data.objects.filter(word=word, article_id = line['articleID']).update(word_count = F('word_count')+1, term_frequency = (F('word_count')+1/doc_word_count))
                 if word in sentDict:
                     #currenttfidf = tfidfs [word][0]
                     currentValence = sentDict[word][0]
