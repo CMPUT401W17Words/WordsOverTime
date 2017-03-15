@@ -202,4 +202,4 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run():
-    enterData(corpusPath2,sentimentPath2)
+    enterData(corpusPath4,sentimentPath4)
