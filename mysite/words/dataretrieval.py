@@ -21,11 +21,11 @@ def getDocumentData(startDate, endDate):
 
 # returns all words in a document
 def getWordsInDocument(doc):
-    words = Word_Data.objects.filter(Word_Data__article_id=doc.article_id)
+    words = Word_Data.objects.filter(article_id=doc.article_id)
     result = []
     for w in words:
-        for i in w.word_count:
-            result.append(w.word.word)
+        for i in range(w.word_count):
+            result.append(w.word)
     return result
 
 # split a list of documents into sublists based on a specified time granularity        

@@ -12,32 +12,40 @@ from words.models import Document_Data, Word_Data
 class DataRetrievalTests(TestCase):
     
     def setUp(self):
-        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
         self.docs = [self.doc1,
-                     Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
-                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
-                     Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
                      self.doc2,
-                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
-                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)]
-        word1 = Word_Data(word='rabbit')
-        word2 = Word_Data(word='bird')
+                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)]
+        word1 ='rabbit'
+        word2 ='bird'
         self.words = [word1, word2]
         for doc in self.docs:
             doc.save()
-        for word in self.words:
-            word.save()
-        self.wordInDocs = [Word_Data(word=word1, document=self.doc1, word_count = 1),
-                           Word_Data(word=word2, document=self.doc1, word_count = 1),
-                           Word_Data(word=word2, document=self.doc2, word_count = 1)]
+        #for word in self.words:
+            #word.save()
+        self.wordInDocs = [Word_Data(word=word1, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0)]
         for wid in self.wordInDocs:
             wid.save()
         
     def testGetDocuments(self):
         startDate = date(2000, 5, 19)
+        endDate = date(2008, 10, 11) 
+        docs = words.dataretrieval.getDocuments(startDate, endDate)
+        self.assertIs(len(docs)==3, True)
+        for doc in docs:
+            print(doc)
+        
+    def testGetDocumentData(self):
+        startDate = date(2000, 5, 19)
         endDate = date(2008, 10, 11)
-        docs = words.dataretrieval.getDocuments(startDate, endDate)[0]
+        docs = words.dataretrieval.getDocumentData(startDate, endDate)
         self.assertIs(len(docs)==3, True)
         for doc in docs:
             self.assertGreaterEqual(doc.publication_Date, startDate)
@@ -61,37 +69,37 @@ class RequestHandlerTests(TestCase):
     def setUp(self):
         self.csvFilePath = 'outputDump.csv'
         #words.databaseinput.run()
-        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
-        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0)
+        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
+        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
         self.docs = [self.doc1,
                      self.doc3,
-                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
                      self.doc4,
                      self.doc2,
-                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
-                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0),
+                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
+                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
                      self.doc8,
                      self.doc9]
-        word1 = Word(word='rabbit')
-        word2 = Word(word='bird')
+        word1 = 'rabbit'
+        word2 = 'bird'
         self.words = [word1, word2]
         for doc in self.docs:
             doc.save()
         #for word in self.words:
             #word.save()
-        self.wordInDocs = [Word_Data(word=word1, document=self.doc1, word_count = 1,),
-                           Word_Data(word=word2, document=self.doc1, word_count = 1,),
-                           Word_Data(word=word1, document=self.doc2, word_count = 1,),
-                           Word_Data(word=word1, document=self.doc4, word_count = 1,),
-                           Word_Data(word=word2, document=self.doc4, word_count = 1,),
-                           Word_Data(word=word1, document=self.doc3, word_count = 1,),
-                           Word_Data(word=word2, document=self.doc3, word_count = 1,),                           
-                           Word_Data(word=word2, document=self.doc8, word_count = 1,),
-                           Word_Data(word=word2, document=self.doc9, word_count = 1,)]
+        self.wordInDocs = [Word_Data(word=word1, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc3.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc3.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),                           
+                           Word_Data(word=word2, article_id=self.doc8.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc9.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0)]
         for wid in self.wordInDocs:
             wid.save()
             

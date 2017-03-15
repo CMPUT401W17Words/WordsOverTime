@@ -2,17 +2,19 @@ import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
+# chunk has the format [['word', 'word],['word','word']]
+# docs is a list of Document_Data objects
 
-def averageValence(chunk): # average valence of a list of documents
+def averageValence(docs): # average valence of a list of documents
     pass
     
-def averageArousal(chunk): # average arousal of a list of documents
+def averageArousal(docs): # average arousal of a list of documents
     pass
     
-def averageValenceTopFive(chunk):
+def averageValenceTopFive(docs):
     pass
     
-def averageArousalTopFive(chunk):
+def averageArousalTopFive(docs):
     pass
 
 # each corpus is a list of documents
@@ -23,7 +25,7 @@ def averageArousalTopFive(chunk):
 # dictionary.doc2bow(text): using the mapping of the dictionary, convert text to gensim's corpus format where each text is a list of words
 # corpus = [dictionary.doc2bow(text) for text in texts]: pass in texts as a list of lists of words
 def averageTfidfOfWord(chunk, word):
-    dictionary = gensim.corpora.Dictionary(chunk) # chunk has the format [['word', 'word],['word','word']]
+    dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     corpusTfidf = tfidf[corpus]
