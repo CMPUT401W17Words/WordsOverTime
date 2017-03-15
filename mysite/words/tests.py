@@ -207,6 +207,6 @@ class DataAnalyzerTests(TestCase):
     
 class DataInputTests(TestCase):
     
-    def testDataInput():
+    def testDataInput(self):
         databaseinput.run()
         
