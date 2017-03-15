@@ -116,22 +116,36 @@ class RequestHandlerTests(TestCase):
         granularity = 'Year'
         word1 = 'rabbit'
         word2 = 'bird'
-        doc = (Document_Data.objects.get(article_id=1))
+        #doc = (Document_Data.objects.get(article_id=1))
         #print(doc.article_id, doc.publicationDate)
         #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2)
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2, False)
         result = request.execute()
         print('cos distance over time')
         print(result.xValues)
         print(result.yValues)
         result.generateCSV(self.csvFilePath)
         
+    def testTfidfOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        word = 'water'
+        #doc = (Document_Data.objects.get(article_id=1))
+        #print(doc.article_id, doc.publicationDate)
+        #print(words.dataretrieval.getWordsInDocument(doc))
+        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, word)
+        result = request.execute()
+        print('average tfidf over time')
+        print(result.xValues)
+        print(result.yValues)
+        result.generateCSV(self.csvFilePath)        
+        
     def testNClosestNeighboursOverTime(self):
         dateRange = (date(2000, 5, 19), date(2008, 10, 11))
         granularity = 'Year'
         word = 'rabbit'
         N = 2
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N)
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N, True)
         result = request.execute()
         print('n closest neighbours over time')
         print(result.xValues)
@@ -172,7 +186,18 @@ class RequestHandlerTests(TestCase):
         result = request.execute()
         print('average valence top five words over time')
         print(result.xValues)
-        print(result.yValues) 
+        print(result.yValues)
+    
+    def testPairwiseProbabilities(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, 'water', 'rabbit')
+        result = request.execute()
+        print('pairwise probabilities over time')
+        for k,v in result.items():
+            print(v.yTitle)
+            print(v.xValues)
+            print(v.yValues)
         
 # will be implemented once there is a clearer way to test the analysis process. probably with help from client
 class DataAnalyzerTests(TestCase):
