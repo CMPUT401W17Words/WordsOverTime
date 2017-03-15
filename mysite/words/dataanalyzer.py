@@ -1,21 +1,34 @@
 import gensim, logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+import decimal
+#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
 
 def averageValence(docs): # average valence of a list of documents
-    pass
+    result = decimal.Decimal(0.0)
+    for doc in docs:
+        result = result + doc.average_valence_doc
+    return result/len(docs)
     
 def averageArousal(docs): # average arousal of a list of documents
-    pass
+    result = decimal.Decimal(0.0)
+    for doc in docs:
+        result = result + doc.average_arousal_doc
+    return result/len(docs)
     
 def averageValenceTopFive(docs):
-    pass
+    result = decimal.Decimal(0.0)
+    for doc in docs:
+        result = result + doc.average_valence_words
+    return result/len(docs)
     
 def averageArousalTopFive(docs):
-    pass
+    result = decimal.Decimal(0.0)
+    for doc in docs:
+        result = result + doc.average_arousal_words
+    return result/len(docs)
 
 # each corpus is a list of documents
 # each document is a list of tuples
@@ -41,7 +54,7 @@ def averageTfidfOfWord(chunk, word):
     return totalTfidf/docCount
     
 def cosDistanceOfPair(chunk, word1, word2, cbow=True):
-    print(chunk)
+    #print(chunk)
     model = gensim.models.Word2Vec(chunk, min_count=1)
     return model.similarity(word1, word2)
     

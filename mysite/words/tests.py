@@ -39,8 +39,8 @@ class DataRetrievalTests(TestCase):
         endDate = date(2008, 10, 11) 
         docs = words.dataretrieval.getDocuments(startDate, endDate)
         self.assertIs(len(docs)==3, True)
-        for doc in docs:
-            print(doc)
+        #for doc in docs:
+            #print(doc)
         
     def testGetDocumentData(self):
         startDate = date(2000, 5, 19)
@@ -68,7 +68,6 @@ class RequestHandlerTests(TestCase):
     
     def setUp(self):
         self.csvFilePath = 'outputDump.csv'
-        #words.databaseinput.run()
         self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
         self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
         self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
@@ -86,27 +85,31 @@ class RequestHandlerTests(TestCase):
                      self.doc9]
         word1 = 'rabbit'
         word2 = 'bird'
-        self.words = [word1, word2]
+        word3 = 'water'
         for doc in self.docs:
             doc.save()
-        #for word in self.words:
-            #word.save()
         self.wordInDocs = [Word_Data(word=word1, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word3, article_id=self.doc2.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 3, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc2.article_id, word_count = 7, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
                            Word_Data(word=word1, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
                            Word_Data(word=word2, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc3.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc3.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),                           
+                           Word_Data(word=word1, article_id=self.doc3.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc3.article_id, word_count = 4, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word3, article_id=self.doc3.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc8.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
                            Word_Data(word=word2, article_id=self.doc8.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc9.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0)]
+                           Word_Data(word=word3, article_id=self.doc8.article_id, word_count = 11, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word1, article_id=self.doc9.article_id, word_count = 4, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word3, article_id=self.doc9.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
+                           Word_Data(word=word2, article_id=self.doc9.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0)]
         for wid in self.wordInDocs:
             wid.save()
             
-    def testDatabaseEntry(self):
-        print(len(Document_Data.objects.all()))
-        #print(len(WordInDocument.objects.all()))
-        print(len(Word_Data.objects.all()))
+    #def testDatabaseEntry(self):
+        #print(len(Document_Data.objects.all()))
+        #print(len(Word_Data.objects.all()))
        
     def testCosDistanceOverTime(self):
         dateRange = (date(2000, 5, 19), date(2008, 10, 11))
@@ -118,6 +121,7 @@ class RequestHandlerTests(TestCase):
         #print(words.dataretrieval.getWordsInDocument(doc))
         request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2)
         result = request.execute()
+        print('cos distance over time')
         print(result.xValues)
         print(result.yValues)
         result.generateCSV(self.csvFilePath)
@@ -126,11 +130,52 @@ class RequestHandlerTests(TestCase):
         dateRange = (date(2000, 5, 19), date(2008, 10, 11))
         granularity = 'Year'
         word = 'rabbit'
-        N = 1
+        N = 2
         request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N)
         result = request.execute()
+        print('n closest neighbours over time')
         print(result.xValues)
         print(result.yValues)
         result.generateCSV(self.csvFilePath)
         
+    def testAverageArousalOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity)
+        result = request.execute()
+        print('average arousal over time')
+        print(result.xValues)
+        print(result.yValues)
         
+    def testAverageValenceOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity)
+        result = request.execute()
+        print('average valence over time')
+        print(result.xValues)
+        print(result.yValues)       
+
+    def testAverageArousalTopFiveOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity)
+        result = request.execute()
+        print('average arousal top five words over time')
+        print(result.xValues)
+        print(result.yValues) 
+
+    def testAverageValenceTopFiveOverTime(self):
+        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity)
+        result = request.execute()
+        print('average valence top five words over time')
+        print(result.xValues)
+        print(result.yValues) 
+        
+# will be implemented once there is a clearer way to test the analysis process. probably with help from client
+class DataAnalyzerTests(TestCase):
+    
+    def setUp(self):
+        pass

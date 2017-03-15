@@ -41,7 +41,8 @@ class Document_Data(models.Model):
   average_valence_words   = models.DecimalField(max_digits=14, decimal_places=12)  
   
 class Word_Data(models.Model):
-  word = models.CharField(primary_key=True, max_length=255)
+  word = models.CharField(max_length=255)
+  #word = models.CharField(primary_key=True, max_length=255)
   article_id = models.IntegerField()
   word_count = models.IntegerField()
   term_frequency = models.DecimalField(max_digits=14, decimal_places=12) 

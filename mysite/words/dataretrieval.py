@@ -13,7 +13,7 @@ def getDocuments(startDate, endDate):
     words = []
     for doc in docs:
         words.append(getWordsInDocument(doc))
-    return  words
+    return words
 
 def getDocumentData(startDate, endDate):
     docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)

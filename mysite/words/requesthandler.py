@@ -23,6 +23,58 @@ class TfidfOverTimeRequest(OverTimeRequest):
         self.word = word
     def execute(self):
         return Result(None)
+
+class AverageValenceOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+    def execute(self):
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.averageValence(v))
+        return Result(self.granularity, 'Average Valence of Documents', xValues, yValues)
+
+class AverageArousalOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+    def execute(self):
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.averageValence(v))
+        return Result(self.granularity, 'Average Arousal of Documents', xValues, yValues)
+    
+class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+    def execute(self):
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.averageValence(v))
+        return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
+    
+class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+    def execute(self):
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.averageValence(v))
+        return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
     
 class CosDistanceOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word1, word2):
@@ -30,7 +82,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         self.word1 = word1
         self.word2 = word2
     def execute(self):
-        docs = words.dataretrieval.getDocuments(self.dateRange[0], self.dateRange[1])[0]
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -42,6 +94,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                 chunk.append(wordss)
             xValues.append(k)
             yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, self.word1, self.word2))
+        xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Cosine Distance of '+self.word1+' and '+self.word2, xValues, yValues)  
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
@@ -50,7 +103,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         self.word = word
         self.n = n
     def execute(self):
-        docs = words.dataretrieval.getDocuments(self.dateRange[0], self.dateRange[1])[0]
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -62,6 +115,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 chunk.append(wordss)
             xValues.append(k)
             yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, self.word, self.n))
+        xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'N closest neighbors of '+self.word, xValues, yValues)   
 
 class Result():
@@ -76,6 +130,10 @@ class Result():
             resultWriter.writerow([self.xTitle, self.yTitle])
             for i in range(len(self.xValues)):
                 resultWriter.writerow([self.xValues[i], self.yValues[i]])
+                
+def sortXAndY(xValues, yValues):
+    xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
+    return xValues, yValues
 
 # granularity parameter is for now a string that can be Year or Month
     
