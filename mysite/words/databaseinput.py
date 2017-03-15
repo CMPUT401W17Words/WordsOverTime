@@ -43,8 +43,8 @@ def enterData(corpusCsv, sentimentCsv):
     fullCorpus = MainCorpus(corpusCsv)
     #for text in fullCorpus:
     #    print(text)
-    corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
-    tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
+    #corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
+    #tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
     sentDict = loadSentiment(sentimentCsv)
     
     print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
