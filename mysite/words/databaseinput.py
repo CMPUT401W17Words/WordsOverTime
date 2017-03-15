@@ -66,7 +66,7 @@ def enterData(corpusCsv, sentimentCsv):
             #docData[line['articleID']].append(line['publicationDate'])
             #docData[line['articleID']].append(line['wordCount'])
             words = line['parsedArticle'].split()
-            tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
+            #tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
             #print(tfidfs, 'TFIDFS')
             #print(len(tfidfs), 'TFIDFS')
             arousal = 0.0
