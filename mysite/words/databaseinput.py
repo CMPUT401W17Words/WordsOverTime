@@ -41,8 +41,8 @@ def enterData(corpusCsv, sentimentCsv):
     #wordDocData = {}    
     
     fullCorpus = MainCorpus(corpusCsv)
-    for text in fullCorpus:
-        print(text)
+    #for text in fullCorpus:
+    #    print(text)
     corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
     tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
     sentDict = loadSentiment(sentimentCsv)
@@ -71,13 +71,14 @@ def enterData(corpusCsv, sentimentCsv):
             arousal_five = []
             valence_five = []
             tfidf_five =[]
-            for item in tfidfs: # get each word in the doc and its tfidf
-                word = fullCorpus.dictionary[item[0]]
-                value = item[1]
+            #for item in tfidfs: # get each word in the doc and its tfidf
+                #word = fullCorpus.dictionary[item[0]]
+                #value = item[1]
                 #print(word,value)
                 #wordDocData[(word,line['articleID'])] = []
                 #wordDocData[(word,line['articleID'])].append(value)
-            #for word in words: # get sentiment info
+            value = 0
+            for word in words: # get sentiment info
                 word, created = Word_Data.objects.get_or_create(word=word, articleID = line['articleID'], word_count = 1, term_frequency = math.log10(1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                 if not created:
                     wrd = Word_Data(word=word, articleID = line['articleID'], word_count = word.word_count + 1, term_frequency = math.log10((word.word_count + 1)/doc_word_count))#, inverse_term_frequency = 0)
