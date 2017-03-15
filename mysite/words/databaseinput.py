@@ -6,6 +6,8 @@ import io
 
 import os
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 import csv 
 import django
