@@ -91,11 +91,11 @@ def getSimilarWords(word):
     return None
 
 def getWordFrequency(word, time1=None, time2=None, givenProv = None, givenCity = None, givenCountry = None):
-    if(time1 is not None || time2 is not None):
+    if(time1 is not None or time2 is not None):
         result1 = self.splitByTimeOneWord(word, time1, time2)
         result2 = self.splitByTimeNoWord(time1, time2)
         return result1/result2
-    elif(givenProv is not None || givenCity is not None || givenCountry is not None):
+    elif(givenProv is not None or givenCity is not None or givenCountry is not None):
         result1 = self.splitByLocationOneWord(word, givenProv, givenCity, givenCountry)
         result2 = self.splitByLocationNoWord(givenProv, givenCity, givenCountry)
         return result1/result2
