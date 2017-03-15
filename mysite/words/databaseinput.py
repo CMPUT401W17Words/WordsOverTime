@@ -82,6 +82,7 @@ def enterData(corpusCsv, sentimentCsv):
                 #wordDocData[(word,line['articleID'])] = []
                 #wordDocData[(word,line['articleID'])].append(value)
             value = 0
+            doc_word_count = len(words)
             for word in words: # get sentiment info
                 word, created = Word_Data.objects.get_or_create(word=word, articleID = line['articleID'], word_count = 1, term_frequency = math.log10(1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                 if not created:
@@ -124,7 +125,6 @@ def enterData(corpusCsv, sentimentCsv):
             for i in range(len(tfidf_five)):
                 valence_average_five = valence_average_five + tfidf_five[i][2]
                 arousal_average_five = arousal_average_five + tfidf_five[i][3]
-            doc_word_count = len(words)
             valence_average_five = valence_average_five/len(tfidf)
             arousal_average_five = arousal_average_five/len(tfidf)
             while (len(tfidf_five)<5):
