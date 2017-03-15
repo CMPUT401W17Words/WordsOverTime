@@ -88,7 +88,7 @@ def enterData(corpusCsv, sentimentCsv):
                 # TODO: log10 term frequency
                 word, created = Word_Data.objects.get_or_create(word=word, article_id = line['articleID'], word_count = 1, term_frequency = (1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                 if not created:
-                    wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = math.log10((word.word_count + 1)/doc_word_count))#, inverse_term_frequency = 0)
+                    wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count))#, inverse_term_frequency = 0)
                     wrd.save()                   
                 if word in sentDict:
                     #currenttfidf = tfidfs [word][0]
