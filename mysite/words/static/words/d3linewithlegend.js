@@ -35,7 +35,8 @@ function d3LineWithLegend() {
         }).filter(function(d,i) { return !data[i].disabled }))
 
       xAxis
-        .ticks( width / 100 )
+        //.tickFormat(d3.time.format("%Y-%m-%d"))
+        .ticks( width )
         .tickSize(-(height - margin.top - margin.bottom), 0);
       yAxis
         .ticks( height / 36 )
@@ -193,7 +194,7 @@ function d3LineWithLegend() {
 
   //Expose the x-axis' tickFormat method.
   chart.xAxis = {};
-  d3.rebind(chart.xAxis, xAxis, 'tickFormat');
+  //d3.rebind(chart.xAxis, xAxis, 'tickFormat');
 
   chart.xAxis.label = function(_) {
     if (!arguments.length) return xAxisLabelText;

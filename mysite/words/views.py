@@ -25,15 +25,15 @@ def graph(request):
     form = MainForm(request.POST)
     if form.is_valid():
         keyWords = form.cleaned_data['keywords']
-        print (keyWords)
+        #print (keyWords)
         keyWordsList = keyWords.split()
         
         
-        print (keyWordsList)
+        #print (keyWordsList)
         
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
-    print (keyWords)
+    #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
     req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
     result = req.execute()
