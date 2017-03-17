@@ -130,22 +130,23 @@ $(document).ready(function() {
     //for(var key in splitWords){
     //    alert(splitWords[key]);
     //}
-    //alert(keywords[0]);
+    alert(xValues);
     var yValues = {{ yValues }};
-    alert(yValues);
+    //alert(yValues);
     dataPoints = [];
-    dataPoints2 = [];
-    testThing = ["march", "april", "june", "july", "august"]
+    //dataPoints2 = [];
+    //testThing = ["march", "april", "june", "july", "august"]
 
     for(var i = 0; i < xValues.length; i++) {
-        var date = new Date("2015-03-25");
-        date.setYear(date.getFullYear() + i)
-        dataPoints.push([date, yValues[i] ]);
-        dataPoints2.push([ date, 0.1 * i]);
+        //var date = new Date("2015-03-25");
+        //date.setYear(date.getFullYear() + i)
+	var date = new Date(xValues[i]);
+        dataPoints.push([ date, yValues[i] ]);
+        //dataPoints2.push([ date, 0.1 * i]);
     }
     returnValueList = [];
     returnValueList.push({ data: dataPoints, label: keywords });
-    returnValueList.push({ data: dataPoints2, label: 'test' })
+    //returnValueList.push({ data: dataPoints2, label: 'test' })
     return returnValueList
 /*
     return [
