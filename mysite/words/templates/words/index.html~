@@ -1,6 +1,0 @@
-<html>
-<body>
-<h1> {{ "Hello world!!!!!" }} </h1><br/>
-<img src='{{words/test.png}}'>
-</body>
-</html>
