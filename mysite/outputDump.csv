@@ -1,4 +1,4 @@
-Year,N closest neighbors of rabbit
-2008,"[('bird', 0.0824255719780922)]"
-2000,"[('bird', 0.0824255719780922)]"
-2007,"[('bird', 0.0824255719780922)]"
+Year,Tfidf Over Time of water
+2000,0.5
+2007,0.0
+2008,0.0

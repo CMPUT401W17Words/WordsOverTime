@@ -21,9 +21,9 @@
             </div>
             
             <div id="mainbody" align="center">
-                  <form action = "/words/graph/" method = "post">
+                  <form  enctype="text/plain">
                         <br/>
-                        <input type="text" id = "keywords" name="keywords" value="comma seperated words" size="20">
+                        <input type="text" name="words" value="comma seperated words" size="20">
                       
                         <br/>
                         <select>
@@ -41,9 +41,9 @@
                         <input type="checkbox" name = "docAnaly"/>Document Analytics
                         
                         <br/>
-                        From<input type="date" id = "startDate" name="startDate" value="Dec2010" size="7">
+                        From<input type="text" name="from" value="Dec2010" size="7">
                         <br/>
-                        To<input type="date" id = "endDate" name="endDate" value="Feb2017" size="7">
+                        To<input type="text" name="to" value="Feb2017" size="7">
                       
                         <br/>
                         <input type="checkbox" name = "byLocation"/>Advanced Search by Location
@@ -71,12 +71,10 @@
                         To<input type="text" name="to" value="Feb2017" size="7">
                         To<input type="text" name="to" value="Feb2017" size="7">
                         To<input type="text" name="to" value="Feb2017" size="7">
-                        To<input type="text" name="to" value="Feb2017" size="7"><br/>
-            {% csrf_token %}
-			<input type = "submit" value = "Submit"/>
-			
+                        To<input type="text" name="to" value="Feb2017" size="7">
            </form>
             </div>
+            
              <div id="rightside" align="center">
                 <h1 style="color: aliceblue">Current Request Queue</h1>
                  
@@ -96,7 +94,7 @@
                  
                  
             </div>
-
+            
             <div id = "footer">
                 <h1 style="color: aliceblue">Social media links</h1>
             </div>

@@ -1,6 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import generic
+<<<<<<< HEAD
+
+# Create your views here.
+def index(request):
+  return render(request, 'words/401.html')
+=======
 import random
 from datetime import datetime, date, time, timedelta
 import time
@@ -117,6 +123,7 @@ def graph(request):
         'yValues': yValues
     }
     return render(request, 'words/graph2.html', context)
+>>>>>>> feature/visual_representation
  
 #class IndexView(generic.DetailView):
   #template_name = "words/index.html"
