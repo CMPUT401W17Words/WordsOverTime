@@ -17,7 +17,8 @@ import csv
 import django
 import gensim
 
-from words.models import Document_Data, Word_Data
+
+from words.models import Sentiment_Dict, Document_Data, Word_Data
 from django.db.models import F
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
@@ -53,7 +54,7 @@ def enterData(corpusCsv, sentimentCsv):
     #    print(text)
     #corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
     #tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
-    sentDict = loadSentiment(sentimentCsv)
+    #sentDict = loadSentiment(sentimentCsv)
     print("Beginning document input")
     #print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
     #for word in fullCorpus.dictionary.token2id.keys(): # get each word in the corpus
@@ -95,14 +96,18 @@ def enterData(corpusCsv, sentimentCsv):
                     #wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
                     #wrd.save()
                     Word_Data.objects.filter(word=word, article_id = line['articleID']).update(word_count = F('word_count')+1, term_frequency = (F('word_count')+1/doc_word_count))
-                if word in sentDict:
+                #if word in sentDict:
                     #currenttfidf = tfidfs [word][0]
-                    currentValence = sentDict[word][0]
-                    currentArousal = sentDict[word][1]
-                    arousal = arousal + currentArousal
-                    valence = valence + currentValence
+                    #currentValence = sentDict[word][0]
+                    #currentArousal = sentDict[word][1]
+                wordvalues = Sentiment_Dict.objects.filter(word = word)
+                if wordvalues:
+                    currentArousal = wordvalues.values_list("arousal", flat=True)
+                    currentValence = wordvalues.values_list("valence", flat=True)
+                    arousal = arousal + currentArousal[0]
+                    valence = valence + currentValence[0]
                     if (len(tfidf_five)<5):
-                        tfidf_five.append([word,value,currentValence,currentArousal])
+                        tfidf_five.append([word,value,currentValence[0],currentArousal[0]])
                     else:
                         tfidf_five = sorted(tfidf_five, key=lambda entry: entry[1])
                         for i in range(5):
@@ -157,8 +162,8 @@ def enterData(corpusCsv, sentimentCsv):
             if (count %1000==0): 
                 print(count, " documents computed")
                 sys.stdout.flush()            
-            if (count > 1000):
-                break
+           # if (count > 1000):
+               # break
             
     #for k,v in wordData.items(): # create Word models and enter into db
         #word = Word_data(word=k, articleID = line['articleID'], word_count = 1, term_frequency = 0, inverse_term_frequency = 0)
@@ -199,6 +204,7 @@ class MainCorpus(gensim.corpora.textcorpus.TextCorpus):
 # load sentiment dictionary from file path                
 def loadSentiment(sentimentCsv):
     sentDict = {}
+    csv.field_size_limit(sys.maxsize)
     with io.open(sentimentCsv, 'r', encoding="utf8") as csvfile:
         file = csv.DictReader(csvfile)
         count = 0
@@ -224,3 +230,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+
