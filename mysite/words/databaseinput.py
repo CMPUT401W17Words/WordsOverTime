@@ -54,8 +54,8 @@ def enterData(corpusCsv, sentimentCsv):
     #corpus = [gensim.corpora.Dictionary.doc2bow(text) for text in fullCorpus]
     #tfidf = gensim.models.tfidfmodel.TfidfModel(corpus)
     sentDict = loadSentiment(sentimentCsv)
-    
-    print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
+    print("Beginning document input")
+    #print(len(fullCorpus.dictionary.token2id.keys()), 'unique word count')
     #for word in fullCorpus.dictionary.token2id.keys(): # get each word in the corpus
         #wordData[word] = []
         
@@ -154,6 +154,9 @@ def enterData(corpusCsv, sentimentCsv):
             doc.save()
 
             count = count + 1
+            if (count %1000==0): 
+                print(count, " documents computed")
+                sys.stdout.flush()            
             if (count > 1000):
                 break
             
@@ -206,11 +209,13 @@ def loadSentiment(sentimentCsv):
                 pass
                 #print(line)
             count = count + 1
-            if (count %100==0): 
+            #if (count %100==0): 
                 #print(count)
-                sys.stdout.flush()
-            if (count > 1000):
-                break        
+                #sys.stdout.flush()
+            #if (count > 1000):
+                #break 
+        print(count, " word dictionary loaded")
+        sys.stdout.flush()                
     return sentDict
 
 def run():
