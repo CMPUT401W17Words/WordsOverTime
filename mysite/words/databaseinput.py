@@ -220,3 +220,7 @@ def loadSentiment(sentimentCsv):
 
 def run():
     enterData(corpusPath4,sentimentPath4)
+
+
+if __name__ == "__main__":
+    run()
