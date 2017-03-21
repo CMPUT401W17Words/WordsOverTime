@@ -2,15 +2,21 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import generic
 import random
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
+import time
 
 from .forms import MainForm
 from .requesthandler import *
+
+GRANULARITY_WEEKLY = 1
+GRANULARITY_MONTHLY = 2
+GRANULARITY_YEARLY = 3
 
 
 # Create your views here.
 def index(request):
     return render(request, 'words/401.html')
+    #return HttpResponse("Hello world")
 
 def graph(request):
     #testList = [0.1,0.1,0.1,0.1]
@@ -25,30 +31,52 @@ def graph(request):
     form = MainForm(request.POST)
     if form.is_valid():
         keyWords = form.cleaned_data['keywords']
-        print (keyWords)
+        #print (keyWords)
         keyWordsList = keyWords.split()
         
         
-        print (keyWordsList)
+        #print (keyWordsList)
         
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
-    print (keyWords)
+    #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
-    req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
-    result = req.execute()
+    #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
+    #result = req.execute()
 
-    years = result.xValues
+    granularity = 1;
+    #granularity = 2;
+
+    xValues = [];
+    #weekly
+    if(granularity == GRANULARITY_WEEKLY):
+        timeDiff = timedelta(days = 7)
+    #monthly
+    elif (granularity == GRANULARITY_MONTHLY):
+        #TODO: change it to be correct number of days for each month?
+        timeDiff = timedelta(days = 30)
+    #yearly
+    else:
+        timeDiff = timedelta(days = 365) 
+    
+    tempDate = startDate
+    timestamp = 0
+    while(tempDate < endDate):
+        timestamp = int(time.mktime(tempDate.timetuple())) * 1000
+        xValues.append(timestamp)
+        tempDate = tempDate + timeDiff
+
+    #years = result.xValues
     #years = []
     #yearDiff = endDate.year - startDate.year
     #for i in range (0, yearDiff):
     #    years.append(startDate.year + i)
 
-    yValues = result.yValues
-    #yValues = []
-    #for i in range(0, len(years)):
-    #    randomNum = random.randint(1,4)
-    #    yValues.append(randomNum)
+    #yValues = result.yValues
+    yValues = []
+    for i in range(0, len(xValues)):
+        randomNum = random.randint(1,4)
+        yValues.append(randomNum)
 
     splitKeywords = keyWords.split()
 
@@ -58,12 +86,11 @@ def graph(request):
     #    for i in range (0, len(years)):
     #        randomNum = random.randint(1,4)
     #        yValuesList[j].append(randomNum)
-        
-    
-    xAxis = result.xTitle
-    yAxis = result.yTitle
-    #xAxis = "Date"
-    #yAxis = "Valence"
+
+    #xAxis = result.xTitle
+    #yAxis = result.yTitle
+    xAxis = "Date"
+    yAxis = "Valence"
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
@@ -75,7 +102,7 @@ def graph(request):
         'yAxis': yAxis,
         #'word1': word1,
         #'word2': word2, 
-        'xValues': years,
+        'xValues': xValues,
         #'w1x': w1x,
         #'w1y': w1y,
         #'w2x': w2x,
