@@ -15,7 +15,8 @@ GRANULARITY_YEARLY = 3
 
 # Create your views here.
 def index(request):
-    return render(request, 'words/401.html')
+    #return render(request, 'words/401.html')
+    return HttpResponse("Hello")
 
 def graph(request):
     #testList = [0.1,0.1,0.1,0.1]

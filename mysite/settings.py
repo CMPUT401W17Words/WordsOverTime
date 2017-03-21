@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jquery',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -74,13 +73,23 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# Reference: http://stackoverflow.com/a/19189930
+# Author: Andy ( http://stackoverflow.com/users/189134/andy )
+# License: CC-BY-SA 3.0
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Generated_Data',
+        'USER': 'projectuser',
+        'PASSWORD': '12345',
+        'HOST': 'localhost',
+        'PORT': '',
     }
+    #'default': {
+            #'ENGINE': 'django.db.backends.sqlite3',
+            #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #}    
 }
 
 

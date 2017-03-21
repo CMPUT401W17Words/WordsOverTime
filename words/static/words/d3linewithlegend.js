@@ -8,7 +8,7 @@ function d3LineWithLegend() {
       color = d3.scale.category10().range(),
       dispatch = d3.dispatch('showTooltip', 'hideTooltip');
 
-  var x = d3.scale.linear(),
+  var x = d3.time.scale(),
       y = d3.scale.linear(),
       xAxis = d3.svg.axis().scale(x).orient('bottom'),
       yAxis = d3.svg.axis().scale(y).orient('left'),
@@ -35,7 +35,8 @@ function d3LineWithLegend() {
         }).filter(function(d,i) { return !data[i].disabled }))
 
       xAxis
-        .ticks( width / 100 )
+        .tickFormat(d3.time.format("%Y-%m-%d"))
+        .ticks( width / 100)
         .tickSize(-(height - margin.top - margin.bottom), 0);
       yAxis
         .ticks( height / 36 )

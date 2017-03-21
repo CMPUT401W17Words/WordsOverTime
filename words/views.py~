@@ -1,29 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import generic
-from .models import Question
 import random
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
+import time
 
 from .forms import MainForm
+from .requesthandler import *
 
-def getKeywords(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = MainForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = MainForm()
-
-    return render(request, 'words/401.html', {'form': form})
+GRANULARITY_WEEKLY = 1
+GRANULARITY_MONTHLY = 2
+GRANULARITY_YEARLY = 3
 
 
 # Create your views here.
@@ -43,17 +30,89 @@ def graph(request):
     form = MainForm(request.POST)
     if form.is_valid():
         keyWords = form.cleaned_data['keywords']
+        #print (keyWords)
+        keyWordsList = keyWords.split()
+        
+        
+        #print (keyWordsList)
+        
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
+    #print (keyWords)
+    #keyWordsList = ['rabbit', 'bird']
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/visual_representation
+    #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
+    #result = req.execute()
+
+    granularity = 1;
+    #granularity = 2;
+
+    xValues = [];
+    #weekly
+    if(granularity == GRANULARITY_WEEKLY):
+        timeDiff = timedelta(days = 7)
+    #monthly
+    elif (granularity == GRANULARITY_MONTHLY):
+        #TODO: change it to be correct number of days for each month?
+        timeDiff = timedelta(days = 30)
+    #yearly
+    else:
+        timeDiff = timedelta(days = 365) 
+    
+    tempDate = startDate
+    timestamp = 0
+    while(tempDate < endDate):
+        timestamp = int(time.mktime(tempDate.timetuple())) * 1000
+        xValues.append(timestamp)
+        tempDate = tempDate + timeDiff
+    #yearly
+    #if(granularity == 2):
+    #    pushDate = startDate
+    #    yearDiff = endDate.year - startDate.year
+    #    for i in range (0, yearDiff):
+    #        pushDate.
+<<<<<<< HEAD
+
+    #years = result.xValues
     years = []
     yearDiff = endDate.year - startDate.year
     for i in range (0, yearDiff):
         years.append(startDate.year + i)
 
+    #yValues = result.yValues
     yValues = []
-    for i in range(0, len(years)):
+    for i in range(0, len(xValues)):
         randomNum = random.randint(1,4)
         yValues.append(randomNum)
+=======
+    req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
+    result = req.execute()
+=======
+>>>>>>> origin/feature/visual_representation
+
+    #years = result.xValues
+    years = []
+    yearDiff = endDate.year - startDate.year
+    for i in range (0, yearDiff):
+        years.append(startDate.year + i)
+
+<<<<<<< HEAD
+    yValues = result.yValues
+    #yValues = []
+    #for i in range(0, len(years)):
+    #    randomNum = random.randint(1,4)
+    #    yValues.append(randomNum)
+>>>>>>> origin/Email_Server2
+=======
+    #yValues = result.yValues
+    yValues = []
+    for i in range(0, len(xValues)):
+        randomNum = random.randint(1,4)
+        yValues.append(randomNum)
+>>>>>>> origin/feature/visual_representation
 
     splitKeywords = keyWords.split()
 
@@ -65,8 +124,23 @@ def graph(request):
     #        yValuesList[j].append(randomNum)
         
     
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/visual_representation
+    #xAxis = result.xTitle
+    #yAxis = result.yTitle
     xAxis = "Date"
     yAxis = "Valence"
+<<<<<<< HEAD
+=======
+    xAxis = result.xTitle
+    yAxis = result.yTitle
+    #xAxis = "Date"
+    #yAxis = "Valence"
+>>>>>>> origin/Email_Server2
+=======
+>>>>>>> origin/feature/visual_representation
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
@@ -78,7 +152,15 @@ def graph(request):
         'yAxis': yAxis,
         #'word1': word1,
         #'word2': word2, 
+<<<<<<< HEAD
+<<<<<<< HEAD
+        'xValues': xValues,
+=======
         'xValues': years,
+>>>>>>> origin/Email_Server2
+=======
+        'xValues': xValues,
+>>>>>>> origin/feature/visual_representation
         #'w1x': w1x,
         #'w1y': w1y,
         #'w2x': w2x,
@@ -88,6 +170,14 @@ def graph(request):
     }
     return render(request, 'words/graph2.html', context)
  
-
 #class IndexView(generic.DetailView):
   #template_name = "words/index.html"
+  
+def results(request):
+  if request.method == 'POST':
+    form = ContactForm(request.POST) 
+    if form.is_valid():
+      data = myform.cleaned_data
+      #process data with field = data['field']
+      #generate a Request object (see requesthandler.py)
+  return HttpResponseRedirect()
