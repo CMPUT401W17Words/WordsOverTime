@@ -40,7 +40,6 @@ def graph(request):
         endDate = form.cleaned_data['endDate']
     #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
-<<<<<<< HEAD
     #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
     #result = req.execute()
 
@@ -83,22 +82,6 @@ def graph(request):
     for i in range(0, len(xValues)):
         randomNum = random.randint(1,4)
         yValues.append(randomNum)
-=======
-    req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
-    result = req.execute()
-
-    years = result.xValues
-    #years = []
-    #yearDiff = endDate.year - startDate.year
-    #for i in range (0, yearDiff):
-    #    years.append(startDate.year + i)
-
-    yValues = result.yValues
-    #yValues = []
-    #for i in range(0, len(years)):
-    #    randomNum = random.randint(1,4)
-    #    yValues.append(randomNum)
->>>>>>> origin/Email_Server2
 
     splitKeywords = keyWords.split()
 
@@ -110,17 +93,10 @@ def graph(request):
     #        yValuesList[j].append(randomNum)
         
     
-<<<<<<< HEAD
     #xAxis = result.xTitle
     #yAxis = result.yTitle
     xAxis = "Date"
     yAxis = "Valence"
-=======
-    xAxis = result.xTitle
-    yAxis = result.yTitle
-    #xAxis = "Date"
-    #yAxis = "Valence"
->>>>>>> origin/Email_Server2
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
@@ -132,11 +108,7 @@ def graph(request):
         'yAxis': yAxis,
         #'word1': word1,
         #'word2': word2, 
-<<<<<<< HEAD
         'xValues': xValues,
-=======
-        'xValues': years,
->>>>>>> origin/Email_Server2
         #'w1x': w1x,
         #'w1y': w1y,
         #'w2x': w2x,
