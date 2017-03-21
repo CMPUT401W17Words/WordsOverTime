@@ -19,6 +19,11 @@ def getDocumentData(startDate, endDate):
     docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
     return (list(docs))
 
+# return all word data objects for a word (each word data will be a different doc with the same word)
+def getWordData(wordIn):
+    words = Word_Data.objects.filter(word=wordIn)
+    return (list(words))
+
 # returns all words in a document
 def getWordsInDocument(doc):
     words = Word_Data.objects.filter(article_id=doc.article_id)

@@ -78,14 +78,15 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow):
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):
-    result = 0
+    result = 0.0
     for doc in chunk:
         if word in doc:
-            result = result + 1
+            result = result + 1.0
     return result
 
-def relWordFrequency(chunk, word):
-    pass
+# fullFreq is frequency in full corpus
+def relativeWordFrequency(chunk, word, fullFreq):
+    return wordFrequency(chunk,word)/fullFreq
 
 def probX(chunk, x):
     count = 0.0

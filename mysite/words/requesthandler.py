@@ -16,7 +16,51 @@ class OverTimeRequest(Request):
         self.granularity = granularity
     def execute(self):
         return Result(None)
+
+class WordFrequencyOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+        self.word = word
+    def execute(self):
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            # v is a list of Documents
+            chunk = []
+            for doc in v:
+                wordss = words.dataretrieval.getWordsInDocument(doc)
+                chunk.append(wordss)
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.wordFrequency(chunk, self.word))
+        xValues, yValues = sortXAndY(xValues, yValues)
+        return Result(self.granularity, 'Word Frequency Over Time of '+self.word, xValues, yValues)
     
+class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word):
+        OverTimeRequest.__init__(self,dateRange, granularity)
+        self.word = word
+    def execute(self):
+        wordData = words.dataretrieval.getWordData(self.word)
+        fullFreq = 0.0
+        for word in wordData:
+            fullFreq = fullFreq + word.word_count        
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        xValues = []
+        yValues = []
+        for k,v in docHistogram.items():
+            # v is a list of Documents
+            chunk = []
+            for doc in v:
+                wordss = words.dataretrieval.getWordsInDocument(doc)
+                chunk.append(wordss)
+            xValues.append(k)
+            yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, self.word, fullFreq))
+        xValues, yValues = sortXAndY(xValues, yValues)
+        return Result(self.granularity, 'Relative Word Frequency Over Time of '+self.word, xValues, yValues) 
+
 class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -169,7 +213,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                'YGivenX':Result(self.granularity, 'p(' + self.word2 +'|' + self.word1+')', xValues3, yValsYGivenX),
                'XGivenNotY':Result(self.granularity, 'p(' + self.word1 +'|~' + self.word2+')', xValues4, yValsXGivenNotY),
                'YGivenNotX':Result(self.granularity, 'p(' + self.word2 +'|~' + self.word1+')', xValues5, yValsYGivenNotX)}
-    
+
 class Result():
     def __init__(self, xTitle, yTitle, xValues, yValues):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
