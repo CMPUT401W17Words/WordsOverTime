@@ -38,6 +38,13 @@ def graph(request):
         
         startDate = form.cleaned_data['startDate']
         endDate = form.cleaned_data['endDate']
+        #userChoice = form.cleaned_data['choice_field']
+    #if(userChoice == '1'):
+        #handle closest_neighbours request
+    #elif(userChoice == '2'):
+        #handle cosine_distance request
+    #etc...
+
     #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
     #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])

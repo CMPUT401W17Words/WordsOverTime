@@ -8,6 +8,10 @@ import time
 from .forms import MainForm
 from .requesthandler import *
 
+GRANULARITY_WEEKLY = 1
+GRANULARITY_MONTHLY = 2
+GRANULARITY_YEARLY = 3
+
 
 # Create your views here.
 def index(request):
@@ -44,10 +48,11 @@ def graph(request):
 
     xValues = [];
     #weekly
-    if(granularity == 1):
+    if(granularity == GRANULARITY_WEEKLY):
         timeDiff = timedelta(days = 7)
     #monthly
-    elif (granularity == 2):
+    elif (granularity == GRANULARITY_MONTHLY):
+        #TODO: change it to be correct number of days for each month?
         timeDiff = timedelta(days = 30)
     #yearly
     else:
