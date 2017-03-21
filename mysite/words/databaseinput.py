@@ -12,7 +12,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import math
-
+from datetime import datetime
 import csv 
 import django
 import gensim
@@ -75,6 +75,9 @@ def enterData(corpusCsv, sentimentCsv):
             #tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
             #print(tfidfs, 'TFIDFS')
             #print(len(tfidfs), 'TFIDFS')
+            datte = line['publicationDate']
+            datesplit = datte.split(str="-")
+            dattte = datetime.datetime(year=datesplit[0],month=datesplit[1],day=datesplit[2])            
             arousal = 0.0
             valence = 0.0
             arousal_five = []
@@ -152,7 +155,7 @@ def enterData(corpusCsv, sentimentCsv):
             #docData[line['articleID']].append(arousal_average_five)
             #docData[line['articleID']].append(valence_average_five)
             doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
-                          city = line['city'], country = line['country'], publication_Date = line['publicationDate'], 
+                          city = line['city'], country = line['country'], publication_Date = dattte, 
                           word_count = doc_word_count, word_one = tfidf_five[0][0], word_two = tfidf_five[1][0], word_three = tfidf_five[2][0], word_four = tfidf_five[3][0], 
                           word_five = tfidf_five[4][0], average_arousal_doc = arousal/doc_word_count, average_valence_doc = valence/doc_word_count,
                           average_arousal_words = arousal_average_five, average_valence_words = valence_average_five)  
