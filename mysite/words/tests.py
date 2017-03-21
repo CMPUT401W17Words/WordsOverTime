@@ -198,7 +198,25 @@ class RequestHandlerTests(TestCase):
             print(v.yTitle)
             print(v.xValues)
             print(v.yValues)
-        
+               
+    def testWordFrequencyOverTime(self):
+            dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+            granularity = 'Year'
+            request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, 'bird')
+            result = request.execute()
+            print('word frequency over time')
+            print(result.xValues)
+            print(result.yValues)
+            
+    def testRelativeWordFrequencyOverTime(self):
+            dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+            granularity = 'Year'
+            request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, 'bird')
+            result = request.execute()
+            print('relative word frequency over time')
+            print(result.xValues)
+            print(result.yValues)        
+            
 # will be implemented once there is a clearer way to test the analysis process. probably with help from client
 class DataAnalyzerTests(TestCase):
     
