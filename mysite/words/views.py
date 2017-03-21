@@ -64,18 +64,12 @@ def graph(request):
         timestamp = int(time.mktime(tempDate.timetuple())) * 1000
         xValues.append(timestamp)
         tempDate = tempDate + timeDiff
-    #yearly
-    #if(granularity == 2):
-    #    pushDate = startDate
-    #    yearDiff = endDate.year - startDate.year
-    #    for i in range (0, yearDiff):
-    #        pushDate.
 
     #years = result.xValues
-    years = []
-    yearDiff = endDate.year - startDate.year
-    for i in range (0, yearDiff):
-        years.append(startDate.year + i)
+    #years = []
+    #yearDiff = endDate.year - startDate.year
+    #for i in range (0, yearDiff):
+    #    years.append(startDate.year + i)
 
     #yValues = result.yValues
     yValues = []
@@ -91,8 +85,7 @@ def graph(request):
     #    for i in range (0, len(years)):
     #        randomNum = random.randint(1,4)
     #        yValuesList[j].append(randomNum)
-        
-    
+
     #xAxis = result.xTitle
     #yAxis = result.yTitle
     xAxis = "Date"

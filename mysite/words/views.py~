@@ -8,6 +8,10 @@ import time
 from .forms import MainForm
 from .requesthandler import *
 
+GRANULARITY_WEEKLY = 1
+GRANULARITY_MONTHLY = 2
+GRANULARITY_YEARLY = 3
+
 
 # Create your views here.
 def index(request):
@@ -36,6 +40,10 @@ def graph(request):
         endDate = form.cleaned_data['endDate']
     #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/visual_representation
     #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
     #result = req.execute()
 
@@ -44,10 +52,11 @@ def graph(request):
 
     xValues = [];
     #weekly
-    if(granularity == 1):
+    if(granularity == GRANULARITY_WEEKLY):
         timeDiff = timedelta(days = 7)
     #monthly
-    elif (granularity == 2):
+    elif (granularity == GRANULARITY_MONTHLY):
+        #TODO: change it to be correct number of days for each month?
         timeDiff = timedelta(days = 30)
     #yearly
     else:
@@ -65,6 +74,7 @@ def graph(request):
     #    yearDiff = endDate.year - startDate.year
     #    for i in range (0, yearDiff):
     #        pushDate.
+<<<<<<< HEAD
 
     #years = result.xValues
     years = []
@@ -77,6 +87,32 @@ def graph(request):
     for i in range(0, len(xValues)):
         randomNum = random.randint(1,4)
         yValues.append(randomNum)
+=======
+    req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
+    result = req.execute()
+=======
+>>>>>>> origin/feature/visual_representation
+
+    #years = result.xValues
+    years = []
+    yearDiff = endDate.year - startDate.year
+    for i in range (0, yearDiff):
+        years.append(startDate.year + i)
+
+<<<<<<< HEAD
+    yValues = result.yValues
+    #yValues = []
+    #for i in range(0, len(years)):
+    #    randomNum = random.randint(1,4)
+    #    yValues.append(randomNum)
+>>>>>>> origin/Email_Server2
+=======
+    #yValues = result.yValues
+    yValues = []
+    for i in range(0, len(xValues)):
+        randomNum = random.randint(1,4)
+        yValues.append(randomNum)
+>>>>>>> origin/feature/visual_representation
 
     splitKeywords = keyWords.split()
 
@@ -88,10 +124,23 @@ def graph(request):
     #        yValuesList[j].append(randomNum)
         
     
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/visual_representation
     #xAxis = result.xTitle
     #yAxis = result.yTitle
     xAxis = "Date"
     yAxis = "Valence"
+<<<<<<< HEAD
+=======
+    xAxis = result.xTitle
+    yAxis = result.yTitle
+    #xAxis = "Date"
+    #yAxis = "Valence"
+>>>>>>> origin/Email_Server2
+=======
+>>>>>>> origin/feature/visual_representation
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
@@ -103,7 +152,15 @@ def graph(request):
         'yAxis': yAxis,
         #'word1': word1,
         #'word2': word2, 
+<<<<<<< HEAD
+<<<<<<< HEAD
         'xValues': xValues,
+=======
+        'xValues': years,
+>>>>>>> origin/Email_Server2
+=======
+        'xValues': xValues,
+>>>>>>> origin/feature/visual_representation
         #'w1x': w1x,
         #'w1y': w1y,
         #'w2x': w2x,
