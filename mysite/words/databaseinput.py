@@ -19,6 +19,7 @@ import gensim
 
 from words.models import Document_Data, Word_Data
 from django.db.models import F
+import words.dataretrieval
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
@@ -215,3 +216,27 @@ def loadSentiment(sentimentCsv):
 
 def run():
     enterData(corpusPath4,sentimentPath4)
+    
+def calculateTfidf(word, doc, chunk):
+    dictionary = gensim.corpora.Dictionary(chunk)
+    corpus = [dictionary.doc2bow(text) for text in chunk]
+    tfidf = gensim.models.TfidfModel(corpus)
+    wordId = dictionary.token2id[word]
+    for item in tfidf[doc]:
+        if (item[0] == wordId):
+            return item[1]
+    
+def inputTfidfs():
+    pass
+    
+def calculateAverageValenceTopFive(doc):
+    pass
+    
+def calculateAverageArousalTopFive(doc):
+    pass
+    
+def inputAverageValenceTopFive():
+    pass
+    
+def inputAverageArousalTopFive():
+    pass
