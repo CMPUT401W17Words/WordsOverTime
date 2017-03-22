@@ -1,6 +1,7 @@
 import gensim, logging
 import decimal
 #logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+import words.dataretrieval
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
@@ -19,16 +20,65 @@ def averageArousal(docs): # average arousal of a list of documents
     return result/len(docs)
     
 def averageValenceTopFive(docs):
-    result = decimal.Decimal(0.0)
-    for doc in docs:
-        result = result + doc.average_valence_words
-    return result/len(docs)
+    chunk = []
+    for document in docs:
+        chunk.append(words.dataretrieval.getWordsInDocument(document))
+    dictionary = gensim.corpora.Dictionary(chunk)
+    corpus = [dictionary.doc2bow(text) for text in chunk]
+    tfidf = gensim.models.TfidfModel(corpus)
+    totalChunk = 0.0
+    for doc in chunk:
+        tfidfs = getTopFiveWords(tfidf[doc])
+        totalDoc = 0.0
+        for item in tfidfs:
+            for wd,num in dictionary.token2id:
+                if (num == item[0]):
+                    word = wd
+                    break
+            totalDoc = totalDoc + words.dataretrieval.getValence(word)
+        totalChunk = totalChunk + totalDoc/len(tfidfs)
+    return totalChunk/len(chunk)
     
 def averageArousalTopFive(docs):
-    result = decimal.Decimal(0.0)
-    for doc in docs:
-        result = result + doc.average_arousal_words
-    return result/len(docs)
+    chunk = []
+    for document in docs:
+        chunk.append(words.dataretrieval.getWordsInDocument(document))
+    dictionary = gensim.corpora.Dictionary(chunk)
+    corpus = [dictionary.doc2bow(text) for text in chunk]
+    tfidf = gensim.models.TfidfModel(corpus)
+    totalChunk = 0.0
+    for doc in chunk:
+        tfidfs = getTopFiveWords(tfidf[doc])
+        totalDoc = 0.0
+        for item in tfidfs:
+            for wd,num in dictionary.token2id:
+                if (num == item[0]):
+                    word = wd
+                    break
+            totalDoc = totalDoc + words.dataretrieval.getArousal(word)
+        totalChunk = totalChunk + totalDoc/len(tfidfs)
+    return totalChunk/len(chunk)
+
+# helper
+def getTopFiveWords(tfidfsDoc):
+    result = []
+    tfidfs = tfidfsDoc.copy().items()
+    topWord = getTopWord(tfidfs)
+    while (topWord != None):
+        result.append(topWord)
+        tfidfs.pop(topWord[0])
+    return result
+
+# helper  
+def getTopWord(tfidfs):
+    current = None
+    for item in tfidfs:
+        if (current == None):
+            current = item
+        else:
+            if (item[1]>current[1]):
+                current = item
+    return current
 
 # each corpus is a list of documents
 # each document is a list of tuples

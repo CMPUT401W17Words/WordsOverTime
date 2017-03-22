@@ -4,8 +4,14 @@ import sys
 sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
 import django
 django.setup()
-from words.models import Document_Data, Word_Data
+from words.models import Document_Data, Word_Data, Sentiment_Dict
 
+def getArousal(wd):
+    return Sentiment_Dict.objects.get(word=wd).arousal
+    
+def getValence(wd):
+    return Sentiment_Dict.objects.get(word=wd).valence
+    
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
 def getDocuments(startDate, endDate):

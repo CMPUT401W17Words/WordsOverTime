@@ -247,7 +247,7 @@ def checkWordInChunk(wordToCheck, chunk):
                 return True
     return False
 
-# granularity parameter is for now a string that can be Year or Month
+# granularity parameter is for now a string that can be Year or Month, later Week and Full (for no time range)
     
 # for now, structure every request as a request for some parameter to be evaluated over time
 # all requests have a date range (choose a section of the corpus), time granularity (week, year, etc), and parameters (examined over time)
