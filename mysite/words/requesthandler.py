@@ -77,7 +77,10 @@ class TfidfOverTimeRequest(OverTimeRequest):
                 wordss = words.dataretrieval.getWordsInDocument(doc)
                 chunk.append(wordss)
             xValues.append(k)
-            yValues.append(words.dataanalyzer.averageTfidfOfWord(chunk, self.word))
+            if (checkWordInChunk(self.word, chunk)):
+                yValues.append(words.dataanalyzer.averageTfidfOfWord(chunk, self.word))
+            else:
+                yValues.append('Error: word not in chunk') 
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Tfidf Over Time of '+self.word, xValues, yValues) 
 
@@ -151,7 +154,10 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                 wordss = words.dataretrieval.getWordsInDocument(doc)
                 chunk.append(wordss)
             xValues.append(k)
-            yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, self.word1, self.word2, self.cbow))
+            if (checkWordInChunk(self.word1, chunk) and checkWordInChunk(self.word2, chunk)):
+                yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, self.word1, self.word2, self.cbow))
+            else:
+                yValues.append('Error: word not in chunk')            
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Cosine Distance of '+self.word1+' and '+self.word2, xValues, yValues)  
     
@@ -173,7 +179,10 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 wordss = words.dataretrieval.getWordsInDocument(doc)
                 chunk.append(wordss)
             xValues.append(k)
-            yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, self.word, self.n, self.cbow))
+            if (checkWordInChunk(self.word, chunk)):
+                yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, self.word, self.n, self.cbow))
+            else:
+                yValues.append('Error: word not in chunk')
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'N closest neighbors of '+self.word, xValues, yValues)   
 
@@ -230,6 +239,13 @@ class Result():
 def sortXAndY(xValues, yValues):
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
+
+def checkWordInChunk(wordToCheck, chunk):
+    for doc in chunk:
+        for word in doc:
+            if (wordToCheck == word):
+                return True
+    return False
 
 # granularity parameter is for now a string that can be Year or Month
     
