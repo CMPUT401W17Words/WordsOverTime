@@ -7,6 +7,8 @@ import time
 
 from .forms import MainForm
 from .requesthandler import *
+from .hash import *
+from .models import *
 
 GRANULARITY_WEEKLY = 1
 GRANULARITY_MONTHLY = 2
@@ -18,7 +20,73 @@ def index(request):
     return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
+def success(request):
+    #hashStr = gen_unique_hash(Graph, 15)
+    hashStr = 23432
+    #Get Form Data!
+    startDateString = request.POST["startDate"]
+    endDateString = request.POST["endDate"]
+    startDate = datetime.strptime(startDateString, '%Y-%m-%d')
+    endDate = datetime.strptime(endDateString, '%Y-%m-%d')
+    granularity = int(request.POST["granularity"])
+    
+    #Form data for n closest neighbors
+    n = int(request.POST["Nneighbor"])
+    keyWords = request.POST["keywords"]
+    keyWordsList = keyWords.split()    
+    #textFile = request.FILES["text_file"]
+    skipOrCBOW1 = request.POST["skipOrCBOW1"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for cosine distance
+    wordPair = request.POST["wordPairs"]
+    #textFile2 = request.FILES["text_file2"]
+    skipOrCBOW2 = request.POST["skipOrCBOW2"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+    
+    #Form data for tfidf
+    tfidfWord = request.POST["tfidfWord"]
+    
+    #Form data for Pairwise Conditional Probabilities
+    conditionalWordPair = request.POST["conditionalWord"]
+    #fileConditional = request.FILES["fileConditional"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data from checkboxes
+    averageValence = request.POST["Average valence"]
+    averageArousal = request.POST["Average arousal"]
+    top5averageValence = request.POST["5 Words Average valence"]
+    top5averageArousal = request.POST["5 Words Average arousal"]
+
+    #Form data for word frequency
+    wordFrequencyWords = request.POST["frequencyWord"]
+    #wordFrequencyFile = request.FILES["wordFrequencyFile"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for relative word frequency
+    relativeWords = request.POST["relativeWord"]
+    #relativeFile = request.FILES["relativeFile"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for email
+    email = request.POST["userEmail"]
+    
+    req = CosDistanceOverTimeRequest(hashStr, (startDate, endDate), 1, 'Year', keyWordsList[0], keyWordsList[1], True)
+    result = req.execute()
+    result.generateCSV(hashStr)
+    return render(request, 'words/success.html')
+    
+
 def graph(request):
+    hashStr = request.GET.get('q', '')
+    print(hashStr)
+    return render(request, 'words/graph2.html')
+"""
     #testList = [0.1,0.1,0.1,0.1]
     #testDict = {}
     #testDict["hello"] = testList
@@ -106,6 +174,7 @@ def graph(request):
     #result = req.execute()
     print(granularity)
     print (n)
+    
 
     xValues = [];
     #weekly
@@ -170,7 +239,8 @@ def graph(request):
         'keywords': keyWords,
         'yValues': yValues
     }
-    return render(request, 'words/graph2.html', context)
+"""
+    #return render(request, 'words/graph2.html', context)
  
 #class IndexView(generic.DetailView):
   #template_name = "words/index.html"
