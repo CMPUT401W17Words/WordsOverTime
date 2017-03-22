@@ -1,9 +1,447 @@
-<html>
-<body>
-<h1> {{ "Hello world!!!!!" }} </h1><br/>
-<script>
-    var test = {{ test }};
-    alert(test[1]);
-</script>
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
+<head>
+    <title>Words Over Time</title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">    
+    <link rel="shortcut icon" href="favicon.ico">  
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+    <!-- Plugins CSS -->    
+    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/plugins/prism/prism.css">
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/styles-4.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+<style> 
+body{ text-align:center} 
+.fileIn{ margin:0 auto;} 
+ 
+</style> 
+
+	
+	
+</head> 
+
+<body data-spy="scroll">
+    
+    <!---//Theme author's Facebook button code-->
+	
+<!--
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+-->
+    
+    <!-- ******HEADER****** --> 
+    <header id="header" class="header">  
+        <div class="container">            
+            <h1 class="logo pull-left">
+                <a class="scrollto" href="#promo">
+                    <span class="logo-title">WordsOverTime</span>
+                </a>
+            </h1><!--//logo-->              
+            <nav id="main-nav" class="main-nav navbar-right" role="navigation">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button><!--//nav-toggle-->
+                </div><!--//navbar-header-->            
+                <div class="navbar-collapse collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active nav-item sr-only"><a class="scrollto" href="#promo">Home</a></li>
+                        <li class="nav-item"><a class="scrollto" href="#about">About</a></li>
+											<li class="nav-item"><a class="scrollto" href="#analyze">Analyze</a></li>
+<!--                        <li class="nav-item"><a class="scrollto" href="#features">Features</a></li>-->
+<!--                        <li class="nav-item"><a class="scrollto" href="#docs">Docs</a></li>-->
+<!--                        <li class="nav-item"><a class="scrollto" href="#license">License</a></li>                        -->
+                        <li class="nav-item last"><a class="scrollto" href="#contact">Contact</a></li>
+                    </ul><!--//nav-->
+                </div><!--//navabr-collapse-->
+            </nav><!--//main-nav-->
+        </div>
+			
+			
+<!--
+			<style tabindex="text/css">
+				.second{
+					text-align:center
+				}
+			</style>
+-->
+			
+			
+			
+			
+			
+    </header><!--//header
+    
+    <!-- ******PROMO****** -->
+    <section id="promo" class="promo section offset-header">
+        <div class="container text-center">
+            <h2 class="title">Words ov<span class="highlight">er Time</span></h2>
+            <p class="intro">A mobile-friendly tool designed to help researchers
+understand how language is used by the media</p>
+            <div class="btns">
+                <a class="btn btn-cta-secondary" href=#analyze>Get Started</a>
+<!--                <a class="btn btn-cta-primary" href="http://themes.3rdwavemedia.com/website-templates/devaid-free-bootstrap-theme-developers/" target="_blank">Download</a>-->
+            </div>
+					
+            <ul class="meta list-inline">
+<!--
+                <li><a href="https://github.com/xriley/devAid-Theme" target="_blank">View on GitHub</a></li>
+                <li><a href="http://themes.3rdwavemedia.com/website-templates/devaid-free-bootstrap-theme-developers/" target="_blank">Full Documentation</a></li>
+                <li>Created by: <a href="http://themes.3rdwavemedia.com/" target="_blank">Xiaoying Riley</a> at 3rd Wave Media</li>
+-->
+            </ul><!--//meta-->
+        </div><!--//container-->
+			
+<!-- DELETED  <div class="social-media">-->
+    </section><!--//promo-->
+    
+    <!-- ******ABOUT****** --> 
+    <section id="about" class="about section">
+        <div class="container">
+            <h2 class="title text-center">What is WordsOverTime?</h2>
+            <p class="intro text-center">Explain project in detail.</p>
+            <div class="row">
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-heart"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">Designed for reseachers</h3>
+                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-clock-o"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">Time saver</h3>
+                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-crosshairs"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">UX-centred</h3>
+                         <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->           
+                <div class="clearfix visible-md"></div>    
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-tablet"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">Mobile-friendly</h3>
+                         <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->                
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-code"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">Easy to use</h3>
+                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->
+                <div class="item col-md-4 col-sm-6 col-xs-12">
+                    <div class="icon-holder">
+                        <i class="fa fa-coffee"></i>
+                    </div>
+                    <div class="content">
+                        <h3 class="sub-title">Benefit</h3>
+                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                    </div><!--//content-->
+                </div><!--//item-->               
+            </div><!--//row-->            
+        </div><!--//container-->
+    </section><!--//about-->
+    
+    <!-- ******ANALYZE****** --> 
+    <section id="analyze" class="features section">
+        <div class="container text-center">
+            <h2 class="title">Analyze</h2>	
+					
+						<!-- copy from last version-->
+						 <form enctype="multipart/form-data" action = "/words/graph/" method = "post">
+							 				
+							 
+<!--
+                      	<br/>
+                        <br/>
+                        <select>
+                        <option value ="all">Date from</option>
+                        </select>
+                        <select>
+                        <option value ="all">Date to</option>
+                        </select>
+                        <select>
+                        <option value ="all">Location</option>
+                        </select>
+                      	<br/>
+-->
+<!--
+                        <br/>
+							  <br/>
+							 
+							 <input type="checkbox" name = "pairwise"/>  Pairwise
+							 
+                        <input type="checkbox" name = "docAnaly"/>      Document Analytics
+                        
+-->
+
+                        <br/>
+							  				<br/>
+							 
+							 					
+                         From <input type="date" id = "startDate" name="startDate" placeholder="1990-01-01" size="10">
+                    
+                         To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">
+							 
+							 					<lable>By</lable>		 				
+												<select type = "select" id="unit" name = "granularity">
+													<option value = "3">Year</option>
+													<option value = "2">Month</option>
+													<option value = "1">Week</option>
+												</select>
+												<!--end of first analyst section-->
+							 
+							 
+							  <br/>
+							  				<br/>
+							 
+							 <div class="panel-group" id="accordion"><!--start of accordion -->
+  								<div class="panel panel-default">
+														<div class="panel-heading">
+															<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">N closest neighbors</a></h4>
+														</div>
+														<div id="collapse1" class="panel-collapse collapse">
+															<div class="panel-body">
+																<div id="NclosestNeighbors">
+																		<br/>
+																		<input type="text" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
+																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="comma-separated phrase">
+																		<input type="file" name = "text_file" id="text_file">
+																			<select id="output2" name="skipOrCBOW1">
+																				<option>CBow</option>
+																				<option>Skipgram</option>
+																			</select>
+																</div>
+															</div>
+  								</div>
+								 </div><!--end of the first fold in-->
+								
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+												Cosine distance of word pairs</a>
+											</h4>
+										</div>
+										<div id="collapse2" class="panel-collapse collapse">
+											<div class="panel-body">
+												<div id="cos"><input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="(w1, w2),(w3, w4) format">
+													<input class="fileIn" type=file name = "text_file2" id="fileCos">
+												
+													<select id="output3" name="skipOrCBOW2">
+														<option>CBow</option>
+														<option>Skipgram</option>
+													</select>
+												</div>
+											</div>
+								 		</div>
+								 </div><!--end of the second fold in-->
+								 
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Average tfidf</a>
+										</h4>
+									</div>
+									<div id="collapse3" class="panel-collapse collapse">
+										<div class="panel-body">
+											<div id="Averagetfidf">
+												<input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="single word">
+											</div>
+										</div>
+									</div>
+								</div><!--end of the first fold in-->
+							</div><!--end of the whole accordion section-->
+						 
+							 <div id="five">
+								 <lable>Pairwise conditional probabilities</lable>
+								 <input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="(w1, w2),(w3, w4) format">
+													<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
+							 </div>
+							 
+							 	<br/>
+							 					<br/>
+							 					<br/>
+												<br/>
+							 
+							 	<div id="six" class="checkbox">
+														<label><input type="checkbox" name="Average valence" value="1">Average valence</label>
+														<label><input type="checkbox" name="Average arousal" value="1">Average arousal</label>
+									<br/>
+														<label><input type="checkbox" name="5 Words Average valence" value="1">Average valence of five words with highest tfidf</label>
+									<br/>
+														<label><input type="checkbox" name="5 Words Average arousal" value="1">Average arousal of five words with highest tfidf</label>
+												
+													</div><!--default value1?-->
+
+							 	<br/>
+							 					<br/>
+							 					<br/>
+												<br/>
+							 
+							 <div id="seven">
+								 <lable>Word frequency</lable>
+								 <input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="frequencyWords">
+													<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
+							 </div>
+							 
+							 <br/>
+							 					<br/>
+							 					<br/>
+												<br/>
+							 
+							 <div id="eight">
+								 <lable>Relative word frequency</lable>
+								 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="relativeWords">
+									<input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
+							 </div>
+							 
+							 
+							 
+												
+							 				
+<!--
+
+<input type="checkbox" name = "byLocation"/> Advanced Search by Location
+                      	<br/>
+                        <br/>
+                        <input type="text" name="Locations" value="comma seperated locations" size="50">
+                      	 <br/>
+                        <br/>
+                        <input type="checkbox" name = "byLocation"/> Advanced Search by Date
+                      	 <br/>
+                        <br/>
+							 
+							 <p>Number of Chunks:</p>
+                        <select>
+													<option value ="all">4</option>
+                        </select>
+-->
+		
+<!--
+                        From<input type="text" name="from" value="1990-01-01" size="7">
+                        From<input type="text" name="from" value="1990-01-01" size="7">
+                        From<input type="text" name="from" value="1990-01-01" size="7">
+                        From<input type="text" name="from" value="1990-01-01" size="7">
+                      
+                      
+                        <br/>
+                        To<input type="text" name="to" value="2000-01-01" size="7">
+                        To<input type="text" name="to" value="2000-01-01" size="7">
+                        To<input type="text" name="to" value="2000-01-01" size="7">
+                        To<input type="text" name="to" value="Feb2017" size="7"><br/>
+-->
+							 
+							 			<!-- hiding csrf_token -->
+							 	
+            						<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!--??-->
+												
+													
+							 					<br/>
+							  				<br/>
+							 					<br/>
+							 					<br/>
+												<br/>
+												
+													<div id="submission">
+														<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="input your email">
+													<input type = "submit" value = "Submit"/>
+												 </div>
+							            </form><!--//from last version-->
+        </div><!--//container-->
+    </section><!--//features
+    
+    <!--DELETED ******DOCS****** --> 
+<!--DELETED     <section id="docs" class="docs section">-->       
+    <!-- ******LICENSE****** --> 
+<!--    <section id="license" class="license section">-->
+	
+    <!-- ******CONTACT****** --> 
+    <section id="contact" class="contact section has-pattern">
+        <div class="container">
+            <div class="contact-inner">
+                <h2 class="title  text-center">Contact</h2>
+<!--                <p class="intro  text-center">I hope you find this Bootstrap template useful. <br />Feel free to get in touch if you have any questions or suggestions.</p>-->
+<!--                <div class="author-message">                      -->
+<!--                    <div class="profile">-->
+<!--                        <img class="img-responsive" src="assets/images/profile.png" alt="" />-->
+<!--                    </div>//profile-->
+<!--DELETED                    <div class="speech-bubble">-->
+                                            
+<!--                </div>//author-message-->
+                <div class="clearfix"></div>
+                <div class="info text-center">
+<!--                    <h4 class="sub-title">Get Connected</h4>-->
+                    <ul class="social-icons list-inline">
+                        <li><a href="" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href=""><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href=""><i class="fa fa-instagram"></i></a></li>  
+<!--                        <li><a href="https://dribbble.com/Xiaoying"><i class="fa fa-dribbble"></i></a></li>   -->
+                        <li class="last"><a href="mailto:hello@3rdwavemedia.com"><i class="fa fa-envelope"></i></a></li>              
+                    </ul>
+                </div><!--//info-->
+            </div><!--//contact-inner-->
+        </div><!--//container-->
+    </section><!--//contact-->  
+      
+    <!-- ******FOOTER****** --> 
+    <footer class="footer">
+        <div class="container text-center">
+            <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can check out other license options via our website: themes.3rdwavemedia.com */-->
+            <small class="copyright">Deployed <i class="fa fa-heart"></i>under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Liences</a></small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+     
+    <!-- Javascript -->          
+    <script type="text/javascript" src="assets/plugins/jquery-1.11.3.min.js"></script>   
+    <script type="text/javascript" src="assets/plugins/jquery.easing.1.3.js"></script>   
+    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>     
+    <script type="text/javascript" src="assets/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script> 
+    <script type="text/javascript" src="assets/plugins/prism/prism.js"></script>    
+    <script type="text/javascript" src="assets/js/main.js"></script>       
 </body>
-</html>
+</html> 

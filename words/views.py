@@ -15,7 +15,7 @@ GRANULARITY_YEARLY = 3
 
 # Create your views here.
 def index(request):
-    return render(request, 'words/401.html')
+    return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
 def graph(request):
@@ -28,24 +28,84 @@ def graph(request):
     keyWords = []
     startDate = date.today()
     endDate = date.today()
+    granularity = GRANULARITY_YEARLY
+    n = 0
     form = MainForm(request.POST)
-    if form.is_valid():
-        keyWords = form.cleaned_data['keywords']
+    #if form.is_valid():
+        #keyWords = form.cleaned_data['keywords']
         #print (keyWords)
-        keyWordsList = keyWords.split()
+        #keyWordsList = keyWords.split()
         
         
         #print (keyWordsList)
         
-        startDate = form.cleaned_data['startDate']
-        endDate = form.cleaned_data['endDate']
+        #startDate = form.cleaned_data['startDate']
+        #endDate = form.cleaned_data['endDate']
+        #granularity = form.cleaned_data['granularity']
+        
+        #n = form.cleaned_data['nNeighbour']
+
+
+    #Get Form Data!
+    startDateString = request.POST["startDate"]
+    endDateString = request.POST["endDate"]
+    startDate = datetime.strptime(startDateString, '%Y-%m-%d')
+    endDate = datetime.strptime(endDateString, '%Y-%m-%d')
+    granularity = int(request.POST["granularity"])
+    
+    #Form data for n closest neighbors
+    n = int(request.POST["Nneighbor"])
+    keyWords = request.POST["keywords"]
+    keyWordsList = keyWords.split()    
+    textFile = request.FILES["text_file"]
+    skipOrCBOW1 = request.POST["skipOrCBOW1"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for cosine distance
+    wordPair = request.POST["wordPairs"]
+    #textFile2 = request.FILES["text_file2"]
+    skipOrCBOW2 = request.POST["skipOrCBOW2"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+    
+    #Form data for tfidf
+    tfidfWord = request.POST["tfidfWord"]
+    
+    #Form data for Pairwise Conditional Probabilities
+    conditionalWordPair = request.POST["conditionalWord"]
+    #fileConditional = request.FILES["fileConditional"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data from checkboxes
+    averageValence = request.POST["Average valence"]
+    averageArousal = request.POST["Average arousal"]
+    top5averageValence = request.POST["5 Words Average valence"]
+    top5averageArousal = request.POST["5 Words Average arousal"]
+
+    #Form data for word frequency
+    wordFrequencyWords = request.POST["frequencyWord"]
+    #wordFrequencyFile = request.FILES["wordFrequencyFile"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for relative word frequency
+    relativeWords = request.POST["relativeWord"]
+    #relativeFile = request.FILES["relativeFile"]
+    #TODO: read in file and create list of strings from it
+    #How to separate words?
+
+    #Form data for email
+    email = request.POST["userEmail"]
+    
+
     #print (keyWords)
     #keyWordsList = ['rabbit', 'bird']
     #req = CosDistanceOverTimeRequest((startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1])
     #result = req.execute()
-
-    granularity = 1;
-    #granularity = 2;
+    print(granularity)
+    print (n)
 
     xValues = [];
     #weekly
@@ -78,7 +138,7 @@ def graph(request):
         randomNum = random.randint(1,4)
         yValues.append(randomNum)
 
-    splitKeywords = keyWords.split()
+    #splitKeywords = keyWords.split()
 
     #yValuesList = []
     #for j in range (0, len(keyWords)):
