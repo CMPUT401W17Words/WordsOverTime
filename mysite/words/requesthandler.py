@@ -1,6 +1,7 @@
 # This is the "coordinator" module that calls on other modules to process a client request
 
 import csv
+from datetime import date
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
