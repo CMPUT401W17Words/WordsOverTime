@@ -1,8 +1,8 @@
 from datetime import date
-import words.dataretrieval
-import words.requesthandler
-import words.databaseinput
-from words.models import Document_Data, Word_Data
+import dataretrieval
+import requesthandler
+import databaseinput
+from models import Document_Data, Word_Data
 
 dateRange = (date(2000, 5, 19), date(2008, 10, 11))
 granularity = 'Year'
