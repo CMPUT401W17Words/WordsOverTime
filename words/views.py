@@ -4,6 +4,7 @@ from django.views import generic
 import random
 from datetime import datetime, date, time, timedelta
 import time
+import csv
 
 from .forms import MainForm
 from .requesthandler import *
@@ -241,62 +242,29 @@ def success(request):
     
 
 def graph(request, hash):
-    #hashStr = request.GET.get('q', '')
-    #print(hashStr)
-    #return HttpResponse(hash)
-    '''
+    filePath = '/mnt/vol/csvs'
     keyWords = []
-    startDate = date.today()
-    endDate = date.today()
-    granularity = GRANULARITY_YEARLY
-    
-    xValues = [];
-    #weekly
-    if(granularity == GRANULARITY_WEEKLY):
-        timeDiff = timedelta(days = 7)
-    #monthly
-    elif (granularity == GRANULARITY_MONTHLY):
-        #TODO: change it to be correct number of days for each month?
-        timeDiff = timedelta(days = 30)
-    #yearly
-    else:
-        timeDiff = timedelta(days = 365) 
-    
-    tempDate = startDate
-    timestamp = 0
-    while(tempDate < endDate):
-        timestamp = int(time.mktime(tempDate.timetuple())) * 1000
-        xValues.append(timestamp)
-        tempDate = tempDate + timeDiff
-
-    #years = result.xValues
-    #years = []
-    #yearDiff = endDate.year - startDate.year
-    #for i in range (0, yearDiff):
-    #    years.append(startDate.year + i)
-
-    #yValues = result.yValues
+    xValues = []
     yValues = []
-    for i in range(0, len(xValues)):
-        randomNum = random.randint(1,4)
-        yValues.append(randomNum)
-
-    #splitKeywords = keyWords.split()
-
-    #yValuesList = []
-    #for j in range (0, len(keyWords)):
-    #    yValuesList.append([])
-    #    for i in range (0, len(years)):
-    #        randomNum = random.randint(1,4)
-    #        yValuesList[j].append(randomNum)
-    '''
+    xAxis = ''
+    yAxis = ''
+    thing = []
+    with open('test.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        xAxis = reader.fieldnames[0]
+        yAxis = reader.fieldnames[1]
+        for row in reader:
+            xValues.append(row[xAxis])
+            thing = row[yAxis]
+            yValues.append(thing[1])
+            keyWords.append(thing[0])
     #xAxis = result.xTitle
     #yAxis = result.yTitle
-    xAxis = "Date"
-    yAxis = "Valence"
-    xValues = [1,2,3,4,5]
-    yValues = [1,2,3,4,5]
-    keyWords = ['hello', 'hi']
+    #xAxis = "Date"
+    #yAxis = "Valence"
+    #xValues = [1,2,3,4,5]
+    #yValues = [1,2,3,4,5]
+    #keyWords = ['hello', 'hi']
     word1 = "Hello"
     word2 = "Hi"
     #w1x = [1,6,3,4]
