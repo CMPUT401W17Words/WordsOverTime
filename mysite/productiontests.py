@@ -1,4 +1,5 @@
-from datetime import date
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 import words.requesthandler
 from words.models import Document_Data, Word_Data
 
