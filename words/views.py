@@ -147,10 +147,10 @@ def success(request):
     else:
         #error
         email = ''
-    print(keyWordsList)
+    #print(keyWordsList)
     
     requestList = []
-    hashList = [300,4000,1234,5555]
+    hashList = []
 
     #Handle N closest neighbor request
     if(n >= 0 and keyWordsList):
@@ -187,7 +187,7 @@ def success(request):
 
     #avgHash = 5
     #Handle Average Valence Request
-    if (averageValence == 1):
+    if (averageValence == '1'):
         avgValHash = 5        
         avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity)
         avgValResult = avgValReq.execute()
@@ -195,23 +195,27 @@ def success(request):
         hashList.append(avgValHash)
 
     #Handle Average Arousal Request
-    if (averageArousal == 1):
-        avgAroHash = 6        
+    if (averageArousal == '1'):
+        avgAroHash = 6  
+        hashList.append(avgAroHash)      
+        print(hashList)  
         avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity)
         avgAroResult = avgAroReq.execute()
         avgAroResult.generateCSV(avgAroHash)
-        hashList.append(avgAroHash)  
+        
 
     #Handle Average 5 Word Valence Request
-    if (averageArousal == 1):
+    if (top5averageValence == '1'):
         avgVal5Hash = 7        
         avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgVal5Result = avgVal5Req.execute()
         avgVal5Result.generateCSV(avgVal5Hash)
         hashList.append(avgVal5Hash)   
 
+ 
+
     #Handle Average 5 Word Arousal Request
-    if (averageArousal == 1):
+    if (top5averageArousal == '1'):
         avgAro5Hash = 8        
         avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgAro5Result = avgAro5Req.execute()
@@ -231,6 +235,8 @@ def success(request):
     
     #result = req.execute()
     #result.generateCSV(hashStr)
+
+    print(hashList)
 
     context = {}
     for index in range (0, len(hashList)):
