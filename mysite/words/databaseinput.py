@@ -215,28 +215,10 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run():
-    enterData(corpusPath4,sentimentPath4)
-    
-def calculateTfidf(word, doc, chunk):
-    dictionary = gensim.corpora.Dictionary(chunk)
+    enterData(corpusPath4,sentimentPath4)dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     wordId = dictionary.token2id[word]
     for item in tfidf[doc]:
         if (item[0] == wordId):
             return item[1]
-    
-def inputTfidfs():
-    pass
-    
-def calculateAverageValenceTopFive(doc):
-    pass
-    
-def calculateAverageArousalTopFive(doc):
-    pass
-    
-def inputAverageValenceTopFive():
-    pass
-    
-def inputAverageArousalTopFive():
-    pass
