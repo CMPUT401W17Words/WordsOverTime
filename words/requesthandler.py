@@ -8,21 +8,19 @@ import words.dataanalyzer
 filePath = '/mnt/vol/csvs/'
 
 class Request(object):
-    def __init__(self, hashStr):
-        self.hash = hashStr
     def execute(self):
         return Result(None)
     
-class OverTimeRequest(Request, object):
-    def __init__(self, hashStr, dateRange, granularity):
-        Request.__init__(self, hashStr)
+class OverTimeRequest(Request):
+    def __init__(self, dateRange, granularity):
+        Request.__init__(self)
         self.dateRange = dateRange
         self.granularity = granularity
     def execute(self):
         return Result(None)
     
-class TfidfOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity, word):
+class TfidfOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.word = word
     def execute(self):
@@ -41,8 +39,8 @@ class TfidfOverTimeRequest(OverTimeRequest, object):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Tfidf Over Time of '+self.word, xValues, yValues) 
 
-class AverageValenceOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity):
+class AverageValenceOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
@@ -54,8 +52,8 @@ class AverageValenceOverTimeRequest(OverTimeRequest, object):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Valence of Documents', xValues, yValues)
 
-class AverageArousalOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity):
+class AverageArousalOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
@@ -67,8 +65,8 @@ class AverageArousalOverTimeRequest(OverTimeRequest, object):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yValues)
     
-class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity):
+class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
@@ -80,8 +78,8 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest, object):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
     
-class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity):
+class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
@@ -93,8 +91,8 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest, object):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
     
-class CosDistanceOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity, word1, word2, cbow):
+class CosDistanceOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word1, word2, cbow):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.word1 = word1
         self.word2 = word2
@@ -115,8 +113,8 @@ class CosDistanceOverTimeRequest(OverTimeRequest, object):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Cosine Distance of '+self.word1+' and '+self.word2, xValues, yValues)  
     
-class NClosestNeighboursOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity, word, n, cbow):
+class NClosestNeighboursOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word, n, cbow):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.word = word
         self.n = n
@@ -137,8 +135,8 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest, object):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'N closest neighbors of '+self.word, xValues, yValues)   
 
-class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest, object):
-    def __init__(self, hashStr, dateRange, granularity, word1, word2):
+class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
+    def __init__(self, dateRange, granularity, word1, word2):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.word1 = word1
         self.word2 = word2
@@ -175,14 +173,13 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest, object):
                'YGivenNotX':Result(self.granularity, 'p(' + self.word2 +'|~' + self.word1+')', xValues5, yValsYGivenNotX)}
     
 class Result():
-    def __init__(self, xTitle, yTitle, xValues, yValues, hashStr):
+    def __init__(self, xTitle, yTitle, xValues, yValues):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
         self.xValues = xValues # xValues and yValues are parallel lists that together construct a scatterplot
         self.yValues = yValues
-        self.hash = hashStr
-    def generateCSV(self):
-        with open(filePath+self.hash+'.csv', 'w') as csvfile:
+    def generateCSV(self, hashStr):
+        with open(filePath + hashStr + '.csv', 'w') as csvfile:
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle])
             for i in range(len(self.xValues)):

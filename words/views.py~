@@ -316,7 +316,7 @@ def graph(request, hash):
         'keywords': keyWords,
         'yValues': yValues
     }
-    #return render(request, 'words/graph2.html', context)
+    return render(request, 'words/graph2.html', context)
  
 #class IndexView(generic.DetailView):
   #template_name = "words/index.html"

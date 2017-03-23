@@ -154,7 +154,7 @@ def success(request):
     #Handle N closest neighbor request
     if(n >= 0 and keyWordsList):
         closeHash = 1
-        nClosestReq = NClosestNeighboursOverTimeRequest(closeHash, (startDate, endDate), granularity, keyWordsList[0], n, True)
+        nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList[0], n, True)
         nClosestResult = nClosestReq.execute()
         nClosestResult.generateCSV(closeHash)
         hashList.append(closeHash)
