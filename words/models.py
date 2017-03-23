@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from .hash import *
 
 # Create your models here.
   
@@ -54,3 +55,15 @@ class Word_Data(models.Model):
 class Corpus_Data(models.Model):
   start_date = models.DateField()
   end_date = models.DateField()  
+
+class Graph(models.Model):
+  hashStr = models.CharField(max_length = 200)
+  Title = models.CharField(max_length = 200)
+  
+  
+  def save(self, *args, **kwargs):
+
+    if not self.hashStr:
+      self.hashStr = gen_unique_hash(YOUR_MODELS_CLASS, 5)
+    super(YOUR_MODELS_CLASS, self).save(*args, **kwargs)
+  
