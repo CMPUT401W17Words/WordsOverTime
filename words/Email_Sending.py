@@ -4,9 +4,9 @@ def SendWordsOverTimeEmail(emailTo, htmlLink, date):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login("draakx@gmail.com", "ly010465")
+    server.login("WordsOverTimeProject@gmail.com", "Words1234")
     msg = "\r\n".join([
-        "From: draakx@gmail.com",
+        "From: WordsOverTimeProject@gmail.com",
       "To: %s" % emailTo,
       "Subject: WordsOverTime request complete!",
       "",
