@@ -12,11 +12,11 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import math
-
+import datetime
 import csv 
 import django
 import gensim
-
+import databaseretrival
 
 from words.models import Sentiment_Dict, Document_Data, Word_Data
 from django.db.models import F
@@ -44,7 +44,7 @@ def enterArticles():
     pass
 
 # main function that will input corpus and sentiment info into the database
-def enterData(corpusCsv, sentimentCsv):
+def enterData(corpusCsv):
     #wordData = {} # represent models as dictionaries of primary key to list of other data
     #docData = {}
     #wordDocData = {}    
@@ -64,6 +64,10 @@ def enterData(corpusCsv, sentimentCsv):
         file = csv.DictReader(csvfile)
         count = 0
         for line in file:
+            if Document_Data.objects.filter(article_id = line['articleID']).exists():
+                continue
+
+	    try:
             #docData[line['articleID']] = []
             #docData[line['articleID']].append(line['language'])
             #docData[line['articleID']].append(line['province'])
@@ -71,49 +75,55 @@ def enterData(corpusCsv, sentimentCsv):
             #docData[line['articleID']].append(line['country'])
             #docData[line['articleID']].append(line['publicationDate'])
             #docData[line['articleID']].append(line['wordCount'])
-            words = line['parsedArticle'].split()
+                words = line['parsedArticle'].split()
             #tfidfs = tfidf[fullCorpus.dictionary.doc2bow(words)]
             #print(tfidfs, 'TFIDFS')
-            #print(len(tfidfs), 'TFIDFS')
-            arousal = 0.0
-            valence = 0.0
-            arousal_five = []
-            valence_five = []
-            tfidf_five =[]
+            #print(len(tfidfs), 'TFIDFS'
+                datte = line['publicationDate']
+                datesplit = datte.split("-")
+                dattte = datetime.datetime(year=int(datesplit[0]),month=int(datesplit[1]),day=int(datesplit[2]))
+                arousal = 0.0
+                valence = 0.0
+                arousal_five = []
+                valence_five = []
+                tfidf_five =[]
             #for item in tfidfs: # get each word in the doc and its tfidf
                 #word = fullCorpus.dictionary[item[0]]
                 #value = item[1]
                 #print(word,value)
                 #wordDocData[(word,line['articleID'])] = []
                 #wordDocData[(word,line['articleID'])].append(value)
-            value = 0
-            doc_word_count = len(words)
+                value = 0
+                doc_word_count = len(words)
+                wordsindictcount = 0
             #print(doc_word_count)
-            for word in words: # get sentiment info
+                for eachword in words: # get sentiment info
                 # TODO: log10 term frequency
-                word, created = Word_Data.objects.get_or_create(word=word, article_id = line['articleID'], word_count = 1, term_frequency = (1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
-                if not created:
-                    #wrd = Word_Data(word=word, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
-                    #wrd.save()
-                    Word_Data.objects.filter(word=word, article_id = line['articleID']).update(word_count = F('word_count')+1, term_frequency = (F('word_count')+1/doc_word_count))
+                    word, created = Word_Data.objects.get_or_create(word=eachword, article_id = line['articleID'], word_count = 1, term_frequency = (1/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
+                    if not created:
+                        #wrd = Word_Data(word=eachword, article_id = line['articleID'], word_count = word.word_count + 1, term_frequency = ((word.word_count + 1)/doc_word_count), tfidf = value)#, inverse_term_frequency = 0)
+                        #wrd.save()
+                        word.update(word_count = word.word_count+1, term_frequency = (word.word_count+1)/doc-word_count)
+                    #Word_Data.objects.filter(word=eachword, article_id = line['articleID']).update(word_count = F('word_count')+1, term_frequency = (F('word_count')+1/doc_word_count))
                 #if word in sentDict:
                     #currenttfidf = tfidfs [word][0]
                     #currentValence = sentDict[word][0]
                     #currentArousal = sentDict[word][1]
-                wordvalues = Sentiment_Dict.objects.filter(word = word)
-                if wordvalues:
-                    currentArousal = wordvalues.values_list("arousal", flat=True)
-                    currentValence = wordvalues.values_list("valence", flat=True)
-                    arousal = arousal + currentArousal[0]
-                    valence = valence + currentValence[0]
-                    if (len(tfidf_five)<5):
-                        tfidf_five.append([word,value,currentValence[0],currentArousal[0]])
-                    else:
-                        tfidf_five = sorted(tfidf_five, key=lambda entry: entry[1])
-                        for i in range(5):
-                            if (tfidf_five[i][1]<value):
-                                tfidf_five[i] = [word, value]
-                                break  
+                    wordvalues = Sentiment_Dict.objects.filter(word = eachword)
+                    if wordvalues:
+                        wordsindictcount = wordsindictcount + 1
+                        currentArousal = wordvalues.values_list("arousal", flat=True)
+                        currentValence = wordvalues.values_list("valence", flat=True)
+                        arousal = arousal + currentArousal[0]
+                        valence = valence + currentValence[0]
+                        if (len(tfidf_five)<5):
+                            tfidf_five.append([eachword,value,currentValence[0],currentArousal[0]])
+                        else:
+                            tfidf_five = sorted(tfidf_five, key=lambda entry: entry[1])
+                            for i in range(5):
+                                if (tfidf_five[i][1]<value):
+                                    tfidf_five[i] = [eachword, value]
+                                    break  
                             
                             
                     #if (len(arousal_five)<5):
@@ -132,15 +142,15 @@ def enterData(corpusCsv, sentimentCsv):
                             #if (valence_five[i]<currentValence):
                                 #valence_five[i] = currentValence
                                 #break
-            arousal_average_five = 0.0
-            valence_average_five = 0.0
+                arousal_average_five = 0.0
+                valence_average_five = 0.0
             #for i in range(len(tfidf_five)):
                 #valence_average_five = valence_average_five + tfidf_five[i][2]
                 #arousal_average_five = arousal_average_five + tfidf_five[i][3]
             #valence_average_five = valence_average_five/len(tfidf)
             #arousal_average_five = arousal_average_five/len(tfidf)
-            while (len(tfidf_five)<5):
-                tfidf_five.append(["",0,0,0])            
+                while (len(tfidf_five)<5):
+                    tfidf_five.append(["",0,0,0])            
             #docData[line['articleID']].append(len(words))
             #docData[line['articleID']].append("")
             #docData[line['articleID']].append("")
@@ -151,20 +161,21 @@ def enterData(corpusCsv, sentimentCsv):
             #docData[line['articleID']].append(valence/len(words))
             #docData[line['articleID']].append(arousal_average_five)
             #docData[line['articleID']].append(valence_average_five)
-            doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
-                          city = line['city'], country = line['country'], publication_Date = line['publicationDate'], 
+                doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
+                          city = line['city'], country = line['country'], publication_Date = dattte, 
                           word_count = doc_word_count, word_one = tfidf_five[0][0], word_two = tfidf_five[1][0], word_three = tfidf_five[2][0], word_four = tfidf_five[3][0], 
-                          word_five = tfidf_five[4][0], average_arousal_doc = arousal/doc_word_count, average_valence_doc = valence/doc_word_count,
+                          word_five = tfidf_five[4][0], average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount,
                           average_arousal_words = arousal_average_five, average_valence_words = valence_average_five)  
-            doc.save()
+                doc.save()
 
-            count = count + 1
-            if (count %1000==0): 
-                print(count, " documents computed")
-                sys.stdout.flush()            
+                count = count + 1
+                if (count %1000==0): 
+                    print(count, " documents computed")
+                    sys.stdout.flush()            
            # if (count > 1000):
                # break
-            
+            except Exception as e:    
+                print str(e)
     #for k,v in wordData.items(): # create Word models and enter into db
         #word = Word_data(word=k, articleID = line['articleID'], word_count = 1, term_frequency = 0, inverse_term_frequency = 0)
         #word.save()
@@ -182,7 +193,39 @@ def enterData(corpusCsv, sentimentCsv):
         #wordDoc = Word_Data(word=Word_Data.objects.get(word=k[0]),document=Document_Data.objects.get(article_id=k[1]))
         #wordDoc.save()
 
-# generate corpus from file path   
+# generate corpus from file path 
+    
+
+
+def tfidfForFullCorpus():
+   
+    print "Starting tfidf calculations"
+    chunk = Document_Data.objects.all()
+    words = []
+    for doc in chunk:
+        words.append(getWordsInDocument(doc))
+
+    #wordData = Word_Data.objects.all()
+    dictionary = gensim.corpora.Dictionary(chunk)
+    corpus = [dictionary.doc2bow(text) for text in chunk]
+    tfidffull = gensim.models.TfidfModel(corpus)
+    #for word in wordData:
+        #wordId = dictionary.token2id[word.word]
+    for doc,datadoc in zip(corpus, chunk):
+            #print(doc)
+            #print(tfidf[doc])
+        wordData = Word_Data.objects.filter(article_id = datadoc.article_id)
+            #articleId = datadoc.article_id
+        for wordd in wordData:
+             wordId = dictionary.token2id[wordd.word]
+                 
+            for item in tfidffull[doc]:
+                if (item[0] == wordId):
+                    tfidfvalue = item[1]
+                    break
+            wordd.tfidf = tfidfvalue
+            wordd.save()
+  
 class MainCorpus(gensim.corpora.textcorpus.TextCorpus):
     def __init__(self, path):
         gensim.corpora.textcorpus.TextCorpus.__init__(self)
@@ -225,9 +268,8 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run():
-    enterData(corpusPath4,sentimentPath4)
+    enterData(corpusPath4)
 
 
 if __name__ == "__main__":
     run()
-

@@ -1,3 +1,4 @@
+{% load staticfiles %}<!-- hidden token when run in server -->
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
@@ -10,16 +11,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">    
-    <link rel="shortcut icon" href="favicon.ico">  
+    <link rel="shortcut icon" href="static/words/favicon.ico">  
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/words/plugins/bootstrap/css/bootstrap.min.css">
     <!-- Plugins CSS -->    
-    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="assets/plugins/prism/prism.css">
+    <link rel="stylesheet" href="static/words/plugins/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="static/words/plugins/prism/prism.css">
     <!-- Theme CSS -->  
-    <link id="theme-style" rel="stylesheet" href="assets/css/styles-4.css">
+    <link id="theme-style" rel="stylesheet" href="static/words/css/styles-4.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -30,10 +31,7 @@
 body{ text-align:center} 
 .fileIn{ margin:0 auto;} 
  
-</style> 
-
-	
-	
+</style> 	
 </head> 
 
 <body data-spy="scroll">
@@ -191,52 +189,23 @@ understand how language is used by the media</p>
             <h2 class="title">Analyze</h2>	
 					
 						<!-- copy from last version-->
-						 <form enctype="multipart/form-data" action = "/words/success/" method = "post">
+						 <form enctype="multipart/form-data" action = "/words/graph/" method = "post">
 							 				
-							 
-<!--
-                      	<br/>
-                        <br/>
-                        <select>
-                        <option value ="all">Date from</option>
-                        </select>
-                        <select>
-                        <option value ="all">Date to</option>
-                        </select>
-                        <select>
-                        <option value ="all">Location</option>
-                        </select>
-                      	<br/>
--->
-<!--
-                        <br/>
-							  <br/>
-							 
-							 <input type="checkbox" name = "pairwise"/>  Pairwise
-							 
-                        <input type="checkbox" name = "docAnaly"/>      Document Analytics
-                        
--->
-
                         <br/>
 							  				<br/>
-							 
-							 					
-                         From <input type="date" id = "startDate" name="startDate" placeholder="1990-01-01" size="10">
+							 					From <input type="date"  class="datepicker"id = "startDate" name="startDate" placeholder="1990-01-01" size="10">
                     
                          To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">
 							 
 							 					<lable>By</lable>		 				
 												<select type = "select" id="unit" name = "granularity">
-													<option value = "Year">Year</option>
-													<option value = "Month">Month</option>
-													<option value = "Week">Week</option>
+													<option value = "3">Year</option>
+													<option value = "2">Month</option>
+													<option value = "1">Week</option>
 												</select>
-												<!--end of first analyst section-->
-							 
-							 
-							  <br/>
-							  				<br/>
+												<!--end of beginning analysing section-->
+							 	<br/>
+								<br/>
 							 
 							 <div class="panel-group" id="accordion"><!--start of accordion -->
   								<div class="panel panel-default">
@@ -249,7 +218,7 @@ understand how language is used by the media</p>
 																		<br/>
 																		<input type="text" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
 																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="comma-separated phrase">
-																		<input type="file" name = "text_file" id="text_file">
+																		<input type="file" class="fileIn" name = "text_file" id="text_file">
 																			<select id="output2" name="skipOrCBOW1">
 																				<option>CBow</option>
 																				<option>Skipgram</option>
@@ -293,106 +262,96 @@ understand how language is used by the media</p>
 											</div>
 										</div>
 									</div>
-								</div><!--end of the first fold in-->
-							</div><!--end of the whole accordion section-->
-						 
-							 <div id="five">
-								 <lable>Pairwise conditional probabilities</lable>
-								 <input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="(w1, w2),(w3, w4) format">
-													<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
-							 </div>
-							 
-							 	<br/>
-							 					<br/>
-							 					<br/>
-												<br/>
-							 
-							 	<div id="six" class="checkbox">
+								</div><!--end of the third fold in-->
+								 
+								 
+								 <div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Pairwise conditional probabilities</a>
+										</h4>
+									</div>
+									<div id="collapse4" class="panel-collapse collapse">
+										<div class="panel-body">
+											<div id="pcp"><!--changed id from five to abbr.-->
+												<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="(w1, w2),(w3, w4) format">
+												<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
+											</div>
+										</div>
+									</div>
+								</div><!--end of the forth fold in-->
+								 
+								 
+								  <div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapse5">valences and arousal</a>
+										</h4>
+									</div>
+									<div id="collapse5" class="panel-collapse collapse">
+										<div class="panel-body">
+												<div id="aa" class = "checkbox"><!--changed id from six to abbr.-->
 														<label><input type="checkbox" name="Average valence" value="1">Average valence</label>
 														<label><input type="checkbox" name="Average arousal" value="1">Average arousal</label>
-									<br/>
+														<br/>
 														<label><input type="checkbox" name="5 Words Average valence" value="1">Average valence of five words with highest tfidf</label>
-									<br/>
+														<br/>
 														<label><input type="checkbox" name="5 Words Average arousal" value="1">Average arousal of five words with highest tfidf</label>
-												
-													</div><!--default value1?-->
-
-							 	<br/>
-							 					<br/>
-							 					<br/>
-												<br/>
-							 
-							 <div id="seven">
-								 <lable>Word frequency</lable>
-								 <input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="frequencyWords">
-													<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
-							 </div>
-							 
-							 <br/>
-							 					<br/>
-							 					<br/>
-												<br/>
-							 
-							 <div id="eight">
-								 <lable>Relative word frequency</lable>
-								 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="relativeWords">
-									<input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
-							 </div>
-							 
-							 
-							 
-												
-							 				
-<!--
-
-<input type="checkbox" name = "byLocation"/> Advanced Search by Location
-                      	<br/>
-                        <br/>
-                        <input type="text" name="Locations" value="comma seperated locations" size="50">
-                      	 <br/>
-                        <br/>
-                        <input type="checkbox" name = "byLocation"/> Advanced Search by Date
-                      	 <br/>
-                        <br/>
-							 
-							 <p>Number of Chunks:</p>
-                        <select>
-													<option value ="all">4</option>
-                        </select>
--->
-		
-<!--
-                        From<input type="text" name="from" value="1990-01-01" size="7">
-                        From<input type="text" name="from" value="1990-01-01" size="7">
-                        From<input type="text" name="from" value="1990-01-01" size="7">
-                        From<input type="text" name="from" value="1990-01-01" size="7">
-                      
-                      
-                        <br/>
-                        To<input type="text" name="to" value="2000-01-01" size="7">
-                        To<input type="text" name="to" value="2000-01-01" size="7">
-                        To<input type="text" name="to" value="2000-01-01" size="7">
-                        To<input type="text" name="to" value="Feb2017" size="7"><br/>
--->
-							 
-							 			<!-- hiding csrf_token -->
-							 	
-            						<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!--??-->
+																																										<!--default value1?-->
+							 					</div>
+											</div>
+										</div>
+								</div><!--end of the fifth fold in-->
+										
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Word frequency</a>
+										</h4>
+									</div>
+									<div id="collapse6" class="panel-collapse collapse">
+										<div class="panel-body">
+												<div id="WordFrequency"><!--changed id from seven to abbr.-->
+								 						<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="frequencyWords">
+														<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
+							 					</div>
+										</div>
+									</div>
+								</div><!--end of the sixth fold in-->
+										
+										
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion" href="#collapse7">Relative word frequency</a>
+										</h4>
+									</div>
+									<div id="collapse7" class="panel-collapse collapse">
+										<div class="panel-body">
+												<div id="ralativeWordFrequency"><!--changed id from seven to abbr.-->
+								 						 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="relativeWords">
+														 <input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
+							 					</div>
+										</div>
+									</div>
+								</div><!--end of the sixth fold in-->
+							</div><!--end of the whole accordion section-->
+					 
+            	<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!-- hidden csrf_token -->
 												
 													
-							 					<br/>
-							  				<br/>
-							 					<br/>
-							 					<br/>
-												<br/>
-												
-													<div id="submission">
-														<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="input your email">
-													<input type = "submit" value = "Submit"/>
-												 </div>
-							            </form><!--//from last version-->
+							 <br/>
+				
+							<div id="submission">
+								<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="input your email">
+								<br/>
+								<br/>
+								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>
+								
+							</div>
+						</form><!--//from latest version-->
         </div><!--//container-->
-    </section><!--//features
+    </section><!--//analysis-->
     
     <!--DELETED ******DOCS****** --> 
 <!--DELETED     <section id="docs" class="docs section">-->       
@@ -437,11 +396,11 @@ understand how language is used by the media</p>
     </footer><!--//footer-->
      
     <!-- Javascript -->          
-    <script type="text/javascript" src="assets/plugins/jquery-1.11.3.min.js"></script>   
-    <script type="text/javascript" src="assets/plugins/jquery.easing.1.3.js"></script>   
-    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>     
-    <script type="text/javascript" src="assets/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script> 
-    <script type="text/javascript" src="assets/plugins/prism/prism.js"></script>    
-    <script type="text/javascript" src="assets/js/main.js"></script>       
+    <script type="text/javascript" src="static/words/plugins/jquery-1.11.3.min.js"></script>   
+    <script type="text/javascript" src="static/words/plugins/jquery.easing.1.3.js"></script>   
+    <script type="text/javascript" src="static/words/plugins/bootstrap/js/bootstrap.min.js"></script>     
+    <script type="text/javascript" src="static/words/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script> 
+    <script type="text/javascript" src="static/words/plugins/prism/prism.js"></script>    
+    <script type="text/javascript" src="static/words/js/main.js"></script>       
 </body>
 </html> 
