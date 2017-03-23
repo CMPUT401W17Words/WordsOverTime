@@ -5,11 +5,13 @@ from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
 
+filePath = '/mnt/vol/csvs/'
+
 class Request(object):
     def execute(self):
         return Result(None)
     
-class OverTimeRequest(Request, object):
+class OverTimeRequest(Request):
     def __init__(self, dateRange, granularity):
         Request.__init__(self)
         self.dateRange = dateRange
@@ -17,7 +19,7 @@ class OverTimeRequest(Request, object):
     def execute(self):
         return Result(None)
     
-class TfidfOverTimeRequest(OverTimeRequest, object):
+class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, word):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.word = word
@@ -176,12 +178,15 @@ class Result():
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
         self.xValues = xValues # xValues and yValues are parallel lists that together construct a scatterplot
         self.yValues = yValues
-    def generateCSV(self, filePath):
-        with open(filePath, 'w') as csvfile:
+    def generateCSV(self, hashStr):
+        with open(filePath + hashStr + '.csv', 'w') as csvfile:
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle])
             for i in range(len(self.xValues)):
                 resultWriter.writerow([self.xValues[i], self.yValues[i]])
+    def saveModel():
+        model = ResultModel(params)
+        model.save()
                 
 def sortXAndY(xValues, yValues):
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
