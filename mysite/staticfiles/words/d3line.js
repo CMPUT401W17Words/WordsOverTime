@@ -146,7 +146,6 @@ function d3Line() {
           .style('stroke-opacity', 1)
           .style('fill-opacity', .5);
 
-
       var paths = lines.selectAll('path')
           .data(function(d, i) { return [d.data] });
       paths.enter().append('path')
