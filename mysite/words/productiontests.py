@@ -1,11 +1,8 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-
 from datetime import date
-import dataretrieval
-import requesthandler
-import databaseinput
-from models import Document_Data, Word_Data
+import words.dataretrieval
+import words.requesthandler
+import words.databaseinput
+from words.models import Document_Data, Word_Data
 
 dateRange = (date(2000, 5, 19), date(2008, 10, 11))
 granularity = 'Year'
