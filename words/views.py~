@@ -147,7 +147,7 @@ def success(request):
     else:
         #error
         email = ''
-    print(keyWordsList)
+    #print(keyWordsList)
     
     requestList = []
     hashList = []
@@ -197,11 +197,11 @@ def success(request):
     #Handle Average Arousal Request
     if (averageArousal == '1'):
         avgAroHash = 6  
-        hashList.append(avgAroHash)      
-        print(hashList)  
         avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity)
         avgAroResult = avgAroReq.execute()
         avgAroResult.generateCSV(avgAroHash)
+        hashList.append(avgAroHash)      
+        print(hashList)  
         
 
     #Handle Average 5 Word Valence Request
@@ -241,7 +241,7 @@ def success(request):
     context = {}
     for index in range (0, len(hashList)):
         context["Hash%s" %index] = int(hashList[index])
-
+    
     context["nHashes"] = len(hashList)
 
     return render(request, 'words/success.html', context)
@@ -249,21 +249,46 @@ def success(request):
 
 def graph(request, hash):
     filePath = '/mnt/vol/csvs'
-    keyWords = []
-    xValues = []
+    keyWords = ["bird", "thing"]
+    valuesList = [(2009, 0.8, 'bird'), (2010, 0.8, 'bird'), (2009, 0.1, 'thing'), (2010, 0.1, 'thing')]
     yValues = []
+    xValues = []
     xAxis = ''
     yAxis = ''
     thing = []
-    with open('test.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        xAxis = reader.fieldnames[0]
-        yAxis = reader.fieldnames[1]
-        for row in reader:
-            xValues.append(row[xAxis])
-            thing = row[yAxis]
-            yValues.append(thing[1])
-            keyWords.append(thing[0])
+    #with open('test.csv', 'r') as csvfile:
+    #    reader = csv.DictReader(csvfile)
+    #    xAxis = reader.fieldnames[0]
+    #    yAxis = reader.fieldnames[1]
+    #    for row in reader:
+    #        xValues.append(row[xAxis])
+    #        thing = row[yAxis]
+    #        yValues.append(thing[1])
+    #        keyWords.append(thing[0])
+
+    testDict = {}
+    yValuesList = []
+    for word in keyWords:
+        testDict[word] = []
+        yTempValues = []
+        for thing in valuesList:
+            print(thing)
+            if(thing[2] == word):
+                testDict[word].append(thing[1])
+                yTempValues.append(thing[1])
+                xValues.append(thing[0])
+        yValuesList.append(yTempValues)
+    
+    print(keyWords)
+
+    print(yValuesList)
+
+    #print (testDict)
+    #numWords = len(keyWords)
+    #yValuesList= []
+    #for i in range(0, numWords):
+    #    yValuesList.append
+
     #xAxis = result.xTitle
     #yAxis = result.yTitle
     #xAxis = "Date"
