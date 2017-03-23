@@ -1,3 +1,66 @@
 <html>
 <h1> {{ "Hello World" }} </h1>
+<script>
+    var hashList = [];
+    var n = {{ nHashes }};
+    //alert(n);
+    var hash0 = "{{ Hash0 }}";
+    if (hash0){
+        hashList.push(hash0);
+    }
+    var hash1 = "{{ Hash1 }}";
+    if (hash1){
+        hashList.push(hash1);
+    }
+    var hash2 = "{{ Hash2 }}";
+    if (hash2){
+        hashList.push(hash2);
+    }
+    var hash3 = "{{ Hash3 }}";
+    if (hash3){
+        hashList.push(hash3);
+    }
+    var hash4 = "{{ Hash4 }}";
+    if (hash4){
+        hashList.push(hash4);
+    }
+    var hash5 = "{{ Hash5 }}";
+    if (hash5){
+        hashList.push(hash5);
+    }
+    var hash6 = "{{ Hash6 }}";
+    if (hash6){
+        hashList.push(hash6);
+    }
+    var hash7 = "{{ Hash7 }}";
+    if (hash7){
+        hashList.push(hash7);
+    }
+    
+    //alert(hashList);
+    //http://stackoverflow.com/questions/14845710/javascript-variable-access-in-html
+    window.onload = function() {
+        //when the document is finished loading, replace everything
+        //between the <a ...> </a> tags with the value of splitText
+        for(var i = 0; i < n; i++){
+            document.getElementById("myLink" + i).innerHTML="<ip>/words/success/graph/" + hashList[i];
+            //http://stackoverflow.com/questions/975050/passing-javascript-variable-to-a-href
+            document.getElementById("myLink" + i).setAttribute("href", "graph/" + hashList[i] + "/");
+        }
+        document.getElementById("myForm").setAttribute("action", "/words/success/graph/" + hashList[0] + "/");
+        document.getElementById("hashStr").setAttribute("value", hashList[0]);
+    } 
+
+</script>
+<body>
+<a id="myLink0" href = test.html></a></br>
+<a id="myLink1" href = test.html></a></br>
+<a id="myLink2" href = test.html></a></br>
+<a id="myLink3" href = test.html></a></br>
+<a id="myLink4" href = test.html></a></br>
+<a id="myLink5" href = test.html></a></br>
+<a id="myLink6" href = test.html></a></br>
+<a id="myLink7" href = test.html></a></br>
+</body>
+
 </html>

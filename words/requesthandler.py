@@ -41,7 +41,7 @@ class TfidfOverTimeRequest(OverTimeRequest, object):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Tfidf Over Time of '+self.word, xValues, yValues) 
 
-class AverageValenceOverTimeRequest(OverTimeRequest):
+class AverageValenceOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
@@ -54,7 +54,7 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Valence of Documents', xValues, yValues)
 
-class AverageArousalOverTimeRequest(OverTimeRequest):
+class AverageArousalOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
@@ -67,7 +67,7 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yValues)
     
-class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
+class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
@@ -80,7 +80,7 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
     
-class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
+class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity):
         OverTimeRequest.__init__(self,dateRange, granularity)
     def execute(self):
@@ -93,7 +93,7 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
             yValues.append(words.dataanalyzer.averageValence(v))
         return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yValues)
     
-class CosDistanceOverTimeRequest(OverTimeRequest):
+class CosDistanceOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity, word1, word2, cbow):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.word1 = word1
@@ -115,7 +115,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'Cosine Distance of '+self.word1+' and '+self.word2, xValues, yValues)  
     
-class NClosestNeighboursOverTimeRequest(OverTimeRequest):
+class NClosestNeighboursOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity, word, n, cbow):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.word = word
@@ -137,7 +137,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         xValues, yValues = sortXAndY(xValues, yValues)
         return Result(self.granularity, 'N closest neighbors of '+self.word, xValues, yValues)   
 
-class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
+class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest, object):
     def __init__(self, hashStr, dateRange, granularity, word1, word2):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.word1 = word1
