@@ -16,7 +16,7 @@ import datetime
 import csv 
 import django
 import gensim
-
+import databaseretrival
 
 from words.models import Sentiment_Dict, Document_Data, Word_Data
 from django.db.models import F
@@ -193,7 +193,39 @@ def enterData(corpusCsv):
         #wordDoc = Word_Data(word=Word_Data.objects.get(word=k[0]),document=Document_Data.objects.get(article_id=k[1]))
         #wordDoc.save()
 
-# generate corpus from file path   
+# generate corpus from file path 
+    
+
+
+def tfidfForFullCorpus():
+   
+    print "Starting tfidf calculations"
+    chunk = Document_Data.objects.all()
+    words = []
+    for doc in chunk:
+        words.append(getWordsInDocument(doc))
+
+    #wordData = Word_Data.objects.all()
+    dictionary = gensim.corpora.Dictionary(chunk)
+    corpus = [dictionary.doc2bow(text) for text in chunk]
+    tfidffull = gensim.models.TfidfModel(corpus)
+    #for word in wordData:
+        #wordId = dictionary.token2id[word.word]
+    for doc,datadoc in zip(corpus, chunk):
+            #print(doc)
+            #print(tfidf[doc])
+        wordData = Word_Data.objects.filter(article_id = datadoc.article_id)
+            #articleId = datadoc.article_id
+        for wordd in wordData:
+             wordId = dictionary.token2id[wordd.word]
+                 
+            for item in tfidffull[doc]:
+                if (item[0] == wordId):
+                    tfidfvalue = item[1]
+                    break
+            wordd.tfidf = tfidfvalue
+            wordd.save()
+  
 class MainCorpus(gensim.corpora.textcorpus.TextCorpus):
     def __init__(self, path):
         gensim.corpora.textcorpus.TextCorpus.__init__(self)
