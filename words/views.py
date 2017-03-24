@@ -21,22 +21,6 @@ def index(request):
     return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
-def generateCSV(xTitle, yTitle, xValues, yValues, hashStr):
-    with open(hashStr + '.csv', 'w') as csvfile:
-        resultWriter = csv.writer(csvfile, dialect='excel')
-        resultWriter.writerow([xTitle, yTitle, "keywords"])
-        #print("YVALUES:")
-        #print(yValues)
-        for key in yValues:
-            #print(key)
-            for i in range(len(xValues)):
-                resultWriter.writerow([xValues[i], yValues[key][i], key])
-        #for i in range(len(keyWords)):
-        #    for j in range(len(xValues)):
-        #        resultWriter.writerow([xValues[j], yValues[i][j], keyWords[i]])
-        #for i in range(len(self.xValues)):
-        #    resultWriter.writerow([self.xValues[i], self.yValues[i]])
-
 def success(request):
     #hashStr = gen_unique_hash(Graph, 15)
     hashStr = 23432
@@ -246,12 +230,18 @@ def success(request):
     
     #Handle Word Freqency (How?)
     if (wordFrequencyList):
-        #Do stuff
-        pass
+        frequencyHash = '9'
+        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, wordFrequencyList[0])
+        freqResult = freqReq.execute()
+        freqResult.generateCSV(frequencyHash)
+        hashList.append(frequencyHash)
     #Handle relative word frequency (How?)
     if (relativeList):
-        #Do stuff
-        pass
+        relativeHash = '10'
+        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, relativeList[0])
+        relResult = freqReq.execute()
+        relResult.generateCSV(relativeHash)
+        hashList.append(relativeHash)
     
     #req = CosDistanceOverTimeRequest(hashStr, (startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1], True)
     
@@ -280,7 +270,7 @@ def graph(request, hash):
     thing = []
     valuesList = []
     keyWords = []
-    with open('test.csv', 'r') as csvfile:
+    with open(filePath + hash + '.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         xAxis = reader.fieldnames[0]
         yAxis = reader.fieldnames[1]
