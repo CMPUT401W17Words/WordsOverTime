@@ -173,24 +173,23 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                'YGivenNotX':Result(self.granularity, 'p(' + self.word2 +'|~' + self.word1+')', xValues5, yValsYGivenNotX)}
     
 class Result():
-    def __init__(self, xTitle, yTitle, xValues, yValues, keyWords):
+    def __init__(self, xTitle, yTitle, xValues, yValues):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
         self.xValues = xValues # xValues and yValues are parallel lists that together construct a scatterplot
         self.yValues = yValues
-        self.keyWords = keyWords
     def generateCSV(self, hashStr):
         #with open(filePath + hashStr + '.csv', 'w') as csvfile:
         #    resultWriter = csv.writer(csvfile, dialect='excel')
         #    resultWriter.writerow([self.xTitle, self.yTitle])
         #    for i in range(len(self.xValues)):
         #        resultWriter.writerow([self.xValues[i], self.yValues[i]])
-        with open(hashStr + '.csv', 'w') as csvfile:
+        with open(filePath + hashStr + '.csv', 'w') as csvfile:
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
-            for key in yValues:
+            for key in self.yValues:
                 for i in range(len(xValues)):
-                    resultWriter.writerow([xValues[i], yValues[key][i], key])
+                    resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
     def saveModel():
         model = ResultModel(params)
         model.save()
