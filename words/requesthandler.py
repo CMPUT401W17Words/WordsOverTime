@@ -4,7 +4,7 @@ import csv
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
-import words.Email_Sending
+from Email_Sending import *
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
@@ -22,8 +22,8 @@ class RequestsExecuteThread(Thread):
             print('thread start')
             res = req.execute()
             res.generateCSV(req.hashStr)
-            url = "199.116.235.204/words/success/graph/" + req.hashStr
-            csv = "/mnt/vol/csvs/" + hashStr + ".csv"
+            url = "http://199.116.235.204/words/success/graph/" + req.hashStr
+            csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
             csvList.append(csv)
             urlList.append(url)
             #emailUser(req.hashStr)
