@@ -12,18 +12,18 @@ class Request(object):
         return Result(None)
     
 class OverTimeRequest(Request):
-    def __init__(self, hashStr, dateRange, granularity):
+    def __init__(self, dateRange, granularity):
         Request.__init__(self)
         self.dateRange = dateRange
         self.granularity = granularity
-        self.hashStr = hashStr
     def execute(self):
         return Result(None)
 
 class WordFrequencyOverTimeRequest(OverTimeRequest):
-    def __init__(self, hashStr, dateRange, granularity, wordList):
-        OverTimeRequest.__init__(self, hashStr, dateRange, granularity)
+    def __init__(self, dateRange, granularity, wordList, hashStr):
+        OverTimeRequest.__init__(self, dateRange, granularity)
         self.wordList = wordList
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
