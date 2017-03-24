@@ -21,12 +21,21 @@ def index(request):
     return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
-def generateCSV(self, hashStr):
+def generateCSV(xTitle, yTitle, xValues, yValues, hashStr):
     with open(hashStr + '.csv', 'w') as csvfile:
         resultWriter = csv.writer(csvfile, dialect='excel')
-        resultWriter.writerow([self.xTitle, self.yTitle])
-        for i in range(len(self.xValues)):
-            resultWriter.writerow([self.xValues[i], self.yValues[i]])
+        resultWriter.writerow([xTitle, yTitle, "keywords"])
+        #print("YVALUES:")
+        #print(yValues)
+        for key in yValues:
+            #print(key)
+            for i in range(len(xValues)):
+                resultWriter.writerow([xValues[i], yValues[key][i], key])
+        #for i in range(len(keyWords)):
+        #    for j in range(len(xValues)):
+        #        resultWriter.writerow([xValues[j], yValues[i][j], keyWords[i]])
+        #for i in range(len(self.xValues)):
+        #    resultWriter.writerow([self.xValues[i], self.yValues[i]])
 
 def success(request):
     #hashStr = gen_unique_hash(Graph, 15)
@@ -64,6 +73,9 @@ def success(request):
     else:
         textFile = ''
     skipOrCBOW1 = request.POST["skipOrCBOW1"]
+    closeCBOW = False
+    if(skipOrCBOW1 == 'Cbow'):
+        closeCBOW = True
     #TODO: read in file and create list of strings from it
     #How to separate words?
 
@@ -79,6 +91,9 @@ def success(request):
     else:
         textFile2 = ''
     skipOrCBOW2 = request.POST["skipOrCBOW2"]
+    cosCBOW = False
+    if(skipOrCBOW2 == 'Cbow'):
+        cosCBOW = True
     #TODO: read in file and create list of strings from it
     #How to separate words?
     
@@ -285,15 +300,15 @@ def graph(request, hash):
 
     #print(keyWords)
 
-    #testDict = {}
+    yDict = {}
     yValuesList = []
     for word in keyWords:
-        #testDict[word] = []
+        yDict[word] = []
         yTempValues = []
         for thing in valuesList:
             #print(thing)
             if(thing[2] == word):
-                #testDict[word].append(thing[1])
+                yDict[word].append(float(thing[1]))
                 yTempValues.append(float(thing[1]))
                 date = datetime.strptime(thing[0], '%Y-%m-%d').date()
                 timestamp = int(time.mktime(date.timetuple())) * 1000
@@ -301,32 +316,36 @@ def graph(request, hash):
                     xValues.append(timestamp)
         yValuesList.append(yTempValues)
     
-    #print(keyWords)
-    print(xAxis)
-    print(yAxis)
+    #print(yDict)
+    #print(xAxis)
+    #print(yAxis)
 
-    print(xValues)
+    #print(xValues)
 
-    print(yValuesList)
+    #print(yValuesList)
 
-    print (keyWords)
+    #print (keyWords)
 
     context = {
-        'xAxis': xAxis, #good
-        'yAxis': yAxis, #good
-        'xValues': xValues, #good
+        'xAxis': xAxis, 
+        'yAxis': yAxis, 
+        'xValues': xValues, 
         'keywords': keyWords,
-        'yValues': yValuesList, #good
+        'yValues': yValuesList,
     }
 
+
+    generateCSV(xAxis, yAxis, xValues, yDict, hash)
     #for index in range (0, len(keyWords)):
     #    context["yValues%s" %index] = int(hashList[index])
-    with open(hash + '.csv', 'w') as csvfile:
-        resultWriter = csv.writer(csvfile, dialect='excel')
-        resultWriter.writerow([xAxis, yAxis, 'keyword'])
-        for j in range(0, len(keyWords)):
-            for i in range(0, len(xValues)):
-                resultWriter.writerow([xValues[i], yValues[j][i], keyWords[j]])
+    #with open(hash + '.csv', 'w') as csvfile:
+    #    resultWriter = csv.writer(csvfile, dialect='excel')
+    #    resultWriter.writerow([xAxis, yAxis, 'keyword'])
+    #    for item in valuesList:
+    #        resultWriter.writerow([item[0], item[1], item[2]])
+        #for j in range(0, len(keyWords)):
+        #    for i in range(0, len(xValues)):
+        #        resultWriter.writerow([xValues[i], yValues[j][i], keyWords[j]])
         #for i in range(len(self.xValues)):
         #    resultWriter.writerow([self.xValues[i], self.yValues[i]])
 

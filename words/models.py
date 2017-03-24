@@ -59,11 +59,14 @@ class Corpus_Data(models.Model):
 class Graph(models.Model):
   hashStr = models.CharField(max_length = 200)
   Title = models.CharField(max_length = 200)
+
+  def getHash(self):
+    return self.hashStr
   
   
   def save(self, *args, **kwargs):
 
     if not self.hashStr:
-      self.hashStr = gen_unique_hash(YOUR_MODELS_CLASS, 5)
-    super(YOUR_MODELS_CLASS, self).save(*args, **kwargs)
+      self.hashStr = gen_unique_hash(Graph, 5)
+    super(Graph, self).save(*args, **kwargs)
   
