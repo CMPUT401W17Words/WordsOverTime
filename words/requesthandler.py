@@ -82,7 +82,6 @@ class TfidfOverTimeRequest(OverTimeRequest):
         yDict = {}
         for word in self.wordList:
             yValues = []
-            word = word.encode("utf-8")
             for k,v in docHistogram.items():
                 # v is a list of Documents
                 chunk = []
