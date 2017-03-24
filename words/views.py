@@ -290,7 +290,7 @@ def success(request):
                 word = word.decode("utf-8")
                 decodedList.append(word)
             newList = decodedList
-        freqReq = WordFrequencyOverTimeRequest(frequencyHash, (startDate, endDate), granularity, newList)
+        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, frequencyHash)
         freqResult = freqReq.execute()
         freqResult.generateCSV(frequencyHash)
         hashList.append(frequencyHash)
