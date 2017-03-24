@@ -6,6 +6,35 @@ from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
 
+from threading import Thread
+from django.db import connection
+
+def postpone(function):
+  def decorator(*args, **kwargs):
+    t = Thread(target = function, args=args, kwargs=kwargs)
+    t.daemon = True
+    t.start()
+  return decorator
+
+#@postpone
+#def foo():
+  ##do stuff
+  #connection.close()
+
+class RequestsExecuteThread(Thread):
+    def __init__(self, requests):
+        Thread.__init__(self)
+        self.requests = requests
+
+    def run(self):
+        for req in self.requests:
+            print('thread start')
+            res = req.execute()
+            res.generateCSV(req.hashStr)
+            #emailUser(req.hashStr)
+            connection.close()
+            print('thread done')
+
 class Request(object):
     def execute(self):
         return Result(None)
