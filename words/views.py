@@ -328,7 +328,7 @@ def success(request):
     context["nHashes"] = len(hashList)
 
     requests = RequestsExecuteThread(requestList)
-    requests.run()
+    requests.start()
 
     return render(request, 'words/success.html', context)
     
