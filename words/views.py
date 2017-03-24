@@ -15,6 +15,20 @@ GRANULARITY_WEEKLY = 'Week'
 GRANULARITY_MONTHLY = 'Month'
 GRANULARITY_YEARLY = 'Year'
 
+def genHash():
+    randomNum1 = random.randint(1, 100)
+    randomNum2 = random.randint(1, 6)
+    start = int(time.time())
+    start = int((start + randomNum1) / randomNum2)
+    return str(start)
+
+def checkForFile(hashStr):
+    filePath = "/mnt/vol/csvs/"
+    try:
+      open(filePath + hashStr + ".csv", "r")
+      return True
+    except IOError:
+      return False
 
 # Create your views here.
 def index(request):
@@ -31,12 +45,14 @@ def success(request):
         startDate = datetime.strptime(startDateString, '%Y-%m-%d')
     else:
         #error page
+        return HttpResponse("Must enter a start date")
         startDateString = ''
     if "endDate" in request.POST:
         endDateString = request.POST["endDate"]
         endDate = datetime.strptime(endDateString, '%Y-%m-%d')
     else:
         #error
+        return HttpResponse("Must enter an end date")
         endDateString = ''
     granularity = request.POST["granularity"]
     
@@ -84,6 +100,7 @@ def success(request):
     #Form data for tfidf
     if "tfidfWord" in request.POST:
         tfidfWord = request.POST["tfidfWord"]
+        tfidfWordList = tfidtWord.split()
     else:
         tfidfWord = ''
     
@@ -153,22 +170,22 @@ def success(request):
     else:
         #error
         email = ''
-    #print(keyWordsList)
+        return HttpResponse("Must enter an email")
+    #print(keyWordsList)  
     
-    requestList = []
     hashList = []
 
     #Handle N closest neighbor request
     if(n >= 0 and keyWordsList):
-        closeHash = '1'
-        nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList[0], n, True)
+        closeHash = genHash()
+        nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, True)
         nClosestResult = nClosestReq.execute()
         nClosestResult.generateCSV(closeHash)
         hashList.append(closeHash)
 
     #Handle CosineDistance request        
     if (wordPairList):
-        cosHash = '2'
+        cosHash = genHash()
         #Convert list of word pairs into list of tuples containing the pairs
         wordPairTuples = []
         for i in range(len(wordPairList)):
@@ -181,16 +198,15 @@ def success(request):
 
     #Handle tfidf request
     if (tfidfWord != ''):
-        print("Doing stuff")
-        tfidfHash = '3'
-        tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWord)
+        tfidfHash = genHash()
+        tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWordList)
         tfidfResult = tfidfReq.execute()
         tfidfResult.generateCSV(tfidfHash)
         hashList.append(tfidfHash)
 
     #Handle Pairwise Probability request
     if (conditionalWordPairList):
-        pairHash = '4'
+        pairHash = genHash()
         pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1])
         pairResult = pairReq.execute()
         pairResult.generateCSV(pairHash)
@@ -199,7 +215,7 @@ def success(request):
     #avgHash = 5
     #Handle Average Valence Request
     if (averageValence == '1'):
-        avgValHash = '5'        
+        avgValHash = genHash()       
         avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity)
         avgValResult = avgValReq.execute()
         avgValResult.generateCSV(avgValHash)
@@ -207,43 +223,40 @@ def success(request):
 
     #Handle Average Arousal Request
     if (averageArousal == '1'):
-        avgAroHash = '6'  
+        avgAroHash = genHash()  
         avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity)
         avgAroResult = avgAroReq.execute()
         avgAroResult.generateCSV(avgAroHash)
-        hashList.append(avgAroHash)      
-        print(hashList)  
-        
+        hashList.append(avgAroHash)  
 
     #Handle Average 5 Word Valence Request
     if (top5averageValence == '1'):
-        avgVal5Hash = '7'       
+        avgVal5Hash = genHash()      
         avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgVal5Result = avgVal5Req.execute()
         avgVal5Result.generateCSV(avgVal5Hash)
         hashList.append(avgVal5Hash)   
 
- 
-
     #Handle Average 5 Word Arousal Request
     if (top5averageArousal == '1'):
-        avgAro5Hash = '8'        
+        avgAro5Hash = genHash()      
         avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgAro5Result = avgAro5Req.execute()
         avgAro5Result.generateCSV(avgAro5Hash) 
         hashList.append(avgAro5Hash)  
     
-    #Handle Word Freqency (How?)
+    #Handle Word Freqency
     if (wordFrequencyList):
-        frequencyHash = '9'
-        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, wordFrequencyList[0])
+        frequencyHash = genHash()
+        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, wordFrequencyList)
         freqResult = freqReq.execute()
         freqResult.generateCSV(frequencyHash)
         hashList.append(frequencyHash)
-    #Handle relative word frequency (How?)
+
+    #Handle relative word frequency
     if (relativeList):
-        relativeHash = '10'
-        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, relativeList[0])
+        relativeHash = genHash()
+        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, relativeList)
         relResult = freqReq.execute()
         relResult.generateCSV(relativeHash)
         hashList.append(relativeHash)
