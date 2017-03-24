@@ -169,7 +169,12 @@ def success(request):
     #Handle CosineDistance request        
     if (wordPairList):
         cosHash = '2'
-        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairList[0], wordPairList[1], True)
+        #Convert list of word pairs into list of tuples containing the pairs
+        wordPairTuples = []
+        for i in range(len(wordPairList)):
+            temp = wordPairList[i].split(",")
+            wordPairTuples.append((temp[0], temp[1]))
+        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, True)
         cosResult = cosReq.execute()
         cosResult.generateCSV(cosHash)
         hashList.append(cosHash)
