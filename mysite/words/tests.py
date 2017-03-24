@@ -4,7 +4,7 @@ from django.test import TestCase
 
 import words.dataretrieval
 import words.requesthandler
-import words.databaseinput
+#import words.databaseinput
 from words.models import Document_Data, Word_Data
 
 # Create your tests here.
@@ -223,8 +223,8 @@ class DataAnalyzerTests(TestCase):
     def setUp(self):
         pass
     
-class DataInputTests(TestCase):
+#class DataInputTests(TestCase):
     
-    def testDataInput(self):
-        words.databaseinput.run()
+    #def testDataInput(self):
+        #words.databaseinput.run()
         

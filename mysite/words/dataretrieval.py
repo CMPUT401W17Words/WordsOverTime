@@ -5,6 +5,7 @@ sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
 import django
 django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
+from datetime import date
 
 def getArousal(wd):
     return Sentiment_Dict.objects.get(word=wd).arousal
@@ -60,13 +61,15 @@ def splitDocuments(documents, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
         for doc in documents:
-            year = doc.publication_Date.year
+            #year = doc.publication_Date.year
+            year = date(doc.publication_Date.year,1,1)
             if year not in result:
                 result[year] = []
             result[year].append(doc)    
     if (granularity == 'Month'):
         for doc in documents:
-            month = (doc.publication_Date.year, doc.publication_Date.month)
+            #month = (doc.publication_Date.year, doc.publication_Date.month)
+            month = date(doc.publication_Date.year, doc.publication_Date.month, 1)
             if month not in result:
                 result[month] = []
             result[month].append(doc)
