@@ -5,6 +5,7 @@ sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
 import django
 django.setup()
 from words.models import Document_Data, Word_Data
+from datetime import date
 
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
@@ -49,13 +50,15 @@ def splitDocuments(documents, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
         for doc in documents:
-            year = doc.publication_Date.year
+            #year = doc.publication_Date.year
+            year = date(doc.publication_Date.year,1,1)
             if year not in result:
                 result[year] = []
             result[year].append(doc)    
     if (granularity == 'Month'):
         for doc in documents:
-            month = (doc.publication_Date.year, doc.publication_Date.month)
+            #month = (doc.publication_Date.year, doc.publication_Date.month)
+            month = date(doc.publication_Date.year, doc.publication_Date.month, 1)
             if month not in result:
                 result[month] = []
             result[month].append(doc)
