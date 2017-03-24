@@ -96,7 +96,7 @@ class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
-        self.hashStr
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
