@@ -176,7 +176,7 @@ def success(request):
 
     #Handle N closest neighbor request
     if(n >= 0 and keyWordsList):
-        closeHash = 1
+        closeHash = '1'
         nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList[0], n, True)
         nClosestResult = nClosestReq.execute()
         nClosestResult.generateCSV(closeHash)
@@ -184,7 +184,7 @@ def success(request):
 
     #Handle CosineDistance request        
     if (wordPairList):
-        cosHash = 2
+        cosHash = '2'
         cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairList[0], wordPairList[1], True)
         cosResult = cosReq.execute()
         cosResult.generateCSV(cosHash)
@@ -193,7 +193,7 @@ def success(request):
     #Handle tfidf request
     if (tfidfWord != ''):
         print("Doing stuff")
-        tfidfHash = 3
+        tfidfHash = '3'
         tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWord)
         tfidfResult = tfidfReq.execute()
         tfidfResult.generateCSV(tfidfHash)
@@ -201,7 +201,7 @@ def success(request):
 
     #Handle Pairwise Probability request
     if (conditionalWordPairList):
-        pairHash = 4
+        pairHash = '4'
         pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1])
         pairResult = pairReq.execute()
         pairResult.generateCSV(pairHash)
@@ -210,7 +210,7 @@ def success(request):
     #avgHash = 5
     #Handle Average Valence Request
     if (averageValence == '1'):
-        avgValHash = 5        
+        avgValHash = '5'        
         avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity)
         avgValResult = avgValReq.execute()
         avgValResult.generateCSV(avgValHash)
@@ -218,7 +218,7 @@ def success(request):
 
     #Handle Average Arousal Request
     if (averageArousal == '1'):
-        avgAroHash = 6  
+        avgAroHash = '6'  
         avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity)
         avgAroResult = avgAroReq.execute()
         avgAroResult.generateCSV(avgAroHash)
@@ -228,7 +228,7 @@ def success(request):
 
     #Handle Average 5 Word Valence Request
     if (top5averageValence == '1'):
-        avgVal5Hash = 7        
+        avgVal5Hash = '7'       
         avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgVal5Result = avgVal5Req.execute()
         avgVal5Result.generateCSV(avgVal5Hash)
@@ -238,7 +238,7 @@ def success(request):
 
     #Handle Average 5 Word Arousal Request
     if (top5averageArousal == '1'):
-        avgAro5Hash = 8        
+        avgAro5Hash = '8'        
         avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity)
         avgAro5Result = avgAro5Req.execute()
         avgAro5Result.generateCSV(avgAro5Hash) 
@@ -262,7 +262,7 @@ def success(request):
 
     context = {}
     for index in range (0, len(hashList)):
-        context["Hash%s" %index] = int(hashList[index])
+        context["Hash%s" %index] = hashList[index]
     
     context["nHashes"] = len(hashList)
 
