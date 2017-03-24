@@ -4,24 +4,31 @@ import csv
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
-
+import words.Email_Sending
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
 
 class RequestsExecuteThread(Thread):
-    def __init__(self, requests):
+    def __init__(self, requests, email):
         Thread.__init__(self)
         self.requests = requests
-
+        self.email = email
     def run(self):
+        urlList = []
+        csvList = []
+        allhashstr = ''
         for req in self.requests:
             print('thread start')
             res = req.execute()
             res.generateCSV(req.hashStr)
+            url = "199.116.235.204/words/success/graph/" + req.hashStr
+            csv = "/mnt/vol/csvs/" + hashStr + ".csv"
+            csvList.append(csv)
+            urlList.append(url)
             #emailUser(req.hashStr)
             print('thread done')
-
+        send_mail(self.email, urlList, csvList)
 # make a list of requests
 # requests = RequestsExecuteThread(requests)
 # requests.run()
@@ -64,9 +71,10 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Word Frequency Over Time', xValues, yDict)
     
 class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, wordList):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
+        self.hashStr = hashStr
     def execute(self):      
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -92,9 +100,10 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict)
     
 class TfidfOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, wordList):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -116,8 +125,9 @@ class TfidfOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Tfidf Over Time', xValues, yDict) 
 
 class AverageValenceOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity):
+    def __init__(self, dateRange, granularity, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -131,8 +141,9 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
 class AverageArousalOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity):
+    def __init__(self, dateRange, granularity, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -146,8 +157,9 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity):
+    def __init__(self, dateRange, granularity, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -161,8 +173,9 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
     
 class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity):
+    def __init__(self, dateRange, granularity, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -176,10 +189,11 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
     
 class CosDistanceOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, pairList, cbow):
+    def __init__(self, dateRange, granularity, pairList, cbow, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.pairList = pairList
         self.cbow = cbow
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -201,11 +215,12 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Cosine Distance', xValues, yDict)  
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, wordList, n, cbow):
+    def __init__(self, dateRange, granularity, wordList, n, cbow, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.wordList = wordList
         self.n = n
         self.cbow = cbow
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
@@ -227,10 +242,11 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'N closest neighbors', xValues, yDict)   
 
 class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, word1, word2):
+    def __init__(self, dateRange, granularity, word1, word2, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.word1 = word1
         self.word2 = word2
+        self.hashStr = hashStr
     def execute(self):
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)

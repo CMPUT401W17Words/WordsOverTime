@@ -192,15 +192,16 @@ def success(request):
         n = int(n)
         closeHash = genHash()
         if(keyWordsList):
-            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, closeCBOW)
+            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, closeCBOW, closeHash)
         else:
             decodedList = []
             for word in textFileWords:
                 word = word.decode("utf-8")
                 decodedList.append(word)
-            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, decodedList, n, closeCBOW)
-        nClosestResult = nClosestReq.execute()
-        nClosestResult.generateCSV(closeHash)
+            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, decodedList, n, closeCBOW, closeHash)
+        #nClosestResult = nClosestReq.execute()
+        #nClosestResult.generateCSV(closeHash)
+        requestList.append(nClosestReq)
         hashList.append(closeHash)
 
     #Handle CosineDistance request        
@@ -220,23 +221,25 @@ def success(request):
         for i in range(len(newList)):
             temp = newList[i].split(",")
             wordPairTuples.append((temp[0], temp[1]))
-        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, cosCBOW)
-        cosResult = cosReq.execute()
-        cosResult.generateCSV(cosHash)
+        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, cosCBOW, cosHash)
+        #cosResult = cosReq.execute()
+        #cosResult.generateCSV(cosHash)
+        requestList.append(cosReq)
         hashList.append(cosHash)
 
     #Handle tfidf request
     if (tfidfWord != ''):
         tfidfHash = genHash()
-        tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWordList)
-        tfidfResult = tfidfReq.execute()
-        tfidfResult.generateCSV(tfidfHash)
+        tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWordList, tfidfHash)
+        #tfidfResult = tfidfReq.execute()
+        #tfidfResult.generateCSV(tfidfHash)
+        requestList.append(tfidfReq)
         hashList.append(tfidfHash)
 
     #Handle Pairwise Probability request
     if (conditionalWordPairList):
         pairHash = genHash()
-        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1])
+        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1], pairHash)
         pairResult = pairReq.execute()
         for key in pairResult:
             pairHash = genHash()
@@ -250,33 +253,37 @@ def success(request):
     #Handle Average Valence Request
     if (averageValence == '1'):
         avgValHash = genHash()       
-        avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity)
-        avgValResult = avgValReq.execute()
-        avgValResult.generateCSV(avgValHash)
+        avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity, avgValHash)
+        #avgValResult = avgValReq.execute()
+        #avgValResult.generateCSV(avgValHash)
+        requestList.append(avgValReq)
         hashList.append(avgValHash)
 
     #Handle Average Arousal Request
     if (averageArousal == '1'):
         avgAroHash = genHash()  
-        avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity)
-        avgAroResult = avgAroReq.execute()
-        avgAroResult.generateCSV(avgAroHash)
+        avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity, avgAroHash)
+        #avgAroResult = avgAroReq.execute()
+        #avgAroResult.generateCSV(avgAroHash)
+        requestList.append(avgAroReq)
         hashList.append(avgAroHash)  
 
     #Handle Average 5 Word Valence Request
     if (top5averageValence == '1'):
         avgVal5Hash = genHash()      
-        avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity)
-        avgVal5Result = avgVal5Req.execute()
-        avgVal5Result.generateCSV(avgVal5Hash)
+        avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity, avgVal5Hash)
+        #avgVal5Result = avgVal5Req.execute()
+        #avgVal5Result.generateCSV(avgVal5Hash)
+        requestList.append(avgVal5Req)
         hashList.append(avgVal5Hash)   
 
     #Handle Average 5 Word Arousal Request
     if (top5averageArousal == '1'):
         avgAro5Hash = genHash()      
-        avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity)
-        avgAro5Result = avgAro5Req.execute()
-        avgAro5Result.generateCSV(avgAro5Hash) 
+        avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity, avgAro5Hash)
+        #avgAro5Result = avgAro5Req.execute()
+        #avgAro5Result.generateCSV(avgAro5Hash) 
+        requestList.append(avgAro5Req)
         hashList.append(avgAro5Hash)  
     
     #Handle Word Freqency
@@ -309,9 +316,10 @@ def success(request):
                 word = word.decode("utf-8")
                 decodedList.append(word)
             newList = decodedList
-        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList)
-        relResult = freqReq.execute()
-        relResult.generateCSV(relativeHash)
+        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, relativeHash)
+        #relResult = freqReq.execute()
+        #relResult.generateCSV(relativeHash)
+        requestList.append(relReq)
         hashList.append(relativeHash)
     
     #req = CosDistanceOverTimeRequest(hashStr, (startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1], True)
@@ -327,7 +335,7 @@ def success(request):
     
     context["nHashes"] = len(hashList)
 
-    requests = RequestsExecuteThread(requestList)
+    requests = RequestsExecuteThread(requestList, email)
     requests.start()
 
     return render(request, 'words/success.html', context)
