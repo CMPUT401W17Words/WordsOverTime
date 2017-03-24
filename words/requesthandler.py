@@ -4,24 +4,28 @@ import csv
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
-
+import words.Email_Sending
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
 
 class RequestsExecuteThread(Thread):
-    def __init__(self, requests):
+    def __init__(self, requests, email):
         Thread.__init__(self)
         self.requests = requests
-
+        self.email = email
     def run(self):
+        urlList = []
+        allhashstr = ''
         for req in self.requests:
             print('thread start')
             res = req.execute()
             res.generateCSV(req.hashStr)
+            url = "199.116.235.204/words/success/graph/" + req.hashStr
+            urlList.append(url)
             #emailUser(req.hashStr)
             print('thread done')
-
+        SendWordsOverTimeEmail(self.email, urlList, "March 24")
 # make a list of requests
 # requests = RequestsExecuteThread(requests)
 # requests.run()

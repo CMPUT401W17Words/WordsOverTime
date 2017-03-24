@@ -335,7 +335,7 @@ def success(request):
     
     context["nHashes"] = len(hashList)
 
-    requests = RequestsExecuteThread(requestList)
+    requests = RequestsExecuteThread(requestList, email)
     requests.start()
 
     return render(request, 'words/success.html', context)
