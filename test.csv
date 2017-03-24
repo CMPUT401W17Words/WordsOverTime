@@ -1,4 +1,7 @@
-Year,N closest neighbors of rabbit
-2008,"[('bird', 0.0824255719780922)]"
-2000,"[('bird', 0.0824255719780922)]"
-2007,"[('bird', 0.0824255719780922)]"
+Year,N closest neighbors of rabbit,keyword
+2008-01-01,0.0824255719780922,"bird,thing"
+2000-01-01,0.0824255719780922,"bird,thing"
+2007-01-01,0.0824255719780922,"bird,thing"
+2008-01-01,0.01,"water"
+2000-01-01,0.01,"water"
+2007-01-01,0.01,"water"

@@ -21,6 +21,13 @@ def index(request):
     return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
+def generateCSV(self, hashStr):
+    with open(hashStr + '.csv', 'w') as csvfile:
+        resultWriter = csv.writer(csvfile, dialect='excel')
+        resultWriter.writerow([self.xTitle, self.yTitle])
+        for i in range(len(self.xValues)):
+            resultWriter.writerow([self.xValues[i], self.yValues[i]])
+
 def success(request):
     #hashStr = gen_unique_hash(Graph, 15)
     hashStr = 23432
@@ -249,72 +256,80 @@ def success(request):
 
 def graph(request, hash):
     filePath = '/mnt/vol/csvs'
-    keyWords = ["bird", "thing"]
-    valuesList = [(2009, 0.8, 'bird'), (2010, 0.8, 'bird'), (2009, 0.1, 'thing'), (2010, 0.1, 'thing')]
+    #keyWords = ["bird", "thing"]
+    #valuesList = [(2009, 0.8, 'bird'), (2010, 0.8, 'bird'), (2009, 0.1, 'thing'), (2010, 0.1, 'thing')]
     yValues = []
     xValues = []
     xAxis = ''
     yAxis = ''
     thing = []
-    #with open('test.csv', 'r') as csvfile:
-    #    reader = csv.DictReader(csvfile)
-    #    xAxis = reader.fieldnames[0]
-    #    yAxis = reader.fieldnames[1]
-    #    for row in reader:
-    #        xValues.append(row[xAxis])
-    #        thing = row[yAxis]
-    #        yValues.append(thing[1])
-    #        keyWords.append(thing[0])
+    valuesList = []
+    keyWords = []
+    with open('test.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        xAxis = reader.fieldnames[0]
+        yAxis = reader.fieldnames[1]
+        keyword = reader.fieldnames[2]
+        for row in reader:
+            #xValues.append(row[xAxis])
+            #thing = row[yAxis]
+            #yValues.append(thing[1])
+            #keyWords.append(thing[0])
+            valuesList.append((row[xAxis], row[yAxis], row[keyword]))
 
-    testDict = {}
+    #print(valuesList)
+
+    for item in valuesList:
+        if(item[2] not in keyWords):
+            keyWords.append(item[2])
+
+    #print(keyWords)
+
+    #testDict = {}
     yValuesList = []
     for word in keyWords:
-        testDict[word] = []
+        #testDict[word] = []
         yTempValues = []
         for thing in valuesList:
-            print(thing)
+            #print(thing)
             if(thing[2] == word):
-                testDict[word].append(thing[1])
-                yTempValues.append(thing[1])
-                xValues.append(thing[0])
+                #testDict[word].append(thing[1])
+                yTempValues.append(float(thing[1]))
+                date = datetime.strptime(thing[0], '%Y-%m-%d').date()
+                timestamp = int(time.mktime(date.timetuple())) * 1000
+                if(timestamp not in xValues):
+                    xValues.append(timestamp)
         yValuesList.append(yTempValues)
     
-    print(keyWords)
+    #print(keyWords)
+    print(xAxis)
+    print(yAxis)
+
+    print(xValues)
 
     print(yValuesList)
 
-    #print (testDict)
-    #numWords = len(keyWords)
-    #yValuesList= []
-    #for i in range(0, numWords):
-    #    yValuesList.append
+    print (keyWords)
 
-    #xAxis = result.xTitle
-    #yAxis = result.yTitle
-    #xAxis = "Date"
-    #yAxis = "Valence"
-    #xValues = [1,2,3,4,5]
-    #yValues = [1,2,3,4,5]
-    #keyWords = ['hello', 'hi']
-    word1 = "Hello"
-    word2 = "Hi"
-    #w1x = [1,6,3,4]
-    #w1y = [1,3,6,7]
-    #w2x = [2,5,6,7]
-    #w2y = [1,4,7,9]
     context = {
-        'xAxis': xAxis,
-        'yAxis': yAxis,
-        #'word1': word1,
-        #'word2': word2, 
-        'xValues': xValues,
-        #'w1x': w1x,
-        #'w1y': w1y,
-        #'w2x': w2x,
-        #'w2y': w2y,
+        'xAxis': xAxis, #good
+        'yAxis': yAxis, #good
+        'xValues': xValues, #good
         'keywords': keyWords,
-        'yValues': yValues
+        'yValues': yValuesList, #good
     }
+
+    #for index in range (0, len(keyWords)):
+    #    context["yValues%s" %index] = int(hashList[index])
+    with open(hash + '.csv', 'w') as csvfile:
+        resultWriter = csv.writer(csvfile, dialect='excel')
+        resultWriter.writerow([xAxis, yAxis, 'keyword'])
+        for j in range(0, len(keyWords)):
+            for i in range(0, len(xValues)):
+                resultWriter.writerow([xValues[i], yValues[j][i], keyWords[j]])
+        #for i in range(len(self.xValues)):
+        #    resultWriter.writerow([self.xValues[i], self.yValues[i]])
+
     return render(request, 'words/graph2.html', context)
  
 #class IndexView(generic.DetailView):
