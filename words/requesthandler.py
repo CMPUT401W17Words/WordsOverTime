@@ -7,6 +7,25 @@ import words.dataanalyzer
 
 filePath = '/mnt/vol/csvs/'
 
+from threading import Thread
+
+class RequestsExecuteThread(Thread):
+    def __init__(self, requests):
+        Thread.__init__(self)
+        self.requests = requests
+
+    def run(self):
+        for req in self.requests:
+            print('thread start')
+            res = req.execute()
+            res.generateCSV(req.hashStr)
+            #emailUser(req.hashStr)
+            print('thread done')
+
+# make a list of requests
+# requests = RequestsExecuteThread(requests)
+# requests.run()
+
 class Request(object):
     def execute(self):
         return Result(None)
