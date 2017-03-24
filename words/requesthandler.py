@@ -16,16 +16,19 @@ class RequestsExecuteThread(Thread):
         self.email = email
     def run(self):
         urlList = []
+        csvList = []
         allhashstr = ''
         for req in self.requests:
             print('thread start')
             res = req.execute()
             res.generateCSV(req.hashStr)
             url = "199.116.235.204/words/success/graph/" + req.hashStr
+            csv = "/mnt/vol/csvs/" + hashStr + ".csv"
+            csvList.append(csv)
             urlList.append(url)
             #emailUser(req.hashStr)
             print('thread done')
-        SendWordsOverTimeEmail(self.email, urlList, "March 24")
+        send_mail(self.email, urlList, csvList)
 # make a list of requests
 # requests = RequestsExecuteThread(requests)
 # requests.run()
