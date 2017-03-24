@@ -260,7 +260,7 @@ def success(request):
     
 
 def graph(request, hash):
-    filePath = '/mnt/vol/csvs'
+    filePath = '/mnt/vol/csvs/'
     #keyWords = ["bird", "thing"]
     #valuesList = [(2009, 0.8, 'bird'), (2010, 0.8, 'bird'), (2009, 0.1, 'thing'), (2010, 0.1, 'thing')]
     yValues = []

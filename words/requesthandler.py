@@ -92,9 +92,11 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         xValues = []
         yValues = []
         for k,v in docHistogram.items():
-            xValues.append(k)
+            xValues.append(k)            
             yValues.append(words.dataanalyzer.averageValence(v))
-        return Result(self.granularity, 'Average Valence of Documents', xValues, yValues)
+        yDict = {}
+        yDict["test"] = yValues
+        return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
 class AverageArousalOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity):
@@ -107,7 +109,9 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         for k,v in docHistogram.items():
             xValues.append(k)
             yValues.append(words.dataanalyzer.averageValence(v))
-        return Result(self.granularity, 'Average Arousal of Documents', xValues, yValues)
+        yDict = {}
+        yDict["test"] = yValues
+        return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity):
@@ -232,7 +236,7 @@ class Result():
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
             for key in self.yValues:
-                for i in range(len(xValues)):
+                for i in range(len(self.xValues)):
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
     def saveModel():
         model = ResultModel(params)
