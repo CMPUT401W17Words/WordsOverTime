@@ -22,6 +22,7 @@ def genHash():
     start = int((start + randomNum1) / randomNum2)
     return str(start)
 
+#http://stackoverflow.com/questions/8380006/file-open-function-with-try-except-python-2-7-1
 def checkForFile(hashStr):
     filePath = "/mnt/vol/csvs/"
     try:
@@ -208,9 +209,14 @@ def success(request):
     if (conditionalWordPairList):
         pairHash = genHash()
         pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1])
-        pairResult = pairReq.execute()
-        pairResult.generateCSV(pairHash)
-        hashList.append(pairHash)
+        for key in pairReq:
+            pairHash = genHash()
+            pairResult = pairReq[key].execute()
+            pairResult.generateCSV(pairHash)
+            hashList.append(pairHash)
+        #pairResult = pairReq.execute()
+        #pairResult.generateCSV(pairHash)
+        #hashList.append(pairHash)
 
     #avgHash = 5
     #Handle Average Valence Request

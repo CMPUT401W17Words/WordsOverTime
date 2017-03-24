@@ -220,6 +220,11 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         yValsYGivenX = []
         yValsXGivenNotY = []
         yValsYGivenNotX = []
+        yDictXAndY = {}
+        yDictXGivenY = {}
+        yDictYGivenX = {}
+        yDictXGivenNotY = {}
+        yDictYGivenNotX = {}
         for k,v in docHistogram.items():
             # v is a list of Documents
             chunk = []
@@ -237,11 +242,16 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         xValues3, yValsYGivenX = sortXAndY(list(xValues), yValsYGivenX)
         xValues4, yValsXGivenNotY = sortXAndY(list(xValues), yValsXGivenNotY)
         xValues5, yValsYGivenNotX = sortXAndY(list(xValues), yValsYGivenNotX)
-        return{'XAndY':Result(self.granularity, 'p(' + self.word1 +',' + self.word2+')', xValues1, yValsXAndY),
-               'XGivenY':Result(self.granularity, 'p(' + self.word1 +'|' + self.word2+')', xValues2, yValsXGivenY),
-               'YGivenX':Result(self.granularity, 'p(' + self.word2 +'|' + self.word1+')', xValues3, yValsYGivenX),
-               'XGivenNotY':Result(self.granularity, 'p(' + self.word1 +'|~' + self.word2+')', xValues4, yValsXGivenNotY),
-               'YGivenNotX':Result(self.granularity, 'p(' + self.word2 +'|~' + self.word1+')', xValues5, yValsYGivenNotX)}
+        yDictXAndY["XAndY"] = yValsXAndY
+        yDictXGivenY["XGivenY"] = yValsXGivenY
+        yDictYGivenX["YGivenX"] = yValsYGivenX
+        yDictXGivenNotY["XGivenNotY"] = yValsXGivenNotY
+        yDictYGivenNotX["YGivenNotX"] = yValsYGivenNotX
+        return{'XAndY':Result(self.granularity, 'p(' + self.word1 +',' + self.word2+')', xValues1, yDictXAndY),
+               'XGivenY':Result(self.granularity, 'p(' + self.word1 +'|' + self.word2+')', xValues2, yDictXGivenY),
+               'YGivenX':Result(self.granularity, 'p(' + self.word2 +'|' + self.word1+')', xValues3, yDictYGivenX),
+               'XGivenNotY':Result(self.granularity, 'p(' + self.word1 +'|~' + self.word2+')', xValues4, yDictXGivenNotY),
+               'YGivenNotX':Result(self.granularity, 'p(' + self.word2 +'|~' + self.word1+')', xValues5, yDictYGivenNotX)}
     
 class Result():
     def __init__(self, xTitle, yTitle, xValues, yValues):
