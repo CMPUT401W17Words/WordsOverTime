@@ -100,7 +100,7 @@ def success(request):
     #Form data for tfidf
     if "tfidfWord" in request.POST:
         tfidfWord = request.POST["tfidfWord"]
-        tfidfWordList = tfidtWord.split()
+        tfidfWordList = tfidfWord.split()
     else:
         tfidfWord = ''
     
