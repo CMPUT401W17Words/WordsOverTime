@@ -125,27 +125,44 @@ $(document).ready(function() {
         r4 = Math.random();
 
     var xValues = {{ xValues }};
-    var keywords = "{{ keywords }}";
-    var splitWords = keywords.split(" ");
+    var keywords = {{ keywords | safe }};
+    //alert(keywords.length);
+    //var splitWords = keywords.split(" ");
     //for(var key in splitWords){
     //    alert(splitWords[key]);
     //}
-    alert(xValues);
+    //alert(xValues);
     var yValues = {{ yValues }};
     //alert(yValues);
-    dataPoints = [];
+    //dataPoints = [];
     //dataPoints2 = [];
     //testThing = ["march", "april", "june", "july", "august"]
+    //returnValueList = [];
+    //for(var i = 0; i < keywords.length; i++){
+    //    dataPoints = [];
+        
+    //}
+    dataPoints = [];
+    returnValueList = [];
 
-    for(var i = 0; i < xValues.length; i++) {
+    for(var i = 0; i < keywords.length; i++){
+        dataPoints = [];
+        for(var j = 0; j < xValues.length; j++){
+            var date = new Date(xValues[j]);
+            dataPoints.push([ date, yValues[i][j] ]);
+        }        
+        returnValueList.push({ data: dataPoints, label: keywords[i] });
+    }    
+
+    //for(var i = 0; i < 4; i++) {
         //var date = new Date("2015-03-25");
         //date.setYear(date.getFullYear() + i)
-	var date = new Date(xValues[i]);
-        dataPoints.push([ date, yValues[i] ]);
+	    //var date = new Date(xValues[i]);
+    //    dataPoints.push([ date, 1 ]);
         //dataPoints2.push([ date, 0.1 * i]);
-    }
-    returnValueList = [];
-    returnValueList.push({ data: dataPoints, label: keywords });
+    //}
+    //returnValueList = [];
+    //returnValueList.push({ data: dataPoints, label: "hello" });
     //returnValueList.push({ data: dataPoints2, label: 'test' })
     return returnValueList
 /*

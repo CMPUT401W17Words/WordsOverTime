@@ -57,11 +57,16 @@ class Corpus_Data(models.Model):
   end_date = models.DateField()  
 
 class Graph(models.Model):
-  hash = models.CharField(max_length = 200)
-  title = models.CharField(max_length = 200)
+  hashStr = models.CharField(max_length = 200)
+  Title = models.CharField(max_length = 200)
+
+  def getHash(self):
+    return self.hashStr
+  
   
   def save(self, *args, **kwargs):
 
-    if not self.hash:
-      self.hash = gen_unique_hash(YOUR_MODELS_CLASS, 5)
+    if not self.hashStr:
+      self.hashStr = gen_unique_hash(YOUR_MODELS_CLASS, 5)
     super(YOUR_MODELS_CLASS, self).save(*args, **kwargs)
+  
