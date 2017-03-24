@@ -53,4 +53,4 @@ def send_mail(send_to, htmlLinks, files=None):
     server.sendmail("WordsOverTimeProject@gmail.com", send_to, msg.as_string())
     server.quit()
 
-send_mail("dmhamilt@ualberta.ca", ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"])
+#send_mail("dmhamilt@ualberta.ca", ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"])
