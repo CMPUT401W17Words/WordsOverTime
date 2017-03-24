@@ -184,6 +184,7 @@ def success(request):
     #print(keyWordsList)  
     
     hashList = []
+    requestList = []
     #print(textFileWords)
 
     #Handle N closest neighbor request
@@ -290,9 +291,10 @@ def success(request):
                 word = word.decode("utf-8")
                 decodedList.append(word)
             newList = decodedList
-        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList)
-        freqResult = freqReq.execute()
-        freqResult.generateCSV(frequencyHash)
+        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, frequencyHash)
+        #freqResult = freqReq.execute()
+        #freqResult.generateCSV(frequencyHash)
+        requestList.append(freqReq)
         hashList.append(frequencyHash)
 
     #Handle relative word frequency
@@ -324,6 +326,9 @@ def success(request):
         context["Hash%s" %index] = hashList[index]
     
     context["nHashes"] = len(hashList)
+
+    requests = RequestsExecuteThread(requestList)
+    requests.start()
 
     return render(request, 'words/success.html', context)
     
