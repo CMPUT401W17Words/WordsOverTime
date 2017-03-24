@@ -31,6 +31,10 @@ def checkForFile(hashStr):
     except IOError:
       return False
 
+#http://stackoverflow.com/questions/13259288/returning-a-list-of-words-after-reading-a-file-in-python
+def read_words(words_file):
+    return [word for line in words_file for word in line.split()]
+
 # Create your views here.
 def index(request):
     return render(request, 'words/index.html')
@@ -71,11 +75,13 @@ def success(request):
         keyWordsList = [] 
     if "text_file" in request.FILES:
         textFile = request.FILES["text_file"]
+        textFileWords = read_words(textFile)
     else:
         textFile = ''
+        textFileWords = []
     skipOrCBOW1 = request.POST["skipOrCBOW1"]
     closeCBOW = False
-    if(skipOrCBOW1 == 'Cbow'):
+    if(skipOrCBOW1 == 'CBow'):
         closeCBOW = True
     #TODO: read in file and create list of strings from it
     #How to separate words?
@@ -89,11 +95,13 @@ def success(request):
         wordPairList = []
     if "text_file2" in request.FILES:
         textFile2 = request.FILES["text_file2"]
+        textFile2Words = read_words(textFile2)
     else:
         textFile2 = ''
+        textFile2Words = []
     skipOrCBOW2 = request.POST["skipOrCBOW2"]
     cosCBOW = False
-    if(skipOrCBOW2 == 'Cbow'):
+    if(skipOrCBOW2 == 'CBow'):
         cosCBOW = True
     #TODO: read in file and create list of strings from it
     #How to separate words?
@@ -146,8 +154,10 @@ def success(request):
         wordFrequencyList = []
     if "wordFrequencyFile" in request.FILES:
         wordFrequencyFile = request.FILES["wordFrequencyFile"]
+        freqFileWords = read_words(wordFrequencyFile)
     else:
         wordFrequencyFile = ''
+        freqFileWords = []
     #TODO: read in file and create list of strings from it
     #How to separate words?
 
@@ -160,8 +170,10 @@ def success(request):
         relativeList = []
     if "relativeFile" in request.FILES:
         relativeFile = request.FILES["relativeFile"]
+        relativeFileWords = read_words(relativeFile)
     else:
         relativeFile = ''
+        relativeFileWords = []
     #TODO: read in file and create list of strings from it
     #How to separate words?
 
@@ -175,24 +187,41 @@ def success(request):
     #print(keyWordsList)  
     
     hashList = []
+    #print(textFileWords)
 
     #Handle N closest neighbor request
-    if(n >= 0 and keyWordsList):
+    if(n >= 0 and (keyWordsList or textFileWords)):
         closeHash = genHash()
-        nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, True)
+        if(keyWordsList):
+            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, closeCBOW)
+        else:
+            decodedList = []
+            for word in textFileWords:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, decodedList, n, closeCBOW)
         nClosestResult = nClosestReq.execute()
         nClosestResult.generateCSV(closeHash)
         hashList.append(closeHash)
 
     #Handle CosineDistance request        
-    if (wordPairList):
+    if (wordPairList or textFile2Words):
         cosHash = genHash()
+        newList = []
+        if(wordPairList):
+            newList = wordPairList
+        else:
+            decodedList = []
+            for word in textFile2Words:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            newList = decodedList
         #Convert list of word pairs into list of tuples containing the pairs
         wordPairTuples = []
-        for i in range(len(wordPairList)):
-            temp = wordPairList[i].split(",")
+        for i in range(len(newList)):
+            temp = newList[i].split(",")
             wordPairTuples.append((temp[0], temp[1]))
-        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, True)
+        cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, cosCBOW)
         cosResult = cosReq.execute()
         cosResult.generateCSV(cosHash)
         hashList.append(cosHash)
@@ -209,10 +238,10 @@ def success(request):
     if (conditionalWordPairList):
         pairHash = genHash()
         pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1])
-        for key in pairReq:
+        pairResult = pairReq.execute()
+        for key in pairResult:
             pairHash = genHash()
-            pairResult = pairReq[key].execute()
-            pairResult.generateCSV(pairHash)
+            pairResult[key].generateCSV(pairHash)
             hashList.append(pairHash)
         #pairResult = pairReq.execute()
         #pairResult.generateCSV(pairHash)
@@ -252,17 +281,35 @@ def success(request):
         hashList.append(avgAro5Hash)  
     
     #Handle Word Freqency
-    if (wordFrequencyList):
+    if (wordFrequencyList or freqFileWords):
         frequencyHash = genHash()
-        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, wordFrequencyList)
+        newList = []
+        if(wordFrequencyList):
+            newList = wordFrequencyList
+        else:
+            decodedList = []
+            for word in freqFileWords:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            newList = decodedList
+        freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList)
         freqResult = freqReq.execute()
         freqResult.generateCSV(frequencyHash)
         hashList.append(frequencyHash)
 
     #Handle relative word frequency
-    if (relativeList):
+    if (relativeList or relativeFileWords):
         relativeHash = genHash()
-        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, relativeList)
+        newList = []
+        if(relativeList):
+            newList = relativeList
+        else:
+            decodedList = []
+            for word in relativeFileWords:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            newList = decodedList
+        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList)
         relResult = freqReq.execute()
         relResult.generateCSV(relativeHash)
         hashList.append(relativeHash)
@@ -272,7 +319,7 @@ def success(request):
     #result = req.execute()
     #result.generateCSV(hashStr)
 
-    print(hashList)
+    #print(hashList)
 
     context = {}
     for index in range (0, len(hashList)):
