@@ -41,9 +41,6 @@ def index(request):
     #return HttpResponse("Hello world")
 
 def success(request):
-    #hashStr = gen_unique_hash(Graph, 15)
-    hashStr = 23432
-    
     #Get Form Data!
     if "startDate" in request.POST:
         startDateString = request.POST["startDate"]
@@ -63,9 +60,9 @@ def success(request):
     
     #Form data for n closest neighbors
     if "Nneighbor" in request.POST:
-        n = int(request.POST["Nneighbor"])
+        n = request.POST["Nneighbor"]
     else:
-        n = -1
+        n = ''
     if "keywords" in request.POST:
         keyWords = request.POST["keywords"]
         keyWordsList = keyWords.split()
@@ -190,7 +187,8 @@ def success(request):
     #print(textFileWords)
 
     #Handle N closest neighbor request
-    if(n >= 0 and (keyWordsList or textFileWords)):
+    if(n != '' and (keyWordsList or textFileWords)):
+        n = int(n)
         closeHash = genHash()
         if(keyWordsList):
             nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, keyWordsList, n, closeCBOW)
