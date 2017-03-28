@@ -1,0 +1,11 @@
+boto==2.46.1
+bz2file==0.98
+Django==1.10.6
+gensim==1.0.1
+MySQL-python==1.2.5
+numpy==1.12.1
+requests==2.13.0
+scipy==0.19.0
+selenium==3.3.1
+six==1.10.0
+smart-open==1.5.1
