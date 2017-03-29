@@ -57,6 +57,7 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         yDict = {}
+        xValues = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -85,12 +86,15 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         yDict = {}
+        xValues = []
         for word in self.wordList:
             xValues = []
             yValues = []
             
             # freqneucy of word in full corpus
             wordData = words.dataretrieval.getWordData(word)
+            if (len(wordData) == 0):
+                pass # DO EXCEPTION HANDLING (word is not in corpus at all)
             fullFreq = 0.0
             for thing in wordData:
                 fullFreq = fullFreq + thing.word_count
@@ -120,6 +124,7 @@ class TfidfOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         yDict = {}
+        xValues = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -130,6 +135,8 @@ class TfidfOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
+                if (words.dataanalyzer.wordNotInChunkException(chunk, word)):
+                    pass # DO EXCEPTION HANDLING
                 xValues.append(k)
                 yValues.append(words.dataanalyzer.averageTfidfOfWord(chunk, word))
                 
@@ -224,6 +231,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         yDict = {}
+        xValues = []
         for pair in self.pairList:
             xValues = []
             yValues = []
@@ -234,6 +242,8 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
+                if (words.dataanalyzer.wordNotInChunkException(chunk, pair[0]) or words.dataanalyzer.wordNotInChunkException(chunk, pair[1])):
+                    pass # DO EXCEPTION HANDLING                
                 xValues.append(k)
                 yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, pair[0], pair[1], self.cbow))
                 
@@ -255,6 +265,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         yDict = {}
+        xValues = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -265,6 +276,8 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
+                if (words.dataanalyzer.wordNotInChunkException(chunk, word)):
+                    pass # DO EXCEPTION HANDLING                
                 xValues.append(k)
                 yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, word, self.n, self.cbow))
                 
@@ -299,6 +312,8 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
+                if (words.dataanalyzer.probException(chunk, pair[0], pair[1])):
+                    pass # DO EXCEPTION HANDLING
                 xValues.append(k)
                 yValsXAndY.append(words.dataanalyzer.probXAndY(chunk, pair[0], pair[1]))
                 yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
