@@ -6,6 +6,8 @@ several articles, and outputting the results of those requests to the user.
 
 More info can be found in the [WordsOverTime GitHub Wiki](https://github.com/CMPUT401W17Words/WordsOverTime/wiki) page.
 
+The WordsOverTime website ran on the Cybera server can be found at http://199.116.235.204/words
+
 Project Clients
 =================
 
@@ -31,5 +33,5 @@ Contributors
 Data References
 =================
 Based on databases sourced from:  
-http://ualberta.ca/~hollis/files/articles-can.tgz  
-http://ualberta.ca/~hollis/files/sentiment_dict_3mil.tgz  
+Articles: http://ualberta.ca/~hollis/files/articles-can.tgz  
+Sentiment Table: http://ualberta.ca/~hollis/files/sentiment_dict_3mil.tgz  

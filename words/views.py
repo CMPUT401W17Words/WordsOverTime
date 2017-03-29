@@ -329,16 +329,16 @@ def success(request):
 
     #print(hashList)
 
-    context = {}
-    for index in range (0, len(hashList)):
-        context["Hash%s" %index] = hashList[index]
+    #context = {}
+    #for index in range (0, len(hashList)):
+    #    context["Hash%s" %index] = hashList[index]
     
-    context["nHashes"] = len(hashList)
+    #context["nHashes"] = len(hashList)
 
     requests = RequestsExecuteThread(requestList, email)
     requests.start()
 
-    return render(request, 'words/success.html', context)
+    return render(request, 'words/submit.html')
     
 
 def graph(request, hash):

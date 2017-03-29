@@ -32,7 +32,7 @@ def send_mail(send_to, htmlLinks, files=None):
     server.ehlo()
     server.starttls()
     server.login("WordsOverTimeProject@gmail.com", "Words1234")
-    msgbody = "Your request submitted on %s has been completed, and you can see your data and download your CSV files at:\n"
+    msgbody = "Your request  has been completed, and you can see your data and download your CSV files at:\n"
     for link in htmlLinks:
         msgbody = msgbody + link+"\n"
 
