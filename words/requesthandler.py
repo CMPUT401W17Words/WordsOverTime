@@ -50,12 +50,15 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.wordList = wordList
         self.hashStr = hashStr
+        
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        # get documents in time range and split by granularity
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
-        xValues = []
+        
         yDict = {}
         for word in self.wordList:
+            xValues = []
             yValues = []
             for k,v in docHistogram.items():
                 # v is a list of Documents
@@ -63,11 +66,11 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if(k not in xValues):
-                    xValues.append(k)
+                xValues.append(k)
                 yValues.append(words.dataanalyzer.wordFrequency(chunk, word))
-                xValues, yValues = sortXAndY(xValues, yValues)
+            xValues, yValues = sortXAndY(xValues, yValues)
             yDict[word] = yValues
+            
         return Result(self.granularity, 'Word Frequency Over Time', xValues, yDict)
     
 class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
@@ -75,28 +78,34 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
         self.hashStr = hashStr
-    def execute(self):      
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        
+    def execute(self):
+        
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
-        xValues = []
+        
         yDict = {}
         for word in self.wordList:
+            xValues = []
             yValues = []
+            
+            # freqneucy of word in full corpus
             wordData = words.dataretrieval.getWordData(word)
             fullFreq = 0.0
             for thing in wordData:
-                fullFreq = fullFreq + thing.word_count  
+                fullFreq = fullFreq + thing.word_count
+                
             for k,v in docHistogram.items():
                 # v is a list of Documents
                 chunk = []
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if(k not in xValues):
-                    xValues.append(k)
+                xValues.append(k)
                 yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
-                xValues, yValues = sortXAndY(xValues, yValues)
+            xValues, yValues = sortXAndY(xValues, yValues)
             yDict[word] = yValues
+            
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict)
     
 class TfidfOverTimeRequest(OverTimeRequest):

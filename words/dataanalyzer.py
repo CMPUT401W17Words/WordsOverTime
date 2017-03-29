@@ -130,8 +130,7 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow):
 def wordFrequency(chunk, word):
     result = 0.0
     for doc in chunk:
-        if word in doc:
-            result = result + 1.0
+        result = result + doc.count(word)
     return result
 
 # fullFreq is frequency in full corpus
