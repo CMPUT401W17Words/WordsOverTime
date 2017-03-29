@@ -4,209 +4,359 @@ from django.test import TestCase
 
 import words.dataretrieval
 import words.requesthandler
-import words.databaseinput
-from words.models import Document_Data, Word_Data
-
+#import words.databaseinput
+from words.models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
+import csv
+import decimal
+from datetime import date
 # Create your tests here.
 
 class DataRetrievalTests(TestCase):
     
     def setUp(self):
-        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.docs = [self.doc1,
-                     Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     self.doc2,
-                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 1, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)]
-        word1 ='rabbit'
-        word2 ='bird'
-        self.words = [word1, word2]
-        for doc in self.docs:
-            doc.save()
-        #for word in self.words:
-            #word.save()
-        self.wordInDocs = [Word_Data(word=word1, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0)]
-        for wid in self.wordInDocs:
-            wid.save()
+        self.sentDict = []
+        self.artCan = []
+        self.docData = []
+        self.wordData = []
         
+        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
+        
+        for item in self.sentDict:
+            item.save()        
+                
+        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
+                
+                words = line['parsedArticle'].split()
+                avgArousal = decimal.Decimal(0.0)
+                avgValence = decimal.Decimal(0.0)
+                wordCounts = {}
+                for wd in words:
+                    sent = Sentiment_Dict.objects.get(word=wd)
+                    avgArousal = avgArousal + sent.arousal
+                    avgValence = avgValence + sent.valence
+                    if wd not in wordCounts:
+                        wordCounts[wd] = 0
+                    wordCounts[wd] = wordCounts[wd] + 1
+                    
+                for k,v in wordCounts.items():
+                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
+                    
+                avgArousal = avgArousal/len(words)
+                avgValence = avgValence/len(words)
+                
+                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
+                
+        for item in self.artCan:
+            item.save()
+        for item in self.docData:
+            item.save()
+        for item in self.wordData:
+            item.save()    
+        
+    def testGetArousal(self):
+        self.assertEqual(words.dataretrieval.getArousal('minors'), 0.57294869)
+        self.assertEqual(words.dataretrieval.getArousal('computer'), 0.37374821)
+        self.assertEqual(words.dataretrieval.getArousal('response'), 0.36475822)
+    
+    def testGetValence(self):
+        self.assertEqual(words.dataretrieval.getValence('minors'), 0.42352934)
+        self.assertEqual(words.dataretrieval.getValence('computer'), 0.76485739)
+        self.assertEqual(words.dataretrieval.getValence('response'), 0.77583958)    
+
     def testGetDocuments(self):
-        startDate = date(2000, 5, 19)
-        endDate = date(2008, 10, 11) 
-        docs = words.dataretrieval.getDocuments(startDate, endDate)
-        self.assertIs(len(docs)==3, True)
-        #for doc in docs:
-            #print(doc)
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)
+        #print(words.dataretrieval.getDocuments(startDate, endDate))
+        startDate = date(2010, 11, 7)
+        endDate = date(2015, 1, 31)
+        #print(words.dataretrieval.getDocuments(startDate, endDate))
         
     def testGetDocumentData(self):
-        startDate = date(2000, 5, 19)
-        endDate = date(2008, 10, 11)
-        docs = words.dataretrieval.getDocumentData(startDate, endDate)
-        self.assertIs(len(docs)==3, True)
-        for doc in docs:
-            self.assertGreaterEqual(doc.publication_Date, startDate)
-            self.assertLessEqual(doc.publication_Date, endDate)
-    
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)
+        for doc in words.dataretrieval.getDocumentData(startDate, endDate):
+            #print(doc.article_id)
+            pass
+        #print()
+        startDate = date(2010, 11, 7)
+        endDate = date(2015, 1, 31)
+        for doc in words.dataretrieval.getDocumentData(startDate, endDate):
+            #print(doc.article_id)
+            pass
+        
+    def testGetWordData(self):
+        systemData = words.dataretrieval.getWordData('system')
+        for wd in systemData:
+            #print(wd.article_id, wd.word_count)
+            pass
+        
     def testGetWordsInDocument(self):
-        wds = words.dataretrieval.getWordsInDocument(self.doc2)
-        self.assertTrue('bird' in wds)
-        self.assertFalse('rabbit' in wds)
+        wordsIn1 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=1))
+        wordsIn4 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=4))
+        wordsIn18 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=18))
+        self.assertTrue('system' in wordsIn4)
+        self.assertTrue('human' in wordsIn4)
+        self.assertTrue('eps' in wordsIn4)
+        self.assertTrue('human' in wordsIn1)
+        self.assertTrue(wordsIn4.count('system') == 2)
+        self.assertTrue(wordsIn4.count('human') == 1)
+        self.assertTrue(wordsIn4.count('eps') == 1)
+        self.assertTrue(wordsIn4.count('survey') == 0)
+        self.assertTrue(wordsIn18.count('survey') == 1)
     
+    def testGetNumWordsInCorpus(self):
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)
+        docs = words.dataretrieval.getDocumentData(startDate, endDate)
+        self.assertTrue(words.dataretrieval.getNumWordsInCorpus(docs) == 26)
+
+    def testGetNumWordInCorpus(self):
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)
+        docs = words.dataretrieval.getDocumentData(startDate, endDate)
+        self.assertTrue(words.dataretrieval.getNumWordInCorpus(docs, 'system') == 4)       
+
     def testSplitDocuments(self):
-        docs = words.dataretrieval.splitDocuments(self.docs, 'Year')
-        for k,v in docs.items():
-            if (k==2010 or k==2008):
-                self.assertTrue(len(v)==2)
-            else:
-                self.assertTrue(len(v)==1)
-    
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)
+        docs = words.dataretrieval.getDocumentData(startDate, endDate)
+        splitYear = words.dataretrieval.splitDocuments(docs, 'Year')
+        for k,v in splitYear.items():
+            #print('Year: ', k)
+            for doc in v:
+                #print(doc.article_id)
+                pass
+            #print()
+            pass
+        splitMonth = words.dataretrieval.splitDocuments(docs, 'Month')
+        for k,v in splitMonth.items():
+            #print('Y/M: ', k)
+            for doc in v:
+                #print(doc.article_id)
+                pass
+            #print()
+            pass
+        
 class RequestHandlerTests(TestCase):
     
     def setUp(self):
-        self.csvFilePath = 'outputDump.csv'
-        self.doc1 = Document_Data(article_id=1, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 6, 7), word_count = 4, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc2 = Document_Data(article_id=2, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 5, 19), word_count = 10, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc3 = Document_Data(article_id=3, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 10, 11), word_count = 8, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc4 = Document_Data(article_id=4, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 19), word_count = 2, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc8 = Document_Data(article_id=8, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2000, 5, 21), word_count = 13, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.doc9 = Document_Data(article_id=9, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2007, 7, 11), word_count = 8, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0)
-        self.docs = [self.doc1,
-                     self.doc3,
-                     Document_Data(article_id=5, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(1990, 12, 17), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     self.doc4,
-                     self.doc2,
-                     Document_Data(article_id=7, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2010, 1, 17), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     Document_Data(article_id=6, language = "english", province = "AB", city = "Edmonton", country = "CAN", publication_Date=date(2008, 11, 1), word_count = 0, average_arousal_doc = 1.0, average_valence_doc = 1.0, average_arousal_words = 1.0, average_valence_words = 1.0),
-                     self.doc8,
-                     self.doc9]
-        word1 = 'rabbit'
-        word2 = 'bird'
-        word3 = 'water'
-        for doc in self.docs:
-            doc.save()
-        self.wordInDocs = [Word_Data(word=word1, article_id=self.doc1.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word3, article_id=self.doc2.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc1.article_id, word_count = 3, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc2.article_id, word_count = 7, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc2.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc4.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc3.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc3.article_id, word_count = 4, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word3, article_id=self.doc3.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc8.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc8.article_id, word_count = 1, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word3, article_id=self.doc8.article_id, word_count = 11, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word1, article_id=self.doc9.article_id, word_count = 4, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word3, article_id=self.doc9.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0),
-                           Word_Data(word=word2, article_id=self.doc9.article_id, word_count = 2, term_frequency =1.0, tfidf = 1.0)]
-        for wid in self.wordInDocs:
-            wid.save()
-            
-    #def testDatabaseEntry(self):
-        #print(len(Document_Data.objects.all()))
-        #print(len(Word_Data.objects.all()))
-       
-    def testCosDistanceOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        word1 = 'rabbit'
-        word2 = 'bird'
-        #doc = (Document_Data.objects.get(article_id=1))
-        #print(doc.article_id, doc.publicationDate)
-        #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2, False)
-        result = request.execute()
-        print('cos distance over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)
+        self.sentDict = []
+        self.artCan = []
+        self.docData = []
+        self.wordData = []
         
-    def testTfidfOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        word = 'water'
-        #doc = (Document_Data.objects.get(article_id=1))
-        #print(doc.article_id, doc.publicationDate)
-        #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, word)
-        result = request.execute()
-        print('average tfidf over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)        
+        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
         
-    def testNClosestNeighboursOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        word = 'rabbit'
-        N = 2
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N, True)
-        result = request.execute()
-        print('n closest neighbours over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)
-        
-    def testAverageArousalOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity)
-        result = request.execute()
-        print('average arousal over time')
-        print(result.xValues)
-        print(result.yValues)
-        
-    def testAverageValenceOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity)
-        result = request.execute()
-        print('average valence over time')
-        print(result.xValues)
-        print(result.yValues)       
-
-    def testAverageArousalTopFiveOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity)
-        result = request.execute()
-        print('average arousal top five words over time')
-        print(result.xValues)
-        print(result.yValues) 
-
-    def testAverageValenceTopFiveOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
-        granularity = 'Year'
-        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity)
-        result = request.execute()
-        print('average valence top five words over time')
-        print(result.xValues)
-        print(result.yValues)
+        for item in self.sentDict:
+            item.save()        
+                
+        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
+                
+                words = line['parsedArticle'].split()
+                avgArousal = decimal.Decimal(0.0)
+                avgValence = decimal.Decimal(0.0)
+                wordCounts = {}
+                for wd in words:
+                    sent = Sentiment_Dict.objects.get(word=wd)
+                    avgArousal = avgArousal + sent.arousal
+                    avgValence = avgValence + sent.valence
+                    if wd not in wordCounts:
+                        wordCounts[wd] = 0
+                    wordCounts[wd] = wordCounts[wd] + 1
+                    
+                for k,v in wordCounts.items():
+                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
+                    
+                avgArousal = avgArousal/len(words)
+                avgValence = avgValence/len(words)
+                
+                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
+                
+        for item in self.artCan:
+            item.save()
+        for item in self.docData:
+            item.save()
+        for item in self.wordData:
+            item.save()
     
-    def testPairwiseProbabilities(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
+    def testCosDistanceOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, 'water', 'rabbit')
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, '')
         result = request.execute()
-        print('pairwise probabilities over time')
-        for k,v in result.items():
-            print(v.yTitle)
-            print(v.xValues)
-            print(v.yValues)
+        print('Cos Distance over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
+    def testTfidfOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, ['human'], '')
+        result = request.execute()
+        print('Average Tfidf over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)    
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
+    def testNClosestNeighboursOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system'], 2, True, '')
+        result = request.execute()
+        print('N Closest Neighbours over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)   
+    
+    # should be working; might want to recheck later   
+    def testAverageArousalOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, '')
+        result = request.execute()
+        print('Average Arousal over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
         
+    # should be working; might want to recheck later    
+    def testAverageValenceOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, '')
+        result = request.execute()
+        print('Average Valence over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)       
+
+    # will have to test at a later date
+    def testAverageArousalTopFiveOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, '')
+        result = request.execute()
+        print('Average Arousal Top Five Words over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
+
+    # will have to test at a later date
+    def testAverageValenceTopFiveOverTime(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, '')
+        result = request.execute()
+        print('Average Valence Top Five Words over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks    
+    def testPairwiseProbabilities(self):
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        granularity = 'Year'
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'system')] , '')
+        result = request.execute()
+        print('Pairwise Probabilities over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v) 
+    
+    # working
+    def testWordFrequency(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 7))
+        granularity = 'Month'
+        request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['system', 'human'], '')
+        result = request.execute()
+        print('Word Frequency over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)
+    
+    # working
+    # still need to test exception: word doesn't exist in full corpus
+    def testRelativeWordFrequency(self):
+        dateRange = (date(2008, 2, 17), date(2011, 11, 7))
+        granularity = 'Month'
+        request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, ['system', 'human'], '')
+        result = request.execute()
+        print('Relative Word Frequency over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)        
+    
 # will be implemented once there is a clearer way to test the analysis process. probably with help from client
 class DataAnalyzerTests(TestCase):
     
     def setUp(self):
-        pass
+        self.sentDict = []
+        self.artCan = []
+        self.docData = []
+        self.wordData = []
+        
+        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
+        
+        for item in self.sentDict:
+            item.save()        
+                
+        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+            file = csv.DictReader(csvfile)
+            for line in file:
+                self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
+                
+                words = line['parsedArticle'].split()
+                avgArousal = decimal.Decimal(0.0)
+                avgValence = decimal.Decimal(0.0)
+                wordCounts = {}
+                for wd in words:
+                    sent = Sentiment_Dict.objects.get(word=wd)
+                    avgArousal = avgArousal + sent.arousal
+                    avgValence = avgValence + sent.valence
+                    if wd not in wordCounts:
+                        wordCounts[wd] = 0
+                    wordCounts[wd] = wordCounts[wd] + 1
+                    
+                for k,v in wordCounts.items():
+                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
+                    
+                avgArousal = avgArousal/len(words)
+                avgValence = avgValence/len(words)
+                
+                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
+                
+        for item in self.artCan:
+            item.save()
+        for item in self.docData:
+            item.save()
+        for item in self.wordData:
+            item.save()
     
-class DataInputTests(TestCase):
+#class DataInputTests(TestCase):
     
-    def testDataInput(self):
-        words.databaseinput.run()
+    #def testDataInput(self):
+        #words.databaseinput.run()
         
