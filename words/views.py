@@ -237,17 +237,30 @@ def success(request):
         hashList.append(tfidfHash)
 
     #Handle Pairwise Probability request
-    if (conditionalWordPairList):
+    if (conditionalWordPairList or fileConditional):
         pairHash = genHash()
-        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1], pairHash)
+        wordPairTuples = []
+        newList = []
+        if(conditionalWordPairList):
+            newList = wordPairList
+        else:
+            decodedList = []
+            for word in textFile2Words:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            newList = decodedList
+        for i in range(len(newList)):
+            temp = newList[i].split(",")
+            wordPairTuples.append((temp[0], temp[1]))
+        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, newList, pairHash)
         pairResult = pairReq.execute()
-        for key in pairResult:
-            pairHash = genHash()
-            pairResult[key].generateCSV(pairHash)
-            hashList.append(pairHash)
-        #pairResult = pairReq.execute()
+        #for key in pairResult:
+        #    pairHash = genHash()
+        #    pairResult[key].generateCSV(pairHash)
+        #    hashList.append(pairHash)
+        pairResult = pairReq.execute()
         #pairResult.generateCSV(pairHash)
-        #hashList.append(pairHash)
+        hashList.append(pairHash)
 
     #avgHash = 5
     #Handle Average Valence Request
