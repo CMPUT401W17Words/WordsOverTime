@@ -190,96 +190,100 @@ class RequestHandlerTests(TestCase):
             item.save()
         for item in self.wordData:
             item.save()
-       
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
     def testCosDistanceOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        word1 = 'rabbit'
-        word2 = 'bird'
-        #doc = (Document_Data.objects.get(article_id=1))
-        #print(doc.article_id, doc.publicationDate)
-        #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, word1, word2, False)
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, '')
         result = request.execute()
-        print('cos distance over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)
-        
+        print('Cos Distance over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
     def testTfidfOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        word = 'water'
-        #doc = (Document_Data.objects.get(article_id=1))
-        #print(doc.article_id, doc.publicationDate)
-        #print(words.dataretrieval.getWordsInDocument(doc))
-        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, word)
+        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, ['human'], '')
         result = request.execute()
-        print('average tfidf over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)        
-        
+        print('Average Tfidf over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)    
+    
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks
     def testNClosestNeighboursOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        word = 'rabbit'
-        N = 2
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, word, N, True)
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system'], 2, True, '')
         result = request.execute()
-        print('n closest neighbours over time')
-        print(result.xValues)
-        print(result.yValues)
-        result.generateCSV(self.csvFilePath)
-        
+        print('N Closest Neighbours over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v)   
+    
+    # should be working; might want to recheck later   
     def testAverageArousalOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity)
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, '')
         result = request.execute()
-        print('average arousal over time')
-        print(result.xValues)
-        print(result.yValues)
+        print('Average Arousal over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
         
+    # should be working; might want to recheck later    
     def testAverageValenceOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity)
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, '')
         result = request.execute()
-        print('average valence over time')
-        print(result.xValues)
-        print(result.yValues)       
+        print('Average Valence over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)       
 
+    # will have to test at a later date
     def testAverageArousalTopFiveOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity)
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, '')
         result = request.execute()
-        print('average arousal top five words over time')
-        print(result.xValues)
-        print(result.yValues) 
+        print('Average Arousal Top Five Words over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
 
+    # will have to test at a later date
     def testAverageValenceTopFiveOverTime(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity)
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, '')
         result = request.execute()
-        print('average valence top five words over time')
-        print(result.xValues)
-        print(result.yValues)
+        print('Average Valence Top Five Words over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(v)  
     
+    # seems to be working
+    # still need to test exception: word doesn't exist in one of the time chunks    
     def testPairwiseProbabilities(self):
-        dateRange = (date(2000, 5, 19), date(2008, 10, 11))
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, 'water', 'rabbit')
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'system')] , '')
         result = request.execute()
-        print('pairwise probabilities over time')
-        for k,v in result.items():
-            print(v.yTitle)
-            print(v.xValues)
-            print(v.yValues)
+        print('Pairwise Probabilities over time')
+        print(result.xTitle, result.xValues)
+        for k,v in result.yValues.items():
+            print(k, v) 
     
-    # working    
+    # working
     def testWordFrequency(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 7))
         granularity = 'Month'
@@ -290,7 +294,8 @@ class RequestHandlerTests(TestCase):
         for k,v in result.yValues.items():
             print(k, v)
     
-    # working    
+    # working
+    # still need to test exception: word doesn't exist in full corpus
     def testRelativeWordFrequency(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 7))
         granularity = 'Month'

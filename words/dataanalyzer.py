@@ -1,6 +1,6 @@
 import gensim, logging
 import decimal
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import words.dataretrieval
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
@@ -96,7 +96,7 @@ def averageTfidfOfWord(chunk, word):
     #print(corpus)
     totalTfidf = 0.0
     docCount = 0.0
-    wordId = dictionary.token2id[word]
+    wordId = dictionary.token2id[word] # THIS CAUSES ERROR IF WORD NOT IN CHUNK
     for doc in corpus:
         #print(doc)
         #print(tfidf[doc])
@@ -135,7 +135,7 @@ def wordFrequency(chunk, word):
 
 # fullFreq is frequency in full corpus
 def relativeWordFrequency(chunk, word, fullFreq):
-    return wordFrequency(chunk,word)/fullFreq
+    return wordFrequency(chunk,word)/fullFreq # MUST CHECK IF fullFreq = 0
 
 def probX(chunk, x):
     count = 0.0
