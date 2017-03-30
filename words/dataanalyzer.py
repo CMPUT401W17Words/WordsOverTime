@@ -168,14 +168,17 @@ def probXGivenNotY(chunk, x, y):
     xAndNotY = probX(chunk, x)*notY
     return xAndNotY/notY
 
-def probException(chunk, x, y):
+# return 1 if probX = 0, 2 if probX = 1, and 0 if no error
+def probException(chunk, x):
     pX = probX(chunk, x)
-    pY = probX(chunk, y)
-    if (pX.is_integer() and (pX == 1.0 or pX == 0.0)):
-        return True
-    if (pY.is_integer() and (pY == 1.0 or pY == 0.0)):
-        return True
-    return False
+    if (pX.is_integer()):
+        if (pX == 0.0):
+            return 1
+        if (pX == 1.0):
+            return 2
+        return 0
+    else:
+        return 0
 
 def wordNotInChunkException(chunk, word):
     for doc in chunk:
