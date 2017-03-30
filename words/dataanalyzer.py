@@ -7,6 +7,9 @@ import words.dataretrieval
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
 
+NNsize = 300
+minWords = 5
+
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
     for doc in docs:
@@ -115,16 +118,16 @@ def averageTfidfOfWord(chunk, word):
     
 def cosDistanceOfPair(chunk, word1, word2, cbow):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
     return model.similarity(word1, word2)
     
 def nClosestNeighboursOfWord(chunk, word, N, cbow):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):
