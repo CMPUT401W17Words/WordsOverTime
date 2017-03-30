@@ -26,7 +26,7 @@ def SendWordsOverTimeEmail(emailTo, htmlLinks, date, csvList):
     
 #SendWordsOverTimeEmail("dmhamilt@ualberta.ca", ["https://www.google.com"], "January 1st")
 
-def send_mail(send_to, htmlLinks, files=None, errors=None):
+def send_mail(send_to, htmlLinks, files=None, errors=None, matrices=None):
     #assert isinstance(send_to, list)
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -55,6 +55,14 @@ def send_mail(send_to, htmlLinks, files=None, errors=None):
         part = MIMEText(ff.read())
         part.add_header('Content-Disposition', 'attachment', filename = f)
         msg.attach(part)
+    
+    # Attach a zip folder containing matrices from cos distance and N closest neighbors analyses    
+    for f in matrices or []:
+        ff = open(f)
+        part = MIMEText(ff.read())
+        part.add_header('Content-Disposition', 'attachment', filename = f)
+        msg.attach(part)
+                
     msg.attach(MIMEText(msgbody))
     server.sendmail("WordsOverTimeProject@gmail.com", send_to, msg.as_string())
     server.quit()

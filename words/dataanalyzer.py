@@ -9,6 +9,7 @@ import words.dataretrieval
 
 NNsize = 300
 minWords = 5
+filePath = '/mnt/vol/matrices/'
 
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
@@ -116,18 +117,20 @@ def averageTfidfOfWord(chunk, word):
                 #totalTfidf = totalTfidf + wordd[1]
                 #break
     
-def cosDistanceOfPair(chunk, word1, word2, cbow):
+def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
     if (cbow==True):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word1+word2+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/word1word2/somedate. email the user by zipping the somehash folder
     return model.similarity(word1, word2)
     
-def nClosestNeighboursOfWord(chunk, word, N, cbow):
+def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
     if (cbow==True):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/someword/somedate. email the user by zipping the somehash folder
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):

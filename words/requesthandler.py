@@ -9,6 +9,18 @@ filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
 
+import os
+import zipfile
+
+# http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
+def zipMatrices(matricesPath, hashStr):
+    zf = zipfile.ZipFile(hashStr+".zip", "w")
+    for dirname, subdirs, files in os.walk(matricesPath):
+        zf.write(dirname)
+        for filename in files:
+            zf.write(os.path.join(dirname, filename))
+    zf.close()
+
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
         Thread.__init__(self)
@@ -17,6 +29,7 @@ class RequestsExecuteThread(Thread):
     def run(self):
         urlList = []
         csvList = []
+        matrixList = []
         errorDict = {} # Map a hashStr (representing an analysis) to a list of strings (representing errors for an analysis)
         allhashstr = ''
         for req in self.requests:
@@ -28,9 +41,14 @@ class RequestsExecuteThread(Thread):
             csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
             csvList.append(csv)
             urlList.append(url)
+            # if the request involved word2vec, email the user a zip file containing matrices for the analysis
+            matrixPath = '/mnt/vol/matrices/' + req.hashStr
+            if (os.path.isdir(matrixPath)):    
+                matrices = zipMatrices(matrixPath, req.hashStr)
+                matrixList.append(matrices)
             #emailUser(req.hashStr)
             print('thread done')
-        send_mail(self.email, urlList, csvList, errorDict)
+        send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
 # requests = RequestsExecuteThread(requests)
 # requests.run()
@@ -268,7 +286,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                         errors.append("at x = " + str(k) + ": chunk did not contain " + pair[1])
                     else:               
                         xValues.append(k)
-                        yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, pair[0], pair[1], self.cbow))
+                        yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, pair[0], pair[1], self.cbow, self.hashStr, k))
                 
             xValues, yValues = sortXAndY(xValues, yValues)                
             yDict[pair] = yValues
@@ -306,7 +324,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                     errors.append("at x = " + str(k) + ": chunk did not contain " + word)
                 else:
                     xValues.append(k)
-                    yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, word, self.n, self.cbow))
+                    yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, word, self.n, self.cbow, self.hashStr, k))
                 
             xValues, yValues = sortXAndY(xValues, yValues)
             yDict[word] = yValues

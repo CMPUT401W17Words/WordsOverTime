@@ -90,6 +90,9 @@ class DataRetrievalTests(TestCase):
             #print(doc.article_id)
             pass
         
+    def testGetDocumentDataWithWordFilter(self):
+        pass
+        
     def testGetWordData(self):
         systemData = words.dataretrieval.getWordData('system')
         for wd in systemData:
@@ -242,7 +245,7 @@ class RequestHandlerTests(TestCase):
     def testAverageValenceOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, '')
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, [], '')
         result = request.execute()
         print('Average Valence over time')
         print(result.xTitle, result.xValues)
@@ -253,7 +256,7 @@ class RequestHandlerTests(TestCase):
     def testAverageArousalTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, '')
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, [], '')
         result = request.execute()
         print('Average Arousal Top Five Words over time')
         print(result.xTitle, result.xValues)
@@ -264,7 +267,7 @@ class RequestHandlerTests(TestCase):
     def testAverageValenceTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, '')
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, [], '')
         result = request.execute()
         print('Average Valence Top Five Words over time')
         print(result.xTitle, result.xValues)
