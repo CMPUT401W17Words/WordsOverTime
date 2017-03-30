@@ -1,19 +1,19 @@
 articleID,language,province,city,country,publicationDate,wordCount,parsedArticle
-1,english,ab,edmonton,canada,2009-11-06,3,human interface computer
-2,english,ab,edmonton,canada,2009-10-07,6,survey user computer system response time
-3,english,ab,edmonton,canada,2009-11-08,4,eps user interface system
-4,english,ab,calgary,canada,2010-11-06,4,system human system eps
-5,english,ab,calgary,canada,2010-11-07,3,user response time
-6,english,on,toronto,canada,2010-11-08,1,trees
-7,english,on,toronto,canada,2011-11-06,2,graph trees
-8,english,on,toronto,canada,2011-11-07,3,graph minors trees
-9,english,on,toronto,canada,2011-11-08,3,graph minors survey
-10,english,on,ottawa,canada,2011-11-09,3,human interface computer
-11,english,on,ottawa,canada,2012-11-06,6,survey user computer system response time
-12,english,on,ottawa,canada,2012-11-07,4,eps user interface system
-13,english,sk,regina,canada,2012-11-08,4,system human system eps
-14,english,sk,regina,canada,2012-11-09,3,user response time
-15,english,sk,regina,canada,2013-11-06,1,trees
-16,english,sk,regina,canada,2013-11-07,2,graph trees
-17,english,bc,victoria,canada,2013-11-08,3,graph minors trees
-18,english,bc,victoria,canada,2013-11-06,3,graph minors survey
+145,english,ab,edmonton,canada,2009-11-06,9,human interface computer human human human system system system
+21233,english,ab,edmonton,canada,2009-10-07,6,survey user computer system response time
+31,english,ab,edmonton,canada,2009-11-08,11,eps user interface system human human system system system system system
+4,english,ab,calgary,canada,2010-11-06,7,system human system eps system system system
+5434,english,ab,calgary,canada,2010-11-07,4,user response time system
+665,english,on,toronto,canada,2010-11-08,12,trees human human human human human human human system system system system
+733,english,on,toronto,canada,2011-11-06,6,graph trees human human system system
+823423,english,on,toronto,canada,2011-01-07,6,graph minors trees human system system
+9,english,on,toronto,canada,2011-11-08,4,graph minors survey human
+10,english,on,ottawa,canada,2011-02-07,6,human interface computer human system system
+1154,english,on,ottawa,canada,2012-12-06,8,survey user computer system response time system system 
+122,english,on,ottawa,canada,2012-11-07,9,eps user interface system human human human human human
+1376,english,sk,regina,canada,2012-11-08,9,system human system eps human human human human human
+147,english,sk,regina,canada,2012-05-09,3,user response time
+15,english,sk,regina,canada,2013-11-06,17,trees human human human human human system system system system system system user survey time interface response
+1653,english,sk,regina,canada,2013-10-07,18,graph trees human human human human human system system system system system system user survey time eps computer
+1735637,english,bc,victoria,canada,2013-08-08,16,graph minors trees human human human human human human human system system system system system system
+1,english,bc,victoria,canada,2013-08-06,14,graph minors survey human human human human human system system system system system system 
