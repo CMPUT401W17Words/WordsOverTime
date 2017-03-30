@@ -154,12 +154,13 @@ class TfidfOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Tfidf Over Time', xValues, yDict, errors) 
 
 class AverageValenceOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
         
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         xValues = []
@@ -174,12 +175,13 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
 class AverageArousalOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
         
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         xValues = []
@@ -194,11 +196,13 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
+        
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -211,11 +215,13 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
     
 class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
+        
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -402,7 +408,8 @@ class Result():
     def saveModel():
         model = ResultModel(params)
         model.save()
-                
+
+# sort parallel lists based on the first list                
 def sortXAndY(xValues, yValues):
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
