@@ -237,17 +237,31 @@ def success(request):
         hashList.append(tfidfHash)
 
     #Handle Pairwise Probability request
-    if (conditionalWordPairList):
+    if (conditionalWordPairList or fileConditional):
         pairHash = genHash()
-        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, conditionalWordPairList[0], conditionalWordPairList[1], pairHash)
-        pairResult = pairReq.execute()
-        for key in pairResult:
-            pairHash = genHash()
-            pairResult[key].generateCSV(pairHash)
-            hashList.append(pairHash)
+        wordPairTuples = []
+        newList = []
+        if(conditionalWordPairList):
+            newList = wordPairList
+        else:
+            decodedList = []
+            for word in textFile2Words:
+                word = word.decode("utf-8")
+                decodedList.append(word)
+            newList = decodedList
+        for i in range(len(newList)):
+            temp = newList[i].split(",")
+            wordPairTuples.append((temp[0], temp[1]))
+        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, newList, pairHash)
+        #pairResult = pairReq.execute()
+        #for key in pairResult:
+        #    pairHash = genHash()
+        #    pairResult[key].generateCSV(pairHash)
+        #    hashList.append(pairHash)
         #pairResult = pairReq.execute()
         #pairResult.generateCSV(pairHash)
-        #hashList.append(pairHash)
+        requestList.append(pairReq)
+        hashList.append(pairHash)
 
     #avgHash = 5
     #Handle Average Valence Request
@@ -329,17 +343,17 @@ def success(request):
 
     #print(hashList)
 
-    #context = {}
-    #for index in range (0, len(hashList)):
-    #    context["Hash%s" %index] = hashList[index]
+    context = {}
+    for index in range (0, len(hashList)):
+        context["Hash%s" %index] = hashList[index]
     
-    #context["nHashes"] = len(hashList)
+    context["nHashes"] = len(hashList)
 
     requests = RequestsExecuteThread(requestList, email)
     requests.start()
 
-    return render(request, 'words/submit.html')
-    
+    #return render(request, 'words/submit.html')
+    return render(request, 'words/success.html', context)
 
 def graph(request, hash):
     filePath = '/mnt/vol/csvs/'
@@ -352,7 +366,8 @@ def graph(request, hash):
     thing = []
     valuesList = []
     keyWords = []
-    with open(filePath + hash + '.csv', 'r') as csvfile:
+    #with open(filePath + hash + '.csv', 'r') as csvfile:
+    with open('test.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         xAxis = reader.fieldnames[0]
         yAxis = reader.fieldnames[1]

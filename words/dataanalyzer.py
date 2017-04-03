@@ -1,6 +1,6 @@
 import gensim, logging
 import decimal
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import words.dataretrieval
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
@@ -96,7 +96,7 @@ def averageTfidfOfWord(chunk, word):
     #print(corpus)
     totalTfidf = 0.0
     docCount = 0.0
-    wordId = dictionary.token2id[word]
+    wordId = dictionary.token2id[word] # THIS CAUSES ERROR IF WORD NOT IN CHUNK
     for doc in corpus:
         #print(doc)
         #print(tfidf[doc])
@@ -130,13 +130,12 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow):
 def wordFrequency(chunk, word):
     result = 0.0
     for doc in chunk:
-        if word in doc:
-            result = result + 1.0
+        result = result + doc.count(word)
     return result
 
 # fullFreq is frequency in full corpus
 def relativeWordFrequency(chunk, word, fullFreq):
-    return wordFrequency(chunk,word)/fullFreq
+    return wordFrequency(chunk,word)/fullFreq # MUST CHECK IF fullFreq = 0
 
 def probX(chunk, x):
     count = 0.0
@@ -165,3 +164,18 @@ def probXGivenNotY(chunk, x, y):
         return 0.0
     xAndNotY = probX(chunk, x)*notY
     return xAndNotY/notY
+
+def probException(chunk, x, y):
+    pX = probX(chunk, x)
+    pY = probX(chunk, y)
+    if (pX.is_integer() and (pX == 1.0 or pX == 0.0)):
+        return True
+    if (pY.is_integer() and (pY == 1.0 or pY == 0.0)):
+        return True
+    return False
+
+def wordNotInChunkException(chunk, word):
+    for doc in chunk:
+        if word in doc:
+            return False
+    return True
