@@ -7,6 +7,10 @@ import words.dataretrieval
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
 
+NNsize = 300
+minWords = 5
+filePath = '/mnt/vol/matrices/'
+
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
     for doc in docs:
@@ -113,18 +117,20 @@ def averageTfidfOfWord(chunk, word):
                 #totalTfidf = totalTfidf + wordd[1]
                 #break
     
-def cosDistanceOfPair(chunk, word1, word2, cbow):
+def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word1+word2+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/word1word2/somedate. email the user by zipping the somehash folder
     return model.similarity(word1, word2)
     
-def nClosestNeighboursOfWord(chunk, word, N, cbow):
+def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/someword/somedate. email the user by zipping the somehash folder
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):
@@ -165,14 +171,17 @@ def probXGivenNotY(chunk, x, y):
     xAndNotY = probX(chunk, x)*notY
     return xAndNotY/notY
 
-def probException(chunk, x, y):
+# return 1 if probX = 0, 2 if probX = 1, and 0 if no error
+def probException(chunk, x):
     pX = probX(chunk, x)
-    pY = probX(chunk, y)
-    if (pX.is_integer() and (pX == 1.0 or pX == 0.0)):
-        return True
-    if (pY.is_integer() and (pY == 1.0 or pY == 0.0)):
-        return True
-    return False
+    if (pX.is_integer()):
+        if (pX == 0.0):
+            return 1
+        if (pX == 1.0):
+            return 2
+        return 0
+    else:
+        return 0
 
 def wordNotInChunkException(chunk, word):
     for doc in chunk:
