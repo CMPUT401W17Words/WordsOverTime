@@ -5,6 +5,8 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
+
+#depreciated email function, kept as example.
 def SendWordsOverTimeEmail(emailTo, htmlLinks, date, csvList):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -23,11 +25,10 @@ def SendWordsOverTimeEmail(emailTo, htmlLinks, date, csvList):
     server.sendmail("YOUR EMAIL ADDRESS", emailTo, msg)
     server.quit()
     
-    
-#SendWordsOverTimeEmail("dmhamilt@ualberta.ca", ["https://www.google.com"], "January 1st")
-
-def send_mail(send_to, htmlLinks, files=None, errors=None, matrices=None):
-    #assert isinstance(send_to, list)
+#send_mail(["dmhamilt@ualberta.ca"], ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"],[],[])    
+def send_mail(send_to_list, htmlLinks, files=None, errors=None, matrices=None):
+    if isinstance(send_to_list, str):
+        send_to_list = [send_to_list]
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
@@ -38,7 +39,7 @@ def send_mail(send_to, htmlLinks, files=None, errors=None, matrices=None):
 
     msg = MIMEMultipart()
     msg['From'] = "WordsOverTimeProject@gmail.com"
-    msg['To'] = send_to
+    msg['To'] = ', '.join(send_to_list)
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = "WordsOverTime request complete!"
 
@@ -64,7 +65,26 @@ def send_mail(send_to, htmlLinks, files=None, errors=None, matrices=None):
         msg.attach(part)
                 
     msg.attach(MIMEText(msgbody))
-    server.sendmail("WordsOverTimeProject@gmail.com", send_to, msg.as_string())
+    for send_to in send_to_list:
+        server.sendmail("WordsOverTimeProject@gmail.com", send_to, msg.as_string())
     server.quit()
 
-#send_mail("dmhamilt@ualberta.ca", ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"])
+#send_mail(["dmhamilt@ualberta.ca"], ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"])
+
+def send_error_mail(send_to_list, error_type=''):
+    if isinstance(send_to_list, str):
+        send_to_list = [send_to_list]
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login("WordsOverTimeProject@gmail.com", "Words1234")
+    msgbody = "Unfortuneately, your %s request failed. Plase contact support, or retry. Maybe you made a spelling mistake?" % error_type
+
+    msg = MIMEMultipart()
+    msg['From'] = "WordsOverTimeProject@gmail.com"
+    msg['To'] = ', '.join(send_to_list)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = "WordsOverTime request failed."
+    for send_to in send_to_list:
+        server.sendmail("WordsOverTimeProject@gmail.com", send_to, msg.as_string())
+    server.quit()
