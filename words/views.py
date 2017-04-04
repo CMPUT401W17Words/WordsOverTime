@@ -395,8 +395,13 @@ def graph(request, hash):
         for thing in valuesList:
             #print(thing)
             if(thing[2] == word):
-                yDict[word].append(float(thing[1]))
-                yTempValues.append(float(thing[1]))
+                try:
+                    yDict[word].append(float(thing[1]))
+                    yTempValues.append(float(thing[1]))
+                except ValueError:
+                    #yDict[word].append(float(0.5))
+                    yTempValues.append(-200)
+                    pass
                 date = datetime.strptime(thing[0], '%Y-%m-%d').date()
                 timestamp = int(time.mktime(date.timetuple())) * 1000
                 if(timestamp not in xValues):
