@@ -4,10 +4,22 @@ import csv
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
-from words.Email_Sending import *
+from words.emailsending import *
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
+
+import os
+import zipfile
+
+# http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
+def zipMatrices(matricesPath, hashStr):
+    zf = zipfile.ZipFile(hashStr+".zip", "w")
+    for dirname, subdirs, files in os.walk(matricesPath):
+        zf.write(dirname)
+        for filename in files:
+            zf.write(os.path.join(dirname, filename))
+    zf.close()
 
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
@@ -17,18 +29,26 @@ class RequestsExecuteThread(Thread):
     def run(self):
         urlList = []
         csvList = []
+        matrixList = []
+        errorDict = {} # Map a hashStr (representing an analysis) to a list of strings (representing errors for an analysis)
         allhashstr = ''
         for req in self.requests:
             print('thread start')
             res = req.execute()
+            errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
             res.generateCSV(req.hashStr)
             url = "http://199.116.235.204/words/success/graph/" + req.hashStr
             csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
             csvList.append(csv)
             urlList.append(url)
+            # if the request involved word2vec, email the user a zip file containing matrices for the analysis
+            matrixPath = '/mnt/vol/matrices/' + req.hashStr
+            if (os.path.isdir(matrixPath)):    
+                matrices = zipMatrices(matrixPath, req.hashStr)
+                matrixList.append(matrices)
             #emailUser(req.hashStr)
             print('thread done')
-        send_mail(self.email, urlList, csvList)
+        send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
 # requests = RequestsExecuteThread(requests)
 # requests.run()
@@ -87,6 +107,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        errors = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -94,24 +115,25 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             # freqneucy of word in full corpus
             wordData = words.dataretrieval.getWordData(word)
             if (len(wordData) == 0):
-                pass # DO EXCEPTION HANDLING (word is not in corpus at all)
-            fullFreq = 0.0
-            for thing in wordData:
-                fullFreq = fullFreq + thing.word_count
-                
-            for k,v in docHistogram.items():
-                # v is a list of Documents
-                chunk = []
-                for doc in v:
-                    wordss = words.dataretrieval.getWordsInDocument(doc)
-                    chunk.append(wordss)
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
-                
-            xValues, yValues = sortXAndY(xValues, yValues)
-            yDict[word] = yValues
+                errors.append(word+" does not appear in the corpus") # DO EXCEPTION HANDLING
+            else:
+                fullFreq = 0.0
+                for thing in wordData:
+                    fullFreq = fullFreq + thing.word_count
+                    
+                for k,v in docHistogram.items():
+                    # v is a list of Documents
+                    chunk = []
+                    for doc in v:
+                        wordss = words.dataretrieval.getWordsInDocument(doc)
+                        chunk.append(wordss)
+                    xValues.append(k)
+                    yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
+                    
+                xValues, yValues = sortXAndY(xValues, yValues)
+                yDict[word] = yValues
             
-        return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict)
+        return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
     
 class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
@@ -125,6 +147,7 @@ class TfidfOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        errors = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -135,23 +158,27 @@ class TfidfOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if (words.dataanalyzer.wordNotInChunkException(chunk, word)):
-                    pass # DO EXCEPTION HANDLING
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.averageTfidfOfWord(chunk, word))
+                if (words.dataanalyzer.wordNotInChunkException(chunk, word)): # DO EXCEPTION HANDLING
+                    xValues.append(k)
+                    yValues.append(None)
+                    errors.append("at x = " + str(k) + ": chunk did not contain " + word)
+                else:
+                    xValues.append(k)
+                    yValues.append(words.dataanalyzer.averageTfidfOfWord(chunk, word))
                 
             xValues, yValues = sortXAndY(xValues, yValues)
             yDict[word] = yValues
             
-        return Result(self.granularity, 'Tfidf Over Time', xValues, yDict) 
+        return Result(self.granularity, 'Tfidf Over Time', xValues, yDict, errors) 
 
 class AverageValenceOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
         
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         xValues = []
@@ -166,12 +193,13 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
 class AverageArousalOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
         
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         
         xValues = []
@@ -186,11 +214,13 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
+        
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -203,11 +233,13 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
     
 class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
-    def __init__(self, dateRange, granularity, hashStr):
+    def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
+        self.wordList = wordList
+        
     def execute(self):
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])#[0]
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(self.dateRange[0], self.dateRange[1], self.wordList)
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
         xValues = []
         yValues = []
@@ -232,6 +264,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        errors = []
         for pair in self.pairList:
             xValues = []
             yValues = []
@@ -242,15 +275,23 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if (words.dataanalyzer.wordNotInChunkException(chunk, pair[0]) or words.dataanalyzer.wordNotInChunkException(chunk, pair[1])):
-                    pass # DO EXCEPTION HANDLING                
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, pair[0], pair[1], self.cbow))
+                if (words.dataanalyzer.wordNotInChunkException(chunk, pair[0])): # DO EXCEPTION HANDLING
+                    xValues.append(k)
+                    yValues.append(None)
+                    errors.append("at x = " + str(k) + ": chunk did not contain " + pair[0])
+                else:
+                    if (words.dataanalyzer.wordNotInChunkException(chunk, pair[1])): # DO EXCEPTION HANDLING
+                        xValues.append(k)
+                        yValues.append(None)
+                        errors.append("at x = " + str(k) + ": chunk did not contain " + pair[1])
+                    else:               
+                        xValues.append(k)
+                        yValues.append(words.dataanalyzer.cosDistanceOfPair(chunk, pair[0], pair[1], self.cbow, self.hashStr, k))
                 
             xValues, yValues = sortXAndY(xValues, yValues)                
             yDict[pair] = yValues
             
-        return Result(self.granularity, 'Cosine Distance', xValues, yDict)  
+        return Result(self.granularity, 'Cosine Distance', xValues, yDict, errors)  
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, n, cbow, hashStr):
@@ -266,6 +307,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        errors = []
         for word in self.wordList:
             xValues = []
             yValues = []
@@ -276,15 +318,18 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if (words.dataanalyzer.wordNotInChunkException(chunk, word)):
-                    pass # DO EXCEPTION HANDLING                
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, word, self.n, self.cbow))
+                if (words.dataanalyzer.wordNotInChunkException(chunk, word)): # DO EXCEPTION HANDLING
+                    xValues.append(k)
+                    yValues.append(None)
+                    errors.append("at x = " + str(k) + ": chunk did not contain " + word)
+                else:
+                    xValues.append(k)
+                    yValues.append(words.dataanalyzer.nClosestNeighboursOfWord(chunk, word, self.n, self.cbow, self.hashStr, k))
                 
             xValues, yValues = sortXAndY(xValues, yValues)
             yDict[word] = yValues
             
-        return Result(self.granularity, 'N closest neighbors', xValues, yDict)   
+        return Result(self.granularity, 'N Closest Neighbours', xValues, yDict, errors)   
 
 class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, pairList, hashStr):
@@ -298,6 +343,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        errors = []
         for pair in self.pairList:
             xValues = []
             yValsXAndY = []
@@ -312,14 +358,37 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                if (words.dataanalyzer.probException(chunk, pair[0], pair[1])):
-                    pass # DO EXCEPTION HANDLING
+                    
                 xValues.append(k)
                 yValsXAndY.append(words.dataanalyzer.probXAndY(chunk, pair[0], pair[1]))
                 yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
-                yValsYGivenX.append(words.dataanalyzer.probXGivenY(chunk, pair[1], pair[0]))
-                yValsXGivenNotY.append(words.dataanalyzer.probXGivenNotY(chunk, pair[0], pair[1]))
-                yValsYGivenNotX.append(words.dataanalyzer.probXGivenNotY(chunk, pair[1], pair[0]))
+                
+                xErrCode = words.dataanalyzer.probException(chunk, pair[0])
+                yErrCode = words.dataanalyzer.probException(chunk, pair[1])
+                
+                if (xErrCode == 1): # DO EXCEPTION HANDLING
+                    errors.append("For " + pair[1] + " given " + pair[0] + ": at x = " + str(k) + ": prob(" + pair[0] + ") = 0")
+                    yValsYGivenX.append(None)
+                else:
+                    yValsYGivenX.append(words.dataanalyzer.probXGivenY(chunk, pair[1], pair[0]))
+                    
+                if (xErrCode == 2): # DO EXCEPTION HANDLING
+                    errors.append("For " + pair[1] + " given not " + pair[0] + ": at x = " + str(k) + ": prob(not " + pair[0] + ") = 0")
+                    yValsYGivenNotX.append(None)
+                else:
+                    yValsYGivenNotX.append(words.dataanalyzer.probXGivenNotY(chunk, pair[1], pair[0]))
+                    
+                if (yErrCode == 1): # DO EXCEPTION HANDLING
+                    errors.append("For " + pair[0] + " given " + pair[1] + ": at x = " + str(k) + ": prob(" + pair[1] + ") = 0")
+                    yValsXGivenY.append(None)
+                else:
+                    yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
+                    
+                if (yErrCode == 2): # DO EXCEPTION HANDLING
+                    errors.append("For " + pair[0] + " given not " + pair[1] + ": at x = " + str(k) + ": prob(not " + pair[1] + ") = 0")
+                    yValsXGivenNotY.append(None)
+                else:
+                    yValsXGivenNotY.append(words.dataanalyzer.probXGivenNotY(chunk, pair[0], pair[1]))
                 
             xValues1, yValsXAndY = sortXAndY(list(xValues), yValsXAndY)
             xValues2, yValsXGivenY = sortXAndY(list(xValues), yValsXGivenY)
@@ -333,14 +402,15 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             yDict[(pair, "XGivenNotY")] = yValsXGivenNotY
             yDict[(pair, "YGivenNotX")] = yValsYGivenNotX
     
-        return Result(self.granularity, 'Pairwise Probabilities', xValues, yDict)
+        return Result(self.granularity, 'Pairwise Probabilities', xValues1, yDict, errors)
     
 class Result():
-    def __init__(self, xTitle, yTitle, xValues, yValues):
+    def __init__(self, xTitle, yTitle, xValues, yValues, errors=None):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
         self.xValues = xValues # xValues and yValues are parallel lists that together construct a scatterplot
         self.yValues = yValues
+        self.errors = errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
     def generateCSV(self, hashStr):
         #with open(filePath + hashStr + '.csv', 'w') as csvfile:
         #    resultWriter = csv.writer(csvfile, dialect='excel')
@@ -356,7 +426,8 @@ class Result():
     def saveModel():
         model = ResultModel(params)
         model.save()
-                
+
+# sort parallel lists based on the first list                
 def sortXAndY(xValues, yValues):
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues

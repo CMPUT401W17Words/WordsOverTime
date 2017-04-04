@@ -3,16 +3,10 @@ from django.core.management.base import BaseCommand, CommandError
 from words.databaseinput import run, enterdata
 
 class Command(BaseCommand):
-    help = 'Creates the database'
-
-    def add_arguements(self, parser):
-        parser.add_arguement('-f', action = 'store', type = 'string', default = False, dest = 'filename')
+    help = 'Creates the database with the files provided. Use '
 
     def handle(self, *args, **options):
-        
-        if options.f:
-            csvpath = options.f
-            enterdata(csvpath)
-        else:
-            run()
+        sentPath = raw_input("Please input the Sentiment Dictionary Path: ")
+        corpusPath = raw_input("Please input the Corpus Path: ")
+        run(sentPath, corpusPath)
         self.stdout.write('Successfully generated database')
