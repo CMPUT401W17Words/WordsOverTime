@@ -1,10 +1,5 @@
 # Test cases use a all-values approach
 
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-import sys
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime")
-
 from django.test import TestCase
 
 import words.dataretrieval
@@ -218,6 +213,8 @@ class RequestHandlerTests(TestCase):
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(k, v)
+        print("Errors: " + str(result.errors))
+        print()
     
     # seems to be working
     # still need to test exception: word doesn't exist in one of the time chunks
@@ -229,7 +226,9 @@ class RequestHandlerTests(TestCase):
         print('Average Tfidf over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(k, v)    
+            print(k, v)
+        print("Errors: " + str(result.errors))
+        print()        
     
     # seems to be working
     # still need to test exception: word doesn't exist in one of the time chunks
@@ -241,7 +240,9 @@ class RequestHandlerTests(TestCase):
         print('N Closest Neighbours over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(k, v)   
+            print(k, v)
+        print("Errors: " + str(result.errors))
+        print()        
     
     # should be working; might want to recheck later   
     def testAverageArousalOverTime(self):
@@ -252,7 +253,9 @@ class RequestHandlerTests(TestCase):
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(v)  
+            print(v)
+        print("Errors: " + str(result.errors))
+        print()
         
     # should be working; might want to recheck later    
     def testAverageValenceOverTime(self):
@@ -263,7 +266,9 @@ class RequestHandlerTests(TestCase):
         print('Average Valence over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(v)       
+            print(v)
+        print("Errors: " + str(result.errors))
+        print()
 
     # will have to test at a later date
     def testAverageArousalTopFiveOverTime(self):
@@ -274,7 +279,9 @@ class RequestHandlerTests(TestCase):
         print('Average Arousal Top Five Words over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(v)  
+            print(v)
+        print("Errors: " + str(result.errors))
+        print()        
 
     # will have to test at a later date
     def testAverageValenceTopFiveOverTime(self):
@@ -285,7 +292,9 @@ class RequestHandlerTests(TestCase):
         print('Average Valence Top Five Words over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(v)  
+            print(v)
+        print("Errors: " + str(result.errors))
+        print()        
     
     # regular case working
     # exception case working
@@ -298,7 +307,8 @@ class RequestHandlerTests(TestCase):
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(k, v) 
-        print(result.errors)
+        print("Errors: " + str(result.errors))
+        print()
     
     # working
     def testWordFrequency(self):
@@ -310,6 +320,8 @@ class RequestHandlerTests(TestCase):
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(k, v)
+        print("Errors: " + str(result.errors))
+        print()        
     
     # working
     # still need to test exception: word doesn't exist in full corpus
@@ -322,6 +334,8 @@ class RequestHandlerTests(TestCase):
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(k, v)
+        print("Errors: " + str(result.errors))
+        print()        
      
     # need to test boundary cases        
     def testRequestExecuteThread(self):

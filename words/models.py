@@ -1,19 +1,9 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-import sys
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime")
-import django
-django.setup()
-
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from .hash import *
 
 # Create your models here.
 
-"""
-Model containing valences and arousals of words
-"""
 class Sentiment_Dict(models.Model):
   word = models.CharField(primary_key=True, max_length=255)
   valence = models.DecimalField(max_digits=14, decimal_places=12)
@@ -22,9 +12,6 @@ class Sentiment_Dict(models.Model):
   concreteness = models.DecimalField(max_digits=14, decimal_places=12)
   aoa = models.DecimalField(max_digits=14, decimal_places=12)  
 
-"""
-Model representing the raw corpus data for each document
-"""
 class Articles_Can(models.Model):
   id = models.IntegerField(primary_key=True, default=-1)
   article_id = models.IntegerField()
@@ -36,9 +23,6 @@ class Articles_Can(models.Model):
   wordCount = models.IntegerField()
   parsed_article = models.TextField()
 
-"""
-Models metadata for each Document
-"""
 class Document_Data(models.Model):
   article_id = models.IntegerField(primary_key=True, default=-1)
   language = models.CharField(max_length=255)
@@ -57,10 +41,6 @@ class Document_Data(models.Model):
   average_arousal_words = models.DecimalField(max_digits=14, decimal_places=12)  
   average_valence_words   = models.DecimalField(max_digits=14, decimal_places=12)  
 
-"""
-Models metadata for words occuring in the corpus
-Unique entries for word/document pairs
-"""
 class Word_Data(models.Model):
   word = models.CharField(max_length=255)
   #word = models.CharField(primary_key=True, max_length=255)
