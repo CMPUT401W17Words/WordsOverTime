@@ -9,7 +9,7 @@ import os
 # docs is a list of Document_Data objects
 
 NNsize = 300
-minWords = 5
+minWords = 1#5
 #filePath = '/mnt/vol/matrices/'
 filePath = 'C:/Users/L/Documents/School/'
 
@@ -53,7 +53,10 @@ def averageArousalTopFive(docs):
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
-    for doc in chunk:
+    for doc in corpus:
+        print("DOC!!!", doc)
+        print("CORPU", corpus)
+        print("tfidf[doc]", tfidf[doc])
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
@@ -68,7 +71,7 @@ def averageArousalTopFive(docs):
 # helper
 def getTopFiveWords(tfidfsDoc):
     result = []
-    tfidfs = tfidfsDoc.copy().items()
+    tfidfs = tfidfsDoc.copy()
     topWord = getTopWord(tfidfs)
     while (topWord != None):
         result.append(topWord)
@@ -211,6 +214,7 @@ def wordNotInChunkException(chunk, word):
     return True
 
 def saveMatrix(model, word, hashStr, chunkDate):
+    return
     path = filePath+hashStr+'/'+word+'/'+str(chunkDate)
     try: 
         os.makedirs(path, 0o777)

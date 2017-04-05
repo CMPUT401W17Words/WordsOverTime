@@ -334,8 +334,6 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
-                print("CHUNK!!!!", word)
-                print(chunk)
                 if (words.dataanalyzer.wordNotInChunkException(chunk, word)): # DO EXCEPTION HANDLING
                     xValues.append(k)
                     yValues.append(None)
@@ -447,6 +445,8 @@ class Result():
 
 # sort parallel lists based on the first list
 def sortXAndY(xValues, yValues):
+    if (len(xValues) < 1):
+        return xValues, yValues
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
 
