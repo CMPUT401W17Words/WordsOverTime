@@ -351,8 +351,8 @@ def success(request):
     requests = RequestsExecuteThread(requestList, emailList)
     requests.start()
 
-    #return render(request, 'words/submit.html')
-    return render(request, 'words/success.html', context)
+    return render(request, 'words/submit.html')
+    #return render(request, 'words/success.html', context)
 
 def graph(request, hash):
     filePath = '/mnt/vol/csvs/'
