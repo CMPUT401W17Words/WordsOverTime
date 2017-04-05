@@ -149,7 +149,12 @@ $(document).ready(function() {
         dataPoints = [];
         for(var j = 0; j < xValues.length; j++){
             var date = new Date(xValues[j]);
-            dataPoints.push([ date, yValues[i][j] ]);
+            if(yValues[i][j] > -100){
+                dataPoints.push([ date, yValues[i][j] ]);
+            }
+            else {
+                dataPoints.push([date, NaN]);
+            }
         }        
         returnValueList.push({ data: dataPoints, label: keywords[i] });
     }    
