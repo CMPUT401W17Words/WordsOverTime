@@ -13,8 +13,8 @@ class Sentiment_Dict(models.Model):
   aoa = models.DecimalField(max_digits=14, decimal_places=12)  
   
 class Articles_Can(models.Model):
-  id = models.IntegerField(primary_key=True, default=-1)
-  article_id = models.IntegerField()
+  #id = models.IntegerField(primary_key=True, default=-1)
+  article_id = models.IntegerField(primary_key=True, default=-1)
   language = models.CharField(max_length=255)
   province = models.CharField(max_length=255)
   city = models.CharField(max_length=255)

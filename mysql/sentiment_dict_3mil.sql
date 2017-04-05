@@ -42,7 +42,7 @@
 
 # run this with 'SOURCE /path/to/precalculated.sql'
 
-Create database Generated_Data;
+Create database Generated_Data CHARACTER SET utf8 COLLATE utf8_bin;
 
 
 
@@ -62,7 +62,7 @@ CREATE TABLE sentiment_dict_3mil
  PRIMARY KEY (Word)
 );
 
-#load data local infile "/mnt/vol/sentiment_dict_3mil.csv" into table Client_Generated_Data.sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
+#load data local infile "/mnt/vol/sentiment_dict_3mil.csv" into table Generated_Data.words_sentiment_dict_3mil FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
 
 drop table if exists articles_can;
 
@@ -81,7 +81,7 @@ create table articles_can
  PRIMARY KEY (id)
 );
 
-#load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
+#load data local infile "/mnt/vol/articles-can.csv" into table Generated_Data.words_articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (article_ID, language, province, city, country, publicationdate, wordcount, parsed_article);
 
 
 DROP TABLE IF EXISTS Document_Data;
@@ -300,3 +300,23 @@ END;
 CREATE USER projectuser@localhost IDENTIFIED BY '12345';
 GRANT ALL PRIVILEGES ON Generated_Data.* TO projectuser@localhost;
 FLUSH PRIVILEGES;
+
+find number of docs words are in:
+select word, count(word) as count from words_word_data group by word order by count;
+
+find number of a word in corpus:
+select word, sum(word_count) as count from words_word_data group by word order by count;
+
+
+To disable MySQL indexes, make sure your file contains these commands before the import starts (replacing "table_name" with the real name of your table):
+
+ALTER TABLE `table_name` DISABLE KEYS;
+Then send these after the import:
+
+ALTER TABLE `table_name` ENABLE KEYS;
+
+5:15 gmt
+
+ create index article_id on words_document_data (article_id)
+
+sudo scp -i demo-server-key.ppk ubuntu@199.116.235.204:/mnt/vol/WordsOverTime/words/databaseinput.py databaseinput.py
