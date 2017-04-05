@@ -217,7 +217,7 @@ def saveMatrix(model, word, hashStr, chunkDate):
         if not os.path.isdir(path):
             raise
     try:
-        model.save(path)
+        model.save(path+'/model.txt')
     except:
         print('model save failed')
         raise
