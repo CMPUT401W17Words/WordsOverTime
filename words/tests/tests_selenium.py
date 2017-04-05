@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 from django.test import LiveServerTestCase
-import time, re
+import time, re, sys
 
 #Note: The webserver MUST be running before running these tests.
 
@@ -44,6 +44,14 @@ import time, re
 # ---
 # userEmail (text)
 
+# Some tests:
+# Submit nothing, submit w/o a date selected, select w/o an e-mail given,
+# submit w/o picking anything (no words given, etc), select everything possible,
+# upload files, etc.
+
+# Tests would be more extensive if it could just go straight to a results page instead
+# of needing an e-mail
+
 class WordsTest(LiveServerTestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
@@ -52,13 +60,23 @@ class WordsTest(LiveServerTestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
 
-    def test_abcd(self):
+    def test_submit_nothing(self):
         driver = self.driver
         driver.get(self.base_url + "words")
         driver.find_element_by_id("startDate").send_keys("2000-01-01")
         driver.find_element_by_id("endDate").send_keys("2001-01-01")
         driver.find_element_by_id("unit").click()
-        self.assertTrue(driver.find_element_by_id("startDate").text, "2000-01-01")
+        self.assertTrue(2+2 == 3, driver.find_element_by_id("startDate").text)
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        self.assertTrue(2+2, 4)
+
+    def test_submit_nothing(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.find_element_by_id("startDate").send_keys("2000-01-01")
+        driver.find_element_by_id("endDate").send_keys("2001-01-01")
+        driver.find_element_by_id("unit").click()
+        self.assertTrue(2+2 == 3, driver.find_element_by_id("startDate").text)
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
         self.assertTrue(2+2, 4)
 
