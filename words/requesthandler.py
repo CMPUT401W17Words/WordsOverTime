@@ -15,9 +15,6 @@ import sys
 import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
-"""
-Zips matrices corresponding to a hash for a request
-"""
 def zipMatrices(matricesPath, hashStr):
     return (shutil.make_archive(matricesPath+hashStr, 'zip', matricesPath, hashStr))
     #zf = zipfile.ZipFile(hashStr+".zip", "w")
@@ -31,9 +28,6 @@ def zipMatrices(matricesPath, hashStr):
             #zf.write(os.path.join(dirname, filename))
     #zf.close()
 
-"""
-Allows a series of requests to be handled in a separate thread, and results emailed to a user
-"""
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
         Thread.__init__(self)
@@ -66,9 +60,6 @@ class RequestsExecuteThread(Thread):
 # requests = RequestsExecuteThread(requests)
 # requests.run()
 
-"""
-Base request class
-"""
 class Request(object):
     def execute(self):
         return Result(None)
@@ -81,9 +72,6 @@ class OverTimeRequest(Request):
     def execute(self):
         return Result(None)
 
-"""
-Handles a word frequency analysis
-"""
 class WordFrequencyOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
@@ -113,9 +101,6 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
             
         return Result(self.granularity, 'Word Frequency Over Time', xValues, yDict)
 
-"""
-Handles a relative word frequency analysis
-"""    
 class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -157,10 +142,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             yDict[word] = yValues
             
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
-
-"""
-Handles a tfidf analysis
-"""    
+  
 class TfidfOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -197,9 +179,6 @@ class TfidfOverTimeRequest(OverTimeRequest):
             
         return Result(self.granularity, 'Tfidf Over Time', xValues, yDict, errors) 
 
-"""
-Handles a valence analysis
-"""
 class AverageValenceOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -221,9 +200,6 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         
         return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
-"""
-Handles an arousal analysis
-"""
 class AverageArousalOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -245,9 +221,6 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
-"""
-Handles a valence of top 5 tfidf words analysis
-"""
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -266,10 +239,7 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
         xValues, yValues = sortXAndY(xValues, yValues)
         yDict["Average Valence Top Five Words"] = yValues
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
-
-"""
-Handles an arousal of top 5 tfidf words analysis
-"""    
+   
 class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -288,10 +258,7 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
         xValues, yValues = sortXAndY(xValues, yValues)
         yDict["Average Arousal Top Five Words"] = yValues
         return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
-
-"""
-Handles a cos distance analysis
-"""    
+  
 class CosDistanceOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, pairList, cbow, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
@@ -334,9 +301,6 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
             
         return Result(self.granularity, 'Cosine Distance', xValues, yDict, errors)  
     
-"""
-Handles an n closest neighbours analysis
-"""
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, wordList, n, cbow, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
@@ -375,9 +339,6 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
             
         return Result(self.granularity, 'N Closest Neighbours', xValues, yDict, errors)   
 
-"""
-Handles a pairwise probabilities analysis
-"""
 class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
     def __init__(self, dateRange, granularity, pairList, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
@@ -451,10 +412,6 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
     
         return Result(self.granularity, 'Pairwise Probabilities', xValues1, yDict, errors)
 
-"""
-Stores the result of an analysis as parallel lists of xValues and yValues that can be plotted
-A CSV can be generated from the result
-"""
 class Result():
     def __init__(self, xTitle, yTitle, xValues, yValues, errors=None):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
@@ -479,9 +436,6 @@ class Result():
         model.save()
 
 # sort parallel lists based on the first list
-"""
-Sorts parallel lists based on the first list
-"""
 def sortXAndY(xValues, yValues):
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
