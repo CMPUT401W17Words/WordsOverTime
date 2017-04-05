@@ -217,7 +217,7 @@ def saveMatrix(model, word, hashStr, chunkDate):
         if not os.path.isdir(path):
             raise
     try:
-        model.save(path+'/model')
+        model.wv.save_word2vec_format(path+'/model', fvocab=path+'/vocab')
     except:
         print('model save failed')
         raise
