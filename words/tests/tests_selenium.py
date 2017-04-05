@@ -58,6 +58,7 @@ class WordsTest(LiveServerTestCase):
         driver.find_element_by_id("startDate").send_keys("2000-01-01")
         driver.find_element_by_id("endDate").send_keys("2001-01-01")
         driver.find_element_by_id("unit").click()
+        self.assertTrue(driver.find_element_by_id("startDate").text, "2000-01-01")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
         self.assertTrue(2+2, 4)
 
