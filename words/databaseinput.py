@@ -41,7 +41,7 @@ def enterSentiment(dictpath):
 def enterArticles(corpuspath):
     cursor = django.db.connection.cursor()
     nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);" % corpuspath)
-
+    Articles_Can.objects.filter(publicationdate = None).delete()
 
 # main function that will input corpus info into the database
 def enterData(corpusCsv):
