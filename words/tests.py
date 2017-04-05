@@ -155,7 +155,7 @@ class RequestHandlerTests(TestCase):
         self.docData = []
         self.wordData = []
         
-        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open(r'words/sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
@@ -163,7 +163,7 @@ class RequestHandlerTests(TestCase):
         for item in self.sentDict:
             item.save()        
                 
-        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open(r'words/corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
@@ -358,16 +358,15 @@ class DataAnalyzerTests(TestCase):
     
 class DataInputTests(TestCase):
  
- 
     def testenterSentiment(self):
-        words.databaseinput.enterSentiment('words\sentiment_mock.csv')
+        words.databaseinput.enterSentiment('words/sentiment_mock.csv')
         result = sentiment_dict.objects.all()
         print('Sentiment_Mock in database:')
         for v in result:
             print(v)
             
     def testCorpusInput(self):
-        words.databaseinput.enterArticles('words\corpus_mock.csv')
+        words.databaseinput.enterArticles('words/corpus_mock.csv')
         result = articles_can.objects.all()
         print('corpus_Mock in database:')
         for v in result:
