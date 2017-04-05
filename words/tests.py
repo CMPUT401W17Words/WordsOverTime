@@ -1,4 +1,9 @@
-from datetime import date
+# Test cases use a all-values approach
+
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+import sys
+sys.path.append("C:/Users/L/Documents/School/WordsOverTime")
 
 from django.test import TestCase
 
@@ -10,6 +15,7 @@ import csv
 import decimal
 from datetime import date
 # Create your tests here.
+import gensim
 
 class DataRetrievalTests(TestCase):
     
@@ -91,7 +97,14 @@ class DataRetrievalTests(TestCase):
             pass
         
     def testGetDocumentDataWithWordFilter(self):
-        pass
+        startDate = date(2008, 2, 17)
+        endDate = date(2011, 11, 7)        
+        docs = words.dataretrieval.getDocumentDataWithWordFilter(startDate, endDate, ['interface'])
+        ids = []
+        for item in docs:
+            ids.append(item.article_id)
+        self.assertTrue(10 in ids and 4 not in ids)
+        self.assertTrue(9 not in ids and 31 in ids)
         
     def testGetWordData(self):
         systemData = words.dataretrieval.getWordData('system')
@@ -117,13 +130,13 @@ class DataRetrievalTests(TestCase):
         startDate = date(2008, 2, 17)
         endDate = date(2011, 11, 7)
         docs = words.dataretrieval.getDocumentData(startDate, endDate)
-        self.assertTrue(words.dataretrieval.getNumWordsInCorpus(docs) == 26)
+        self.assertTrue(words.dataretrieval.getNumWordsInCorpus(docs) == 67)
 
     def testGetNumWordInCorpus(self):
         startDate = date(2008, 2, 17)
         endDate = date(2011, 11, 7)
         docs = words.dataretrieval.getDocumentData(startDate, endDate)
-        self.assertTrue(words.dataretrieval.getNumWordInCorpus(docs, 'system') == 4)       
+        self.assertTrue(words.dataretrieval.getNumWordInCorpus(docs, 'system') == 26)       
 
     def testSplitDocuments(self):
         startDate = date(2008, 2, 17)
@@ -223,7 +236,7 @@ class RequestHandlerTests(TestCase):
     def testNClosestNeighboursOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system'], 2, True, '')
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, '')
         result = request.execute()
         print('N Closest Neighbours over time')
         print(result.xTitle, result.xValues)
@@ -232,9 +245,9 @@ class RequestHandlerTests(TestCase):
     
     # should be working; might want to recheck later   
     def testAverageArousalOverTime(self):
-        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, '')
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], '')
         result = request.execute()
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)
@@ -243,9 +256,9 @@ class RequestHandlerTests(TestCase):
         
     # should be working; might want to recheck later    
     def testAverageValenceOverTime(self):
-        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
+        dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, [], '')
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['tomato'], '')
         result = request.execute()
         print('Average Valence over time')
         print(result.xTitle, result.xValues)
@@ -254,9 +267,9 @@ class RequestHandlerTests(TestCase):
 
     # will have to test at a later date
     def testAverageArousalTopFiveOverTime(self):
-        dateRange = (date(2008, 2, 17), date(2011, 11, 11))
-        granularity = 'Year'
-        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, [], '')
+        dateRange = (date(2013, 1, 1), date(2013, 12, 31))
+        granularity = 'Month'
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, ['trees'], '')
         result = request.execute()
         print('Average Arousal Top Five Words over time')
         print(result.xTitle, result.xValues)
@@ -266,7 +279,7 @@ class RequestHandlerTests(TestCase):
     # will have to test at a later date
     def testAverageValenceTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
-        granularity = 'Year'
+        granularity = 'Month'
         request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, [], '')
         result = request.execute()
         print('Average Valence Top Five Words over time')
@@ -274,23 +287,24 @@ class RequestHandlerTests(TestCase):
         for k,v in result.yValues.items():
             print(v)  
     
-    # seems to be working
-    # still need to test exception: word doesn't exist in one of the time chunks    
+    # regular case working
+    # exception case working
     def testPairwiseProbabilities(self):
-        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        dateRange = (date(2008, 2, 17), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'system')] , '')
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , '')
         result = request.execute()
         print('Pairwise Probabilities over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(k, v) 
+        print(result.errors)
     
     # working
     def testWordFrequency(self):
-        dateRange = (date(2008, 2, 17), date(2011, 11, 7))
-        granularity = 'Month'
-        request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['system', 'human'], '')
+        dateRange = (date(2008, 1, 1), date(2010, 12, 31))
+        granularity = 'Year'
+        request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['human'], '')
         result = request.execute()
         print('Word Frequency over time')
         print(result.xTitle, result.xValues)
@@ -300,63 +314,45 @@ class RequestHandlerTests(TestCase):
     # working
     # still need to test exception: word doesn't exist in full corpus
     def testRelativeWordFrequency(self):
-        dateRange = (date(2008, 2, 17), date(2011, 11, 7))
+        dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
-        request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, ['system', 'human'], '')
+        request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, ['human', 'tomato'], '')
         result = request.execute()
         print('Relative Word Frequency over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
-            print(k, v)        
+            print(k, v)
+     
+    # need to test boundary cases        
+    def testRequestExecuteThread(self):
+        pass
+        #dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        #granularity = 'Year'
+        #request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system'], 2, True, '')
+        
+        #dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        #granularity = 'Year'
+        #request2 = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'system')] , '')
+        
+        #words.requesthandler.RequestsExecuteThread([request, request2], 'tommy3@ualberta.ca').start()
     
 # will be implemented once there is a clearer way to test the analysis process. probably with help from client
 class DataAnalyzerTests(TestCase):
     
     def setUp(self):
-        self.sentDict = []
-        self.artCan = []
-        self.docData = []
-        self.wordData = []
+        pass
+            
+    def testSaveAndZipMatrices(self):
+        chunk = [['water'],['water', 'fire'],['fire', 'fire', 'air']]
+        model = gensim.models.Word2Vec(chunk, size=300, min_count=2, sg=1)
+        words.dataanalyzer.saveMatrix(model, 'fire', '72349', date(2002,1,1))
+        words.requesthandler.zipMatrices('C:/Users/L/Documents/School/', '72349')
         
-        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
-            file = csv.DictReader(csvfile)
-            for line in file:
-                self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
-        
-        for item in self.sentDict:
-            item.save()        
-                
-        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
-            file = csv.DictReader(csvfile)
-            for line in file:
-                self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
-                
-                words = line['parsedArticle'].split()
-                avgArousal = decimal.Decimal(0.0)
-                avgValence = decimal.Decimal(0.0)
-                wordCounts = {}
-                for wd in words:
-                    sent = Sentiment_Dict.objects.get(word=wd)
-                    avgArousal = avgArousal + sent.arousal
-                    avgValence = avgValence + sent.valence
-                    if wd not in wordCounts:
-                        wordCounts[wd] = 0
-                    wordCounts[wd] = wordCounts[wd] + 1
-                    
-                for k,v in wordCounts.items():
-                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
-                    
-                avgArousal = avgArousal/len(words)
-                avgValence = avgValence/len(words)
-                
-                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
-                
-        for item in self.artCan:
-            item.save()
-        for item in self.docData:
-            item.save()
-        for item in self.wordData:
-            item.save()
+    def testAverageValenceTopFive(self):
+        pass
+    
+    def testAverageArousalTopFive(self):
+        pass
     
 #class DataInputTests(TestCase):
     

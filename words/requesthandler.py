@@ -1,5 +1,13 @@
 # This is the "coordinator" module that calls on other modules to process a client request
 
+# These six lines are needed to run this module standalone, i.e. for generating documentation
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+import sys
+sys.path.append("C:/Users/L/Documents/School/WordsOverTime")
+import django
+django.setup()
+
 import csv
 from words.models import Document_Data
 import words.dataretrieval
@@ -11,15 +19,22 @@ from threading import Thread
 
 import os
 import zipfile
+import sys
+import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
-    zf = zipfile.ZipFile(hashStr+".zip", "w")
-    for dirname, subdirs, files in os.walk(matricesPath):
-        zf.write(dirname)
-        for filename in files:
-            zf.write(os.path.join(dirname, filename))
-    zf.close()
+    return (shutil.make_archive(matricesPath+hashStr, 'zip', matricesPath, hashStr))
+    #zf = zipfile.ZipFile(hashStr+".zip", "w")
+    #for dirname, subdirs, files in os.walk(matricesPath):
+        #print(dirname)
+        #sys.stdout.flush()
+        #zf.write(dirname)
+        #for filename in files:
+            #print(filename)
+            #sys.stdout.flush()
+            #zf.write(os.path.join(dirname, filename))
+    #zf.close()
 
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
@@ -114,24 +129,25 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             
             # freqneucy of word in full corpus
             wordData = words.dataretrieval.getWordData(word)
-            if (len(wordData) == 0):
-                errors.append(word+" does not appear in the corpus") # DO EXCEPTION HANDLING
-            else:
-                fullFreq = 0.0
-                for thing in wordData:
-                    fullFreq = fullFreq + thing.word_count
+            #if (len(wordData) == 0):
+            #    errors.append(word+" does not appear in the corpus") # DO EXCEPTION HANDLING
+            #else: # modified to use full frequency in a chunk instead of the whole corpus
+                #fullFreq = 0.0
+                #for thing in wordData:
+                #    fullFreq = fullFreq + thing.word_count
                     
-                for k,v in docHistogram.items():
-                    # v is a list of Documents
-                    chunk = []
-                    for doc in v:
-                        wordss = words.dataretrieval.getWordsInDocument(doc)
-                        chunk.append(wordss)
-                    xValues.append(k)
-                    yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
-                    
-                xValues, yValues = sortXAndY(xValues, yValues)
-                yDict[word] = yValues
+            for k,v in docHistogram.items():
+                # v is a list of Documents
+                chunk = []
+                for doc in v:
+                    wordss = words.dataretrieval.getWordsInDocument(doc)
+                    chunk.append(wordss)
+                xValues.append(k)
+                #yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
+                yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word))
+                
+            xValues, yValues = sortXAndY(xValues, yValues)
+            yDict[word] = yValues
             
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
     
@@ -318,6 +334,8 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
                 for doc in v:
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
+                print("CHUNK!!!!", word)
+                print(chunk)
                 if (words.dataanalyzer.wordNotInChunkException(chunk, word)): # DO EXCEPTION HANDLING
                     xValues.append(k)
                     yValues.append(None)
@@ -361,7 +379,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                     
                 xValues.append(k)
                 yValsXAndY.append(words.dataanalyzer.probXAndY(chunk, pair[0], pair[1]))
-                yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
+                #yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
                 
                 xErrCode = words.dataanalyzer.probException(chunk, pair[0])
                 yErrCode = words.dataanalyzer.probException(chunk, pair[1])
