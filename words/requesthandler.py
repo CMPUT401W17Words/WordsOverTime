@@ -4,7 +4,7 @@ import csv
 from words.models import Document_Data
 import words.dataretrieval
 import words.dataanalyzer
-from words.Email_Sending import *
+from words.emailsending import *
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
