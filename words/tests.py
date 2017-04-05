@@ -318,7 +318,7 @@ class DataAnalyzerTests(TestCase):
         self.docData = []
         self.wordData = []
         
-        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open(r'words/sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
@@ -326,7 +326,7 @@ class DataAnalyzerTests(TestCase):
         for item in self.sentDict:
             item.save()        
                 
-        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open(r'words/corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
@@ -351,12 +351,8 @@ class DataAnalyzerTests(TestCase):
                 
                 self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
                 
-        for item in self.artCan:
-            item.save()
-        for item in self.docData:
-            item.save()
-        for item in self.wordData:
-            item.save()
+        def testSaveMatrix(self):
+            pass
     
 class DataInputTests(TestCase):
  
