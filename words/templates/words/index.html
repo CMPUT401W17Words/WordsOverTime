@@ -324,7 +324,7 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input1" class="col-md-4 control-label">From</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                    <input class="form-control" size="16" type="date" value="" readonly placeholder="2010-April-01">
+                    <input class="form-control" size="16" type="date" value="" readonly placeholder="2010-04-01">
 										
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
@@ -336,7 +336,7 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input2" class="col-md-4 control-label">To</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-										 <input type="date" id = "endDate" name="endDate" placeholder="2017-April-01" class="form-control" size="16" readonly>
+										 <input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
 										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 										</div>
@@ -367,15 +367,15 @@ understand how language is used by the media</p>
 							 <div class="panel-group" id="accordion"><!--start of accordion -->
   								<div class="panel panel-default">
 														<div class="panel-heading">
-															<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">N closest neighbors</a></h4>
+															<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">N closest neighbours</a></h4>
 														</div>
 														<div id="collapse1" class="panel-collapse collapse">
 															<div class="panel-body">
 																<div id="NclosestNeighbors">
-																	<p class="intro text-center">The N cloest neighbours in each output matrix for a given list of words.</p>
+																	<p class="intro text-center">The N closest neighbours in each output matrix for a given list of words.</p>
 																		<br/>
 																		<input type="number" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
-																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="comma-separated phrase">
+																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="word1 word2 format">
 																		<input type="file" class="fileIn" name = "text_file" id="text_file">
 																			<select id="output2" name="skipOrCBOW1">
 																				<option>CBow</option>
@@ -397,7 +397,7 @@ understand how language is used by the media</p>
 											<div class="panel-body">
 												<div id="cos">
 													<p class="intro text-center">The cosine distance in each output matrix for a given list of word pairs</p>
-													<input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="(w1, w2),(w3, w4) format">
+													<input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="w1,w2 w3,w4 format">
 													<input class="fileIn" type=file name = "text_file2" id="fileCos">
 												
 													<select id="output3" name="skipOrCBOW2">
@@ -419,7 +419,7 @@ understand how language is used by the media</p>
 										<div class="panel-body">
 											<div id="Averagetfidf">
 												<p class="intro text-center">A measure of average term frequency within a corpus chunk to global word frequency in the entire corpus.</p>
-												<input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="single word">
+												<input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="One or more words in word1 word2 format">
 											</div>
 										</div>
 									</div>
@@ -437,7 +437,7 @@ understand how language is used by the media</p>
 											<div id="pcp"><!--changed id from five to abbr.-->
 												
 												<p class="intro text-center">Pairwise conditional probablities by article for each corpus chunk.</p>
-												<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="(w1, w2),(w3, w4) format">
+												<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="w1,w2 w3,w4 format">
 												<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
 											</div>
 										</div>
@@ -454,6 +454,7 @@ understand how language is used by the media</p>
 									<div id="collapse5" class="panel-collapse collapse">
 										<div class="panel-body">
 												<div id="aa" class = "checkbox"><!--changed id from six to abbr.-->
+														<input type="text" id = "averageWords" name="averageWords"  size="10" placeholder="word1 word2 format">
 														<label><input type="checkbox" id = "AV" name="Average valence" value="1">Average valence</label>
 														<label><input type="checkbox"  id = "AA" name="Average arousal" value="1">Average arousal</label>
 														<br/>
@@ -476,7 +477,7 @@ understand how language is used by the media</p>
 										<div class="panel-body">
 												<div id="WordFrequency"><!--changed id from seven to abbr.-->
 													<p class="intro text-center">Measure of word frequency in each corpus chunk.</p>
-								 						<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="frequencyWords">
+								 						<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="word1 word2 format">
 														<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
 							 					</div>
 										</div>
@@ -494,7 +495,7 @@ understand how language is used by the media</p>
 										<div class="panel-body">
 												<div id="ralativeWordFrequency"><!--changed id from seven to abbr.-->
 													<p class="intro text-center">Measure of relative word frequency in each corpus chunk: frequency within a corpus chunk to global word frequency in the entire corpus.</p>
-								 						 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="relativeWords">
+								 						 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="One or more words in word1 word2 format">
 														 <input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
 							 					</div>
 										</div>
@@ -555,7 +556,7 @@ understand how language is used by the media</p>
     <footer class="footer">
         <div class="container text-center">
             <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can check out other license options via our website: themes.3rdwavemedia.com */-->
-            <small class="copyright">Deployed <i class="fa fa-heart"></i>under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Liences</a></small>
+            <small class="copyright">Deployed <i class="fa fa-heart"></i>under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Licences</a></small>
         </div><!--//container-->
     </footer><!--//footer-->
      
