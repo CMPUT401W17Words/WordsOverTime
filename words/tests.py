@@ -200,7 +200,7 @@ class RequestHandlerTests(TestCase):
     def testCosDistanceOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, '')
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, '123123')
         result = request.execute()
         print('Cos Distance over time')
         print(result.xTitle, result.xValues)
@@ -353,8 +353,7 @@ class DataAnalyzerTests(TestCase):
                 self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
                 
         def testSaveMatrix(self):
-            model = gensim.models.Word2Vec([['water', 'fire']], size=100, min_count=1, sg=0)
-            saveMatrix(model, 'water', '333333', date(2000, 1, 13))
+            pass
     
 class DataInputTests(TestCase):
  
