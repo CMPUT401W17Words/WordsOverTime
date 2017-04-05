@@ -220,4 +220,4 @@ def saveMatrix(model, word, hashStr, chunkDate):
         model.save(path)
     except:
         print('model save failed')
-        #raise
+        raise
