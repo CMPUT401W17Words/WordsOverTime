@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 from django.test import LiveServerTestCase
-import time, re, sys
+import time, re, os
 
 #Note: The webserver MUST be running before running these tests.
 
@@ -59,25 +59,37 @@ class WordsTest(LiveServerTestCase):
         self.base_url = "http://127.0.0.1:8000/"
         self.verificationErrors = []
         self.accept_next_alert = True
+        # From http://stackoverflow.com/questions/5137497/find-current-directory-and-files-directory
+        # Author: Russell Dias / License: CC-BY-SA 3.0
+        self.current_path = os.path.dirname(os.path.realpath(__file__))
 
+    # Tests fails - it should pass in final version
     def test_submit_nothing(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+
+    def test_submit_stuff(self):
         driver = self.driver
         driver.get(self.base_url + "words")
         driver.find_element_by_id("startDate").send_keys("2000-01-01")
         driver.find_element_by_id("endDate").send_keys("2001-01-01")
         driver.find_element_by_id("unit").click()
-        self.assertTrue(2+2 == 3, driver.find_element_by_id("startDate").text)
+        print(driver.find_element_by_id("startDate").text)
+        #self.assertTrue(driver.find_element_by_id("startDate").text)
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
         self.assertTrue(2+2, 4)
 
-    def test_submit_nothing(self):
+    # WebDriverException: Message: POST ... did not match a known command
+    def test_uploading_files(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        driver.find_element_by_id("startDate").send_keys("2000-01-01")
-        driver.find_element_by_id("endDate").send_keys("2001-01-01")
-        driver.find_element_by_id("unit").click()
-        self.assertTrue(2+2 == 3, driver.find_element_by_id("startDate").text)
-        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        # replace w/ actual sys 
+        path = self.current_path + "/text_files/single_words.txt"
+        print(path)
+        driver.find_element_by_id("text_file").send_keys(path)
         self.assertTrue(2+2, 4)
 
     def is_element_present(self, how, what):
