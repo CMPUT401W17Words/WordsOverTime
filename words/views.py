@@ -15,6 +15,9 @@ GRANULARITY_WEEKLY = 'Week'
 GRANULARITY_MONTHLY = 'Month'
 GRANULARITY_YEARLY = 'Year'
 
+"""
+Create a random hash string
+"""
 def genHash():
     randomNum1 = random.randint(1, 100)
     randomNum2 = random.randint(1, 6)
@@ -40,6 +43,9 @@ def index(request):
     return render(request, 'words/index.html')
     #return HttpResponse("Hello world")
 
+"""
+Processes the main form
+"""
 def success(request):
     #Get Form Data!
     if "startDate" in request.POST:

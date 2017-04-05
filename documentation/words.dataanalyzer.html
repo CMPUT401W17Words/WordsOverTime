@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module words.dataanalyzer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="words.html"><font color="#ffffff">words</font></a>.dataanalyzer</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cmaster%20chief%5Cdocuments%5Cschool%5Cwordsovertime%5Cwords%5Cdataanalyzer.py">c:\users\master chief\documents\school\wordsovertime\words\dataanalyzer.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="decimal.html">decimal</a><br>
+<a href="gensim.html">gensim</a><br>
+</td><td width="25%" valign=top><a href="logging.html">logging</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+<a href="words.html">words</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-averageArousal"><strong>averageArousal</strong></a>(docs)</dt></dl>
+ <dl><dt><a name="-averageArousalTopFive"><strong>averageArousalTopFive</strong></a>(docs)</dt></dl>
+ <dl><dt><a name="-averageTfidfOfWord"><strong>averageTfidfOfWord</strong></a>(chunk, word)</dt><dd><tt>#&nbsp;each&nbsp;corpus&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;documents<br>
+#&nbsp;each&nbsp;document&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;tuples<br>
+#&nbsp;each&nbsp;tuple&nbsp;is&nbsp;an&nbsp;id,count&nbsp;pair,&nbsp;where&nbsp;id&nbsp;maps&nbsp;to&nbsp;a&nbsp;word&nbsp;and&nbsp;count&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;the&nbsp;word&nbsp;appears&nbsp;in&nbsp;the&nbsp;document<br>
+#&nbsp;pass&nbsp;in&nbsp;a&nbsp;chunk&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;documents,&nbsp;where&nbsp;each&nbsp;document&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;words,&nbsp;something&nbsp;like&nbsp;[['word',&nbsp;'word],['word','word']]<br>
+#&nbsp;dictionary&nbsp;=&nbsp;corpora.Dictionary(texts):&nbsp;map&nbsp;each&nbsp;word&nbsp;appearing&nbsp;in&nbsp;the&nbsp;corpus&nbsp;"texts"&nbsp;to&nbsp;an&nbsp;id<br>
+#&nbsp;dictionary.doc2bow(text):&nbsp;using&nbsp;the&nbsp;mapping&nbsp;of&nbsp;the&nbsp;dictionary,&nbsp;convert&nbsp;text&nbsp;to&nbsp;gensim's&nbsp;corpus&nbsp;format&nbsp;where&nbsp;each&nbsp;text&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;words<br>
+#&nbsp;corpus&nbsp;=&nbsp;[dictionary.doc2bow(text)&nbsp;for&nbsp;text&nbsp;in&nbsp;texts]:&nbsp;pass&nbsp;in&nbsp;texts&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;lists&nbsp;of&nbsp;words<br>
+#&nbsp;not&nbsp;sure&nbsp;if&nbsp;bugged...&nbsp;seems&nbsp;to&nbsp;be&nbsp;sort&nbsp;of&nbsp;working</tt></dd></dl>
+ <dl><dt><a name="-averageValence"><strong>averageValence</strong></a>(docs)</dt></dl>
+ <dl><dt><a name="-averageValenceTopFive"><strong>averageValenceTopFive</strong></a>(docs)</dt></dl>
+ <dl><dt><a name="-cosDistanceOfPair"><strong>cosDistanceOfPair</strong></a>(chunk, word1, word2, cbow, hashStr, chunkDate)</dt></dl>
+ <dl><dt><a name="-getTopFiveWords"><strong>getTopFiveWords</strong></a>(tfidfsDoc)</dt><dd><tt>#&nbsp;helper</tt></dd></dl>
+ <dl><dt><a name="-getTopWord"><strong>getTopWord</strong></a>(tfidfs)</dt><dd><tt>#&nbsp;helper</tt></dd></dl>
+ <dl><dt><a name="-nClosestNeighboursOfWord"><strong>nClosestNeighboursOfWord</strong></a>(chunk, word, N, cbow, hashStr, chunkDate)</dt></dl>
+ <dl><dt><a name="-probException"><strong>probException</strong></a>(chunk, x)</dt><dd><tt>#&nbsp;return&nbsp;1&nbsp;if&nbsp;probX&nbsp;=&nbsp;0,&nbsp;2&nbsp;if&nbsp;probX&nbsp;=&nbsp;1,&nbsp;and&nbsp;0&nbsp;if&nbsp;no&nbsp;error</tt></dd></dl>
+ <dl><dt><a name="-probX"><strong>probX</strong></a>(chunk, x)</dt></dl>
+ <dl><dt><a name="-probXAndNotY"><strong>probXAndNotY</strong></a>(chunk, x, y)</dt></dl>
+ <dl><dt><a name="-probXAndY"><strong>probXAndY</strong></a>(chunk, x, y)</dt></dl>
+ <dl><dt><a name="-probXGivenNotY"><strong>probXGivenNotY</strong></a>(chunk, x, y)</dt></dl>
+ <dl><dt><a name="-probXGivenY"><strong>probXGivenY</strong></a>(chunk, x, y)</dt></dl>
+ <dl><dt><a name="-relativeWordFrequency"><strong>relativeWordFrequency</strong></a>(chunk, word)</dt></dl>
+ <dl><dt><a name="-saveMatrix"><strong>saveMatrix</strong></a>(model, word, hashStr, chunkDate)</dt></dl>
+ <dl><dt><a name="-wordFrequency"><strong>wordFrequency</strong></a>(chunk, word)</dt></dl>
+ <dl><dt><a name="-wordNotInChunkException"><strong>wordNotInChunkException</strong></a>(chunk, word)</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>NNsize</strong> = 300<br>
+<strong>filePath</strong> = 'C:/Users/L/Documents/School/'<br>
+<strong>minWords</strong> = 5</td></tr></table>
+</body></html>
