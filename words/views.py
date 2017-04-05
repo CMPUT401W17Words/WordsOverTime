@@ -22,15 +22,6 @@ def genHash():
     start = int((start + randomNum1) / randomNum2)
     return str(start)
 
-#http://stackoverflow.com/questions/8380006/file-open-function-with-try-except-python-2-7-1
-def checkForFile(hashStr):
-    filePath = "/mnt/vol/csvs/"
-    try:
-      open(filePath + hashStr + ".csv", "r")
-      return True
-    except IOError:
-      return False
-
 #http://stackoverflow.com/questions/13259288/returning-a-list-of-words-after-reading-a-file-in-python
 def read_words(words_file):
     return [word for line in words_file for word in line.split()]
@@ -367,7 +358,7 @@ def graph(request, hash):
     valuesList = []
     keyWords = []
     #with open(filePath + hash + '.csv', 'r') as csvfile:
-    with open('test.csv', 'r') as csvfile:
+    with open(filePath + hash + '.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         xAxis = reader.fieldnames[0]
         yAxis = reader.fieldnames[1]
@@ -407,16 +398,6 @@ def graph(request, hash):
                 if(timestamp not in xValues):
                     xValues.append(timestamp)
         yValuesList.append(yTempValues)
-    
-    #print(yDict)
-    #print(xAxis)
-    #print(yAxis)
-
-    #print(xValues)
-
-    #print(yValuesList)
-
-    #print (keyWords)
 
     context = {
         'xAxis': xAxis, 
