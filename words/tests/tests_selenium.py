@@ -6,9 +6,45 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-import unittest, time, re
+from django.test import LiveServerTestCase
+import time, re
 
-class CreatePollTest(unittest.TestCase):
+#Note: The webserver MUST be running before running these tests.
+
+# ID classes:
+# startDate
+# endDate
+# unit -> values: Year/Month/Week
+# ---
+# Nneighbour (int - but field is text, watch for this)
+# keywords (text)
+# text_file (file)
+# output2 -> options: CBow, Skipgram
+# ---
+# wordPairs (text - (a, b), (c,d))
+# fileCos (file)
+# output3 -> options: CBow, Skipgram
+# ---
+# tfidfWord (text)
+# ---
+# conditionalWord (text -> (a, b), (c, d))
+# fileConditional (file)
+# ---
+# checkboxes:
+# name: Average valence
+# name: Average arousal
+# name: 5 Words Average valence
+# name: 5 Words Average arousal
+# ---
+# frequencyWord (text)
+# fileFrequency (file)
+# ---
+# relativeWord (text)
+# relativeFile (file)
+# ---
+# userEmail (text)
+
+class WordsTest(LiveServerTestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -16,8 +52,14 @@ class CreatePollTest(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
 
-    def our_test(self):
-        assertTrue(2+2, 4)
+    def test_abcd(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.find_element_by_id("startDate").send_keys("2000-01-01")
+        driver.find_element_by_id("endDate").send_keys("2001-01-01")
+        driver.find_element_by_id("unit").click()
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        self.assertTrue(2+2, 4)
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
