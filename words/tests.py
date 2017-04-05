@@ -10,6 +10,7 @@ import csv
 import decimal
 from datetime import date
 # Create your tests here.
+import gensim
 
 class DataRetrievalTests(TestCase):
     
@@ -352,7 +353,8 @@ class DataAnalyzerTests(TestCase):
                 self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
                 
         def testSaveMatrix(self):
-            pass
+            model = gensim.models.Word2Vec([['water', 'fire']], size=100, min_count=1, sg=0)
+            saveMatrix(model, 'water', '333333', date(2000, 1, 13))
     
 class DataInputTests(TestCase):
  
