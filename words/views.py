@@ -133,6 +133,13 @@ def success(request):
     else:
         top5averageArousal = 0
 
+    if "averageWords" in request.POST:
+        averageWords = request.POST["averageWords"]
+        averageWordsList = averageWords.split()
+    else:
+        averageWords = ''
+        averageWordsList = []
+
     #Form data for word frequency
     if "frequencyWord" in request.POST:
         wordFrequencyWords = request.POST["frequencyWord"]
@@ -168,10 +175,11 @@ def success(request):
     #Form data for email
     if "userEmail" in request.POST:
         email = request.POST["userEmail"]
+        emailList = email.split()
     else:
         #error
         email = ''
-        return HttpResponse("Must enter an email")
+        emailList = []
     #print(keyWordsList)  
     
     hashList = []
@@ -258,7 +266,7 @@ def success(request):
     #Handle Average Valence Request
     if (averageValence == '1'):
         avgValHash = genHash()       
-        avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity, avgValHash)
+        avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgValHash)
         #avgValResult = avgValReq.execute()
         #avgValResult.generateCSV(avgValHash)
         requestList.append(avgValReq)
@@ -267,7 +275,7 @@ def success(request):
     #Handle Average Arousal Request
     if (averageArousal == '1'):
         avgAroHash = genHash()  
-        avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity, avgAroHash)
+        avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgAroHash)
         #avgAroResult = avgAroReq.execute()
         #avgAroResult.generateCSV(avgAroHash)
         requestList.append(avgAroReq)
@@ -276,7 +284,7 @@ def success(request):
     #Handle Average 5 Word Valence Request
     if (top5averageValence == '1'):
         avgVal5Hash = genHash()      
-        avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity, avgVal5Hash)
+        avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgVal5Hash)
         #avgVal5Result = avgVal5Req.execute()
         #avgVal5Result.generateCSV(avgVal5Hash)
         requestList.append(avgVal5Req)
@@ -285,7 +293,7 @@ def success(request):
     #Handle Average 5 Word Arousal Request
     if (top5averageArousal == '1'):
         avgAro5Hash = genHash()      
-        avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity, avgAro5Hash)
+        avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgAro5Hash)
         #avgAro5Result = avgAro5Req.execute()
         #avgAro5Result.generateCSV(avgAro5Hash) 
         requestList.append(avgAro5Req)
@@ -340,7 +348,7 @@ def success(request):
     
     context["nHashes"] = len(hashList)
 
-    requests = RequestsExecuteThread(requestList, email)
+    requests = RequestsExecuteThread(requestList, emailList)
     requests.start()
 
     #return render(request, 'words/submit.html')
