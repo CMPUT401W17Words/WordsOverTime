@@ -27,11 +27,24 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 	
-<style> 
-body{ text-align:center} 
-.fileIn{ margin:0 auto;} 
- 
-</style> 	
+		<!--datepicker css-->
+<!--depulicated		<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
+    <link href="{% static 'words/css/bootstrap-datetimepicker.min.css' %}"  rel="stylesheet" media="screen">
+		<!--dropdown css-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+	
+	
+		<style> 
+		body{ text-align:center} 
+		.fileIn{ margin:0 auto;} 
+		.colorbg{
+				color: #f5f5f5
+			}
+			.bootstrap-select{ color: f5f5f5}
+		</style>
+	
+
+	
 </head> 
 
 <body data-spy="scroll">
@@ -90,9 +103,6 @@ body{ text-align:center}
 -->
 			
 			
-			
-			
-			
     </header><!--//header
     
     <!-- ******PROMO****** -->
@@ -122,7 +132,7 @@ understand how language is used by the media</p>
     <section id="about" class="about section">
         <div class="container">
             <h2 class="title text-center">What is WordsOverTime?</h2>
-            <p class="intro text-center">Explain project in detail.</p>
+            <p class="intro text-center">WordsOverTime is a web based database application that involves running a series of requests over a database that stores several articles, and outputting the results of those requests to the user.</p>
             <div class="row">
                 <div class="item col-md-4 col-sm-6 col-xs-12">
                     <div class="icon-holder">
@@ -130,7 +140,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Designed for reseachers</h3>
-                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                        <p>Designed for researchers who are intested in analyzing word meanings over time</p>
                     </div><!--//content-->
                 </div><!--//item-->
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -139,7 +149,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Time saver</h3>
-                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                        <p>A effecient way to acquire the wanted values from a large database</p>
                     </div><!--//content-->
                 </div><!--//item-->
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -148,7 +158,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">UX-centred</h3>
-                         <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                         <p>User exprience centred UI designing and color schema</p>
                     </div><!--//content-->
                 </div><!--//item-->           
                 <div class="clearfix visible-md"></div>    
@@ -158,7 +168,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Mobile-friendly</h3>
-                         <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                         <p>Resposive web framework allow this page fitting many didfferent mobile screens</p>
                     </div><!--//content-->
                 </div><!--//item-->                
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -167,7 +177,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Easy to use</h3>
-                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                        <p>By simply few clicks, the analysis is esay to use for students</p>
                     </div><!--//content-->
                 </div><!--//item-->
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -176,7 +186,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Benefit</h3>
-                        <p>Outline a benefit here. change the icon above to <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">FontAwesome</a> icons available.</p>
+                        <p>Benefiting for understanding how words are used by media over time </p>
                     </div><!--//content-->
                 </div><!--//item-->               
             </div><!--//row-->            
@@ -188,22 +198,169 @@ understand how language is used by the media</p>
         <div class="container text-center">
             <h2 class="title">Analyze</h2>	
 					
+					
+					
+		<!-- start of input validating-->
+		<script type="text/javascript">
+
+		function ifEmptyNotify(field,alerttxt)
+		{
+		with (field)
+			{
+			if (value==null||value=="")
+				{alert(alerttxt);return false}
+			else {return true}
+			}
+		}
+			
+		function ifEmptySilent(field)
+		{
+		with (field)
+			{
+			if (value==null||value=="")
+				{return false}
+			else {return true}
+			}
+		}
+			
+		function ifNCloestEmpty(){
+			if (ifEmptySilent(Nneighbor)==false || ifEmptySilent(keywords) == false){
+				{return false}
+			}
+			else {return true}
+		}
+			
+		function ifCosEmpty(){
+			if (ifEmptySilent(wordPairs)==false){
+				return false
+			}
+			else {return true}
+		}
+		
+		function ifTdidfEmpty(){
+			if(ifEmptySilent(tfidfWord)==false){
+				return false
+			}
+			else {return true}
+		}
+			
+		function ifPCPEmpty(){
+			if(ifEmptySilent(conditionalWord)==false){
+				return false
+			}
+			else {return true}
+		}
+			
+		function ifAAChecked(){
+			if(document.getElementById('AV').checked || document.getElementById('AA').checked || document.getElementById('5AV').checked || document.getElementById('5AA').checked){
+				return true
+			}
+			else { return false}
+		}
+			
+		function ifWFEmpty(){
+			if(ifEmptySilent(frequencyWord)==false){
+				return false
+			}
+			else {return true}
+		}
+		
+	
+		function ifRelativeWFEmpty(){
+			if(ifEmptySilent(relativeWord)==false){
+				return false
+			}
+			else {return true}
+		}
+
+		function isValidCSP(commaSeperatedPhase)//regexp practise 
+		{
+				// First check for the pattern
+				var regex_csp = /^\w+(,\w+)*$/;
+
+				if(!regex_csp.test(commaSeperatedPhase))
+				{
+						return false;
+				}
+			}
+		
+		function checkForm(thisform)
+		{
+		with (thisform)
+			{
+				
+			//general slots check
+			if (ifEmptyNotify(startDate,"Starting Date  must be filled!")==false)
+				{startDate.focus();return false}
+				
+			if (ifEmptyNotify(endDate,"Ending Date must be filled!")==false)
+				{endDate.focus();return false}
+				
+			if (ifEmptyNotify(userEmail,"Email must be filled!")==false)
+				{userEmail.focus();return false}
+			
+			//task section check
+				if (ifNCloestEmpty() == false && ifCosEmpty()==false && ifTdidfEmpty() == false && ifPCPEmpty() == false && ifAAChecked() == false && ifWFEmpty() == false && ifRelativeWFEmpty()==false)
+				{
+					alert("at least one of the analysis section should be filled !");
+					return false}
+			}
+			
+			// input format check
+			if(ifNCloestEmpty() == true && isValidCSP(keywords)==false ){
+				alert("N neighbor keywords fomat should be comma seperated words like oil,gas ")
+			} 
+		}
+				
+		</script><!-- end of input validating script-->
+					
+					
 						<!-- copy from last version-->
-						 <form enctype="multipart/form-data" action = "/words/success/" method = "post">
-							 				
-                        <br/>
-							  				<br/>
-							 					From <input type="date"  class="datepicker"id = "startDate" name="startDate" placeholder="1990-01-01" size="10">
-                    
-                         To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">
+					
+						 <form  enctype="multipart/form-data" action="/words/success/" method = "post" onsubmit="return checkForm(this)"><!--action = "/words/success/"-- replaced-->
+						 
+							 <!------->
+         
+						<div class="form-group" >
+                <label for="dtp_input1" class="col-md-4 control-label">From</label>
+                <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+                    <input class="form-control" size="16" type="date" value="" id = "startDate" name="startDate" readonly placeholder="2010-April-01">
+										
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+								<input type="hidden" id="dtp_input1" value="" /><br/>
+            </div>
+		
+					
+						<div class="form-group" >
+                <label for="dtp_input2" class="col-md-4 control-label">To</label>
+                <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+										 <input type="date" id = "endDate" name="endDate" placeholder="2017-April-01" class="form-control" size="16" readonly>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										</div>
+								<input type="hidden" id="dtp_input2" value="" /><br/>
+            </div>
 							 
-							 					<lable>By</lable>		 				
-												<select type = "select" id="unit" name = "granularity">
+							 <!------->		
+<!--							 					From <input type="date"  class="form-control"id = "startDate" name="startDate" readonly size="10" value="">-->
+                    
+<!--                         To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">-->
+							 
+							 
+							 
+								 <div clas = "form-group">
+							 					<label class="col-md-4 control-label">By</label>	
+												<select   class="col-md-2 selectpicker"  type = "select" id="unit" name = "granularity">
 													<option value = "Year">Year</option>
 													<option value = "Month">Month</option>
 													<option value = "Week">Week</option>
 												</select>
 												<!--end of beginning analysing section-->
+							 </div>
+							
+					
 							 	<br/>
 								<br/>
 							 
@@ -215,8 +372,9 @@ understand how language is used by the media</p>
 														<div id="collapse1" class="panel-collapse collapse">
 															<div class="panel-body">
 																<div id="NclosestNeighbors">
+																	<p class="intro text-center">The N cloest neighbours in each output matrix for a given list of words.</p>
 																		<br/>
-																		<input type="text" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
+																		<input type="number" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
 																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="comma-separated phrase">
 																		<input type="file" class="fileIn" name = "text_file" id="text_file">
 																			<select id="output2" name="skipOrCBOW1">
@@ -237,7 +395,9 @@ understand how language is used by the media</p>
 										</div>
 										<div id="collapse2" class="panel-collapse collapse">
 											<div class="panel-body">
-												<div id="cos"><input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="(w1, w2),(w3, w4) format">
+												<div id="cos">
+													<p class="intro text-center">The cosine distance in each output matrix for a given list of word pairs</p>
+													<input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="(w1, w2),(w3, w4) format">
 													<input class="fileIn" type=file name = "text_file2" id="fileCos">
 												
 													<select id="output3" name="skipOrCBOW2">
@@ -258,6 +418,7 @@ understand how language is used by the media</p>
 									<div id="collapse3" class="panel-collapse collapse">
 										<div class="panel-body">
 											<div id="Averagetfidf">
+												<p class="intro text-center">A measure of average term frequency within a corpus chunk to global word frequency in the entire corpus.</p>
 												<input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="single word">
 											</div>
 										</div>
@@ -274,6 +435,8 @@ understand how language is used by the media</p>
 									<div id="collapse4" class="panel-collapse collapse">
 										<div class="panel-body">
 											<div id="pcp"><!--changed id from five to abbr.-->
+												
+												<p class="intro text-center">Pairwise conditional probablities by article for each corpus chunk.</p>
 												<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="(w1, w2),(w3, w4) format">
 												<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
 											</div>
@@ -291,12 +454,12 @@ understand how language is used by the media</p>
 									<div id="collapse5" class="panel-collapse collapse">
 										<div class="panel-body">
 												<div id="aa" class = "checkbox"><!--changed id from six to abbr.-->
-														<label><input type="checkbox" name="Average valence" value="1">Average valence</label>
-														<label><input type="checkbox" name="Average arousal" value="1">Average arousal</label>
+														<label><input type="checkbox" id = "AV" name="Average valence" value="1">Average valence</label>
+														<label><input type="checkbox"  id = "AA" name="Average arousal" value="1">Average arousal</label>
 														<br/>
-														<label><input type="checkbox" name="5 Words Average valence" value="1">Average valence of five words with highest tfidf</label>
+														<label><input type="checkbox"  id = "5AV" name="5 Words Average valence" value="1">Average valence of five words with highest tfidf</label>
 														<br/>
-														<label><input type="checkbox" name="5 Words Average arousal" value="1">Average arousal of five words with highest tfidf</label>
+														<label><input type="checkbox" id = "5AA" name="5 Words Average arousal" value="1">Average arousal of five words with highest tfidf</label>
 																																										<!--default value1?-->
 							 					</div>
 											</div>
@@ -312,6 +475,7 @@ understand how language is used by the media</p>
 									<div id="collapse6" class="panel-collapse collapse">
 										<div class="panel-body">
 												<div id="WordFrequency"><!--changed id from seven to abbr.-->
+													<p class="intro text-center">Measure of word frequency in each corpus chunk.</p>
 								 						<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="frequencyWords">
 														<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
 							 					</div>
@@ -329,6 +493,7 @@ understand how language is used by the media</p>
 									<div id="collapse7" class="panel-collapse collapse">
 										<div class="panel-body">
 												<div id="ralativeWordFrequency"><!--changed id from seven to abbr.-->
+													<p class="intro text-center">Measure of relative word frequency in each corpus chunk: frequency within a corpus chunk to global word frequency in the entire corpus.</p>
 								 						 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="relativeWords">
 														 <input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
 							 					</div>
@@ -343,11 +508,10 @@ understand how language is used by the media</p>
 							 <br/>
 				
 							<div id="submission">
-								<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="input your email">
+								<input type="email" size=30 id="userEmailid" name = "userEmail" placeholder="input your email">
 								<br/>
 								<br/>
-								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>
-								
+								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>		
 							</div>
 						</form><!--//from latest version-->
         </div><!--//container-->
@@ -401,6 +565,54 @@ understand how language is used by the media</p>
     <script type="text/javascript" src="{% static 'words/plugins/bootstrap/js/bootstrap.min.js' %}"></script>     
     <script type="text/javascript" src="{% static 'words/plugins/jquery-scrollTo/jquery.scrollTo.min.js' %}"></script> 
     <script type="text/javascript" src="{% static 'words/plugins/prism/prism.js' %}"></script>    
-    <script type="text/javascript" src="{% static 'words/js/main.js' %}"></script>       
+    <script type="text/javascript" src="{% static 'words/js/main.js' %}"></script>  
+	
+	
+	
+	<!--js for datepicker-->
+<!--duplicated		<script type="text/javascript" src="./jquery/jquery-1.8.3.min.js" charset="UTF-8"></script>-->
+<!--duplicated    <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>-->
+<script type="text/javascript" src="{% static 'words/js/bootstrap-datetimepicker.js' %}" charset="UTF-8"></script>
+<!--<script type="text/javascript" src="{% static 'words/js/bootstrap-datetimepicker.fr.js' %}" charset="UTF-8"></script>-->
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
+	$('.form_date').datetimepicker({
+        language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+    });
+	$('.form_time').datetimepicker({
+        language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 1,
+		minView: 0,
+		maxView: 1,
+		forceParse: 0
+    });
+</script>
+	
+	
+	
+	<!-- bootstrap drop down js-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
 </body>
 </html> 
