@@ -1,9 +1,9 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-import sys
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
-import django
-django.setup()
+#import os
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+#import sys
+#sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+#import django
+#django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 
