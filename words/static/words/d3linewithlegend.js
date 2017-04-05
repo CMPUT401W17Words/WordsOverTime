@@ -1,5 +1,5 @@
 function d3LineWithLegend() {
-  var margin = {top: 30, right: 10, bottom: 40, left: 60},
+  var margin = {top: 30, right: 10, bottom: 100, left: 100},
       width = 960,
       height = 500,
       dotRadius = function() { return 2.5 },
@@ -47,7 +47,16 @@ function d3LineWithLegend() {
       var gEnter = wrap.enter().append('g').attr('class', 'wrap d3lineWithLegend').append('g');
 
       gEnter.append('g').attr('class', 'legendWrap');
-      gEnter.append('g').attr('class', 'x axis');
+      gEnter.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+        .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start");
       gEnter.append('g').attr('class', 'y axis');
       gEnter.append('g').attr('class', 'linesWrap');
 

@@ -8,23 +8,41 @@ from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 
 def getArousal(wd):
-    return Sentiment_Dict.objects.get(word=wd).arousal
+    return float(Sentiment_Dict.objects.get(word=wd).arousal)
     
 def getValence(wd):
-    return Sentiment_Dict.objects.get(word=wd).valence
+    return float(Sentiment_Dict.objects.get(word=wd).valence)
     
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
 def getDocuments(startDate, endDate):
-    docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
+    #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
+    docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     words = []
     for doc in docs:
         words.append(getWordsInDocument(doc))
     return words
 
 def getDocumentData(startDate, endDate):
-    docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
+    #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
+    docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     return (list(docs))
+
+def getDocumentDataWithWordFilter(startDate, endDate, wordList):
+    if (len(wordList)<1):
+        return getDocumentData(startDate, endDate)
+    else:
+        docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate)) # all documents in date range
+        articleIds = docs.values_list('article_id', flat=True) # list of article ids for all documents
+        for wd in wordList:
+            filteredArticleIds = []
+            idFilter = Word_Data.objects.filter(word=wd).values_list('article_id', flat=True)
+            for x in articleIds:
+                if x in idFilter:
+                    filteredArticleIds.append(x)
+            articleIds = filteredArticleIds
+        docs = docs.filter(article_id__in=articleIds) # filter docs by articles that contain the words
+        return (list(docs))
 
 # return all word data objects for a word (each word data will be a different doc with the same word)
 def getWordData(wordIn):

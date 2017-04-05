@@ -1,11 +1,15 @@
 import gensim, logging
 import decimal
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import words.dataretrieval
 
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
+
+NNsize = 300
+minWords = 5
+filePath = '/mnt/vol/matrices/'
 
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
@@ -96,7 +100,7 @@ def averageTfidfOfWord(chunk, word):
     #print(corpus)
     totalTfidf = 0.0
     docCount = 0.0
-    wordId = dictionary.token2id[word]
+    wordId = dictionary.token2id[word] # THIS CAUSES ERROR IF WORD NOT IN CHUNK
     for doc in corpus:
         #print(doc)
         #print(tfidf[doc])
@@ -113,30 +117,31 @@ def averageTfidfOfWord(chunk, word):
                 #totalTfidf = totalTfidf + wordd[1]
                 #break
     
-def cosDistanceOfPair(chunk, word1, word2, cbow):
+def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word1+word2+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/word1word2/somedate. email the user by zipping the somehash folder
     return model.similarity(word1, word2)
     
-def nClosestNeighboursOfWord(chunk, word, N, cbow):
+def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
     if (cbow==True):
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=0)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
-        model = gensim.models.Word2Vec(chunk, min_count=1, sg=1)
+        model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
+    model.save(filePath+hashStr+'/'+word+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/someword/somedate. email the user by zipping the somehash folder
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):
     result = 0.0
     for doc in chunk:
-        if word in doc:
-            result = result + 1.0
+        result = result + doc.count(word)
     return result
 
 # fullFreq is frequency in full corpus
 def relativeWordFrequency(chunk, word, fullFreq):
-    return wordFrequency(chunk,word)/fullFreq
+    return wordFrequency(chunk,word)/fullFreq # MUST CHECK IF fullFreq = 0
 
 def probX(chunk, x):
     count = 0.0
@@ -165,3 +170,21 @@ def probXGivenNotY(chunk, x, y):
         return 0.0
     xAndNotY = probX(chunk, x)*notY
     return xAndNotY/notY
+
+# return 1 if probX = 0, 2 if probX = 1, and 0 if no error
+def probException(chunk, x):
+    pX = probX(chunk, x)
+    if (pX.is_integer()):
+        if (pX == 0.0):
+            return 1
+        if (pX == 1.0):
+            return 2
+        return 0
+    else:
+        return 0
+
+def wordNotInChunkException(chunk, word):
+    for doc in chunk:
+        if word in doc:
+            return False
+    return True
