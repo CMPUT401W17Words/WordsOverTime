@@ -22,8 +22,15 @@ var title = '';
 var xAxis = "{{ xAxis }}";
 var yAxis = "{{ yAxis }}";
 var xValues = {{ xValues }};
+var startDate = new Date(xValues[0]);
+var startDateStr = ''
+startDateStr += startDate.getFullYear() + "-" + startDate.getMonth() + "-" + startDate.getDate();
+//alert(startDate);
+var endDate = new Date(xValues[xValues.length - 1]);
+var endDateStr = ''
+endDateStr += endDate.getFullYear() + "-" + endDate.getMonth() + "-" + endDate.getDate();
 
-title = title + yAxis + " between " + xValues[0] + " and " + xValues[-1] + " by " + xAxis;
+title = title + yAxis + " between " + startDateStr + " and " + endDateStr + " by " + xAxis;
 
 //http://stackoverflow.com/questions/14845710/javascript-variable-access-in-html
     window.onload = function() {
