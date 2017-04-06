@@ -435,6 +435,7 @@ class Result():
                 print("KEY!!!", key)
                 print(len(self.xValues))
                 print(self.xValues)
+                print(self.yValues)
                 for i in range(len(self.xValues)):
                     print("for i in range")
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
