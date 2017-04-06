@@ -16,7 +16,7 @@ import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
-    return (shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr))
+    shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
     #zf = zipfile.ZipFile(hashStr+".zip", "w")
     #for dirname, subdirs, files in os.walk(matricesPath):
         #print(dirname)
@@ -54,8 +54,7 @@ class RequestsExecuteThread(Thread):
                 print(matrixPath)
                 print(os.path.isdir(matrixPath))
                 if (os.path.isdir(matrixPath)):
-                    z = zipMatrices(matrixPath, req.hashStr)
-                    print(z)
+                    zipMatrices(matrixPath, req.hashStr)
                     matrices = matrixPath+'.zip'
                     print(matrices)
                     matrixList.append(matrices)
