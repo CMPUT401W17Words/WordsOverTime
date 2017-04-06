@@ -340,7 +340,8 @@ class RequestHandlerTests(TestCase):
             print(k, v)        
         print("Errors: " + str(result.errors))
         print()
-        
+    
+    # django does not support testing this concurrently, but it does seem to work    
     def testRequestsExecuteThread(self):
         reqs = []
         dateRange = (date(2008, 2, 17), date(2010, 12, 31))
