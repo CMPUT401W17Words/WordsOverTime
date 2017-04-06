@@ -3,6 +3,7 @@ import decimal
 #logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import words.dataretrieval
 import os
+import copy
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
@@ -71,7 +72,7 @@ def averageArousalTopFive(docs):
 # helper
 def getTopFiveWords(tfidfsDoc):
     result = []
-    tfidfs = tfidfsDoc.copy()
+    tfidfs = copy.deepcopy(tfidfsDoc)
     topWord = getTopWord(tfidfs)
     while (topWord != None):
         result.append(topWord)
