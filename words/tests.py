@@ -110,7 +110,7 @@ class DataRetrievalTests(TestCase):
     def testGetWordsInDocument(self):
         wordsIn1 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=1))
         wordsIn4 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=4))
-        wordsIn18 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=18))
+        wordsIn145 = words.dataretrieval.getWordsInDocument(Document_Data.objects.get(article_id=145))
         self.assertTrue('system' in wordsIn4)
         self.assertTrue('human' in wordsIn4)
         self.assertTrue('eps' in wordsIn4)
@@ -119,7 +119,7 @@ class DataRetrievalTests(TestCase):
         self.assertTrue(wordsIn4.count('human') == 1)
         self.assertTrue(wordsIn4.count('eps') == 1)
         self.assertTrue(wordsIn4.count('survey') == 0)
-        self.assertTrue(wordsIn18.count('survey') == 1)
+        self.assertTrue(wordsIn145.count('computer') == 1)
     
     def testGetNumWordsInCorpus(self):
         startDate = date(2008, 2, 17)
