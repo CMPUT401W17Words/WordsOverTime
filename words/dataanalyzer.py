@@ -204,9 +204,12 @@ def probException(chunk, x):
         return 0
 
 def wordNotInChunkException(chunk, word):
+    wordCount = 0
     for doc in chunk:
         if word in doc:
-            return False
+            wordCount = wordCount + 1
+            if (wordCount >= 5):
+                return False
     return True
 
 def saveMatrix(model, word, hashStr, chunkDate):
