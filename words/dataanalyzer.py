@@ -34,6 +34,7 @@ def averageValenceTopFive(docs):
     totalChunk = 0.0
     for doc in corpus:
         print("DOC!!!", doc)
+        print("TFIDF!!!", tfidf[doc])
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
