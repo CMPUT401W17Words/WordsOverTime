@@ -74,11 +74,10 @@ def getTopFiveWords(tfidfsDoc):
     result = []
     tfidfs = copy.deepcopy(tfidfsDoc)
     topWord = getTopWord(tfidfs)
-    while (topWord != None):
+    while ((topWord != None) and (len(result)<5)):
         result.append(topWord)
-        print('tfidfs', tfidfs)
-        print('topword', topWord)
         tfidfs.remove(topWord)
+        topWord = getTopWord(tfidfs)
     return result
 
 # helper  
