@@ -115,7 +115,7 @@ class DataRetrievalTests(TestCase):
         self.assertTrue('human' in wordsIn4)
         self.assertTrue('eps' in wordsIn4)
         self.assertTrue('human' in wordsIn1)
-        self.assertTrue(wordsIn4.count('system') == 2)
+        self.assertTrue(wordsIn4.count('system') == 5)
         self.assertTrue(wordsIn4.count('human') == 1)
         self.assertTrue(wordsIn4.count('eps') == 1)
         self.assertTrue(wordsIn4.count('survey') == 0)
