@@ -36,8 +36,12 @@ def enterSentiment(dictpath):
     cursor = django.db.connection.cursor()
     nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);" % dictpath)
 
-def enterArticles():
-    pass
+#load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
+
+def enterArticles(corpuspath):
+    cursor = django.db.connection.cursor()
+    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);" % corpuspath)
+    Articles_Can.objects.filter(publicationdate = None).delete()
 
 # main function that will input corpus info into the database
 def enterData(corpusCsv):
@@ -234,9 +238,10 @@ def loadSentiment(sentimentCsv):
 
 def run(sentPath, corpusPath):
     print "Creating database from ", sentPath, " and ", corpusPath
-#    enterSentiment(sentPath)
-#    enterData(corpusPath)
-#   tfidfForFullCorpus()
+    enterSentiment(sentPath)
+    enterArticles(corpusPath)
+    enterData(corpusPath)
+    tfidfForFullCorpus()
     
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 {% load static %}
 <!DOCTYPE html>
 <meta charset="utf-8">
-
+<html>
 <link href="{% static 'words/d3.css' %}" rel="stylesheet" type="text/css">
 
 <style>
@@ -16,6 +16,29 @@
 
 
 <body>
+
+<script>
+var title = '';
+var xAxis = "{{ xAxis }}";
+var yAxis = "{{ yAxis }}";
+var xValues = {{ xValues }};
+var startDate = new Date(xValues[0]);
+var startDateStr = ''
+startDateStr += startDate.getFullYear() + "-" + startDate.getMonth() + "-" + startDate.getDate();
+//alert(startDate);
+var endDate = new Date(xValues[xValues.length - 1]);
+var endDateStr = ''
+endDateStr += endDate.getFullYear() + "-" + endDate.getMonth() + "-" + endDate.getDate();
+
+title = title + yAxis + " between " + startDateStr + " and " + endDateStr + " by " + xAxis;
+
+//http://stackoverflow.com/questions/14845710/javascript-variable-access-in-html
+    window.onload = function() {
+        document.getElementById("graphTitle").innerHTML=title;
+    } 
+</script>
+
+<h2 id="graphTitle"></h2>
 
 <div id="test1">
   <svg></svg>
@@ -115,33 +138,12 @@ $(document).ready(function() {
 
   //data
   function generateData() {
-    var sin = [],
-        sin2 = [],
-        cos = [],
-        cos2 = [],			   
-        r1 = Math.random(),
-        r2 = Math.random(),
-        r3 = Math.random(),
-        r4 = Math.random();
-
     var xValues = {{ xValues }};
     var keywords = {{ keywords | safe }};
     //alert(keywords.length);
-    //var splitWords = keywords.split(" ");
-    //for(var key in splitWords){
-    //    alert(splitWords[key]);
-    //}
     //alert(xValues);
     var yValues = {{ yValues }};
     //alert(yValues);
-    //dataPoints = [];
-    //dataPoints2 = [];
-    //testThing = ["march", "april", "june", "july", "august"]
-    //returnValueList = [];
-    //for(var i = 0; i < keywords.length; i++){
-    //    dataPoints = [];
-        
-    //}
     dataPoints = [];
     returnValueList = [];
 
@@ -149,156 +151,20 @@ $(document).ready(function() {
         dataPoints = [];
         for(var j = 0; j < xValues.length; j++){
             var date = new Date(xValues[j]);
-            dataPoints.push([ date, yValues[i][j] ]);
+            if(yValues[i][j] > -100){
+                dataPoints.push([ date, yValues[i][j] ]);
+            }
+            else {
+                dataPoints.push([date, NaN]);
+            }
         }        
         returnValueList.push({ data: dataPoints, label: keywords[i] });
     }    
-
-    //for(var i = 0; i < 4; i++) {
-        //var date = new Date("2015-03-25");
-        //date.setYear(date.getFullYear() + i)
-	    //var date = new Date(xValues[i]);
-    //    dataPoints.push([ date, 1 ]);
-        //dataPoints2.push([ date, 0.1 * i]);
-    //}
-    //returnValueList = [];
-    //returnValueList.push({ data: dataPoints, label: "hello" });
-    //returnValueList.push({ data: dataPoints2, label: 'test' })
     return returnValueList
-/*
-    return [
-        {
-            data: dataPoints,
-            label: keywords
-        }
-    ]
-*/
-/*
-    var xValues = {{ xValues }};
-    var keywords = "{{ keywords }}";
-    var yValueList = {{ yValueList }};
-    alert(keywords);
-
-    var wordList = [];
-
-    for(var key in keywords) {
-        test = [];
-        wordList.push(test);
-    }
-
-    for(var i = 0; i < xValues.length; i++) {
-        for(var j = 0; j < wordList.length; j++) {
-            wordList[j].push([ xValues[i], yValueList[j][i]);
-        }
-    }
-
-    return [
-        {
-            data: wordList[0],
-            label: keywords[0]
-        },
-        {
-            data: wordList[1],
-            label: keywords[1]
-        }
-    ];
-    */        
-
-    //var xAxis = "{{ xAxis }}";
-    //var yAxis = "{{ yAxis }}";
-    //var word1 = "{{ word1 }}";
-    //var word2 = "{{ word2 }}";
-    //var w1x = {{ w1x }};
-    //var w1y = {{ w1y }};
-    //var w2x = {{ w2x }};
-    //var w2y = {{ w2y }};
-    
-
-    //var word1List = [];
-    //var word2List = [];
-    
-    /*
-    for (var i = 0; i < 4; i++) {
-        word1List.push([ w1x[i], w1y[i] ]);
-        word2List.push([ w2x[i], w2y[i] ]);
-    }    
-
-    return [
-        {
-            data: word1List,
-            label: word1
-        },
-        {
-            data: word2List,
-            label: word2
-        }
-    ];
-
-
-    /*var graphTest = [];
-    var xAxis;
-    var yAxis;
-    var xValues = [];
-    var yValues = [];
-
-    test = {{ test }};
-	test2 = {{ test2 }};
-    alert(test);
-    for (var key in test) {
-        xAxis = key;
-        xValues = test[key];
-    }
-    for (var key in test) {
-        yAxis = key;
-        yValues = test[key];
-    }
-
-    for (var i = 0; i < 4; i++) {
-        graphTest.push([ i, 100);
-    }
-
-    return [
-        {
-            data: graphTest,
-            label: xAxis
-        }
-    ];
-    
-    /*
-    for (var i = 0; i < 100; i++) {
-      sin.push([ i, 0.1 ]);
-      cos.push([ i, r2 * Math.cos( r3 + i / (10 * (r3 + .5) ))]);
-      sin2.push([ i, r3 * Math.sin( r1 + i / (10 * (r2 + .5) ))]);
-      cos2.push([ i, r4 * Math.cos( r4 + i / (10 * (r1 + .5) ))]);
-      test.push([ i, test[ i % 4 ]]);
-    }
-    
-
-    return [
-      {
-        data: sin,
-        label: "Sine Wave"
-      },
-      {
-        data: cos,
-        label: "Cosine Wave"
-      },
-      {
-        data: sin2,
-        label: "Sine2 Wave"
-      },
-      {
-        data: cos2,
-        label: "Cosine2 Wave"
-      },
-            {
-			data: test,
-			label: "Test"
-			}
-    ];*/
   }
 
 });
 
 
 </script>
+</html>

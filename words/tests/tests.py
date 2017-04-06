@@ -358,8 +358,24 @@ class DataAnalyzerTests(TestCase):
         for item in self.wordData:
             item.save()
     
-#class DataInputTests(TestCase):
-    
-    #def testDataInput(self):
-        #words.databaseinput.run()
+class DataInputTests(TestCase):
+ 
+ 
+    def testenterSentiment(self):
+        words.databaseinput.enterSentiment('words\sentiment_mock.csv')
+        result = sentiment_dict.objects.all()
+        print('Sentiment_Mock in database:')
+        for v in result:
+            print(v)
+            
+    def testCorpusInput(self):
+        words.databaseinput.enterArticles('words\corpus_mock.csv')
+        result = articles_can.objects.all()
+        print('corpus_Mock in database:')
+        for v in result:
+            print(v)  
+            
+    def testDataInput(self):
+        words.databaseinput.run('words\sentiment_mock.csv', 'words\corpus_mock.csv')
+        pass
         

@@ -152,12 +152,14 @@ function d3Line() {
           .attr('d', d3.svg.line()
             .x(function(d) { return x0(d[0]) })
             .y(function(d) { return y0(d[1]) })
+            .defined(function(d) {return !isNaN(d[1])})
           );
       paths.exit().remove();
       d3.transition(paths)
           .attr('d', d3.svg.line()
             .x(function(d) { return x(d[0]) })
             .y(function(d) { return y(d[1]) })
+            .defined(function(d) {return !isNaN(d[1])})
           );
 
 

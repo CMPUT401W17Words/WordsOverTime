@@ -1,15 +1,15 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-import sys
-sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
-import django
-django.setup()
+#import os
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+#import sys
+#sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+#import django
+#django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 
 def getArousal(wd):
     return float(Sentiment_Dict.objects.get(word=wd).arousal)
-    
+   
 def getValence(wd):
     return float(Sentiment_Dict.objects.get(word=wd).valence)
     
@@ -65,7 +65,7 @@ def getNumWordsInCorpus(documents):
         for word in words:
             total = total + word.word_count
     return total
-            
+           
 def getNumWordInCorpus(documents, inputWord):
     total = 0
     for doc in documents:
@@ -74,7 +74,6 @@ def getNumWordInCorpus(documents, inputWord):
             total = total + word.word_count
     return total
 
-# split a list of documents into sublists based on a specified time granularity        
 def splitDocuments(documents, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
