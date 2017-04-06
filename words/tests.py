@@ -351,7 +351,7 @@ class RequestHandlerTests(TestCase):
         request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, 'test12')
         reqs.append(request)       
         ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
-        ret.start()
+        ret.run()
         
     def testGenerateCSV(self):
         pass

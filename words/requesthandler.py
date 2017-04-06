@@ -412,8 +412,6 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             yDict[(pair, "YGivenX")] = yValsYGivenX
             yDict[(pair, "XGivenNotY")] = yValsXGivenNotY
             yDict[(pair, "YGivenNotX")] = yValsYGivenNotX
-            
-            print("XVALUES1", xValues1)
     
         return Result(self.granularity, 'Pairwise Probabilities', xValues1, yDict, errors)
 
@@ -434,12 +432,7 @@ class Result():
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
             for key in self.yValues:
-                print("KEY!!!", key)
-                print(len(self.xValues))
-                print(self.xValues)
-                print(self.yValues)
                 for i in range(len(self.xValues)):
-                    print("for i in range")
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
     def saveModel():
         model = ResultModel(params)
