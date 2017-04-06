@@ -432,6 +432,7 @@ class Result():
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
             for key in self.yValues:
+                print("KEY!!!", key)
                 for i in range(len(self.xValues)):
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
     def saveModel():

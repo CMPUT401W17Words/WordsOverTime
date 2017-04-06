@@ -351,6 +351,9 @@ class RequestHandlerTests(TestCase):
         reqs.append(request)       
         ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
         ret.start()
+        
+    def testGenerateCSV(self):
+        pass
     
     def testZipMatrices(self):
         pass
