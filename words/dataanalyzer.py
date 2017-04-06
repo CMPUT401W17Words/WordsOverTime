@@ -32,7 +32,8 @@ def averageValenceTopFive(docs):
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
-    for doc in chunk:
+    for doc in corpus:
+        print("DOC!!!", doc)
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
