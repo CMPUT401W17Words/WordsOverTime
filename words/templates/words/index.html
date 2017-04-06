@@ -140,7 +140,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Designed for Reseachers</h3>
-                        <p>Designed for researchers who are interested in analyzing word meanings over time.</p>
+                        <p>Designed for researchers who are interested in words meanings over time.</p>
                     </div><!--//content-->
                 </div><!--//item-->
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -202,14 +202,16 @@ understand how language is used by the media</p>
 					
 		<!-- start of input validating-->
 		<script type="text/javascript">
+                var regex_space_words = /^[A-Za-z]+([ (A-Za-z)+])*$/; //fomat like word word word...
+                var regex_pair_words = /^[A-Za-z]+,[A-Za-z]+([ A-Za-z]+,[A-Za-z]+)*$/; //fomat like word，word word，word...
 
 		function ifEmptyNotify(field,alerttxt)
 		{
 		with (field)
 			{
 			if (value==null||value=="")
-				{alert(alerttxt);return false}
-			else {return true}
+				{alert(alerttxt);return false;}
+			else {return true;}
 			}
 		}
 			
@@ -218,76 +220,72 @@ understand how language is used by the media</p>
 		with (field)
 			{
 			if (value==null||value=="")
-				{return false}
-			else {return true}
+				{return false;}
+			else {return true;}
 			}
 		}
 			
 		function ifNCloestEmpty(){
 			if (ifEmptySilent(Nneighbor)==false || ifEmptySilent(keywords) == false){
-				{return false}
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifCosEmpty(){
 			if (ifEmptySilent(wordPairs)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 		
 		function ifTdidfEmpty(){
 			if(ifEmptySilent(tfidfWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifPCPEmpty(){
 			if(ifEmptySilent(conditionalWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifAAChecked(){
 			if(document.getElementById('AV').checked || document.getElementById('AA').checked || document.getElementById('5AV').checked || document.getElementById('5AA').checked){
-				return true
+				return true;
 			}
-			else { return false}
+			else { return false;}
 		}
 			
 		function ifWFEmpty(){
 			if(ifEmptySilent(frequencyWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 		
 	
 		function ifRelativeWFEmpty(){
 			if(ifEmptySilent(relativeWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
-
-		function isValidCSP(commaSeperatedPhase)//regexp practise 
-		{
-				// First check for the pattern
-				var regex_csp = /^\w+(,\w+)*$/;
-
-				if(!regex_csp.test(commaSeperatedPhase))
-				{
-						return false;
-				}
-			}
-		
+     
 		function checkForm(thisform)
-		{
+		{   
 		with (thisform)
 			{
+                          var Neighborinput = thisform.keywords.value;
+                          var tdidfinput = thisform.tfidfWord.value;
+                          var averageWordsinput = thisform.averageWords.value;
+                          var frequencyWordinput = thisform.frequencyWord.value;
+                          var relativeWordinput = thisform.relativeWord.value;
+                          var wordPairsinput = thisform.wordPairs.value;
+                          var conditionalWordinput = thisform.conditionalWord.value;
 				
 			//general slots check
 			if (ifEmptyNotify(startDate,"Starting Date  must be filled!")==false)
@@ -304,20 +302,57 @@ understand how language is used by the media</p>
 				{
 					alert("at least one of the analysis section should be filled !");
 					return false}
-			}
 			
-			// input format check
-			if(ifNCloestEmpty() == true && isValidCSP(keywords)==false ){
-				alert("N neighbor keywords fomat should be comma seperated words like oil,gas ")
+			
+			 //input format check -------> 1. "word word ..." format 
+			if(ifNCloestEmpty() == true && !regex_space_words.test(Neighborinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                                keywords.focus();
+                          return false; 
+			}
+                        if(ifTdidfEmpty() == true && !regex_space_words.test(tdidfinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          tfidfWord.focus();
+                          return false; 
 			} 
+                        if(ifAAChecked() == true && ifEmptySilent(averageWords) == true && !regex_space_words.test(averageWordsinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          averageWords.focus();
+                          return false; 
+			}
+                        if(ifWFEmpty() == true && !regex_space_words.test(frequencyWordinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          frequencyWord.focus();
+                          return false; 
+			}
+                        if(ifRelativeWFEmpty() == true && !regex_space_words.test(relativeWordinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          relativeWord.focus();
+                          return false; 
+			} 
+                          
+                        
+                        //input format check -------> 2. "word,word word,word ..." format 
+			if(ifCosEmpty() == true && !regex_pair_words.test(wordPairsinput)){
+				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
+                          wordPairs.focus();
+                          return false; 
+			}
+                        if(ifPCPEmpty() == true && !regex_pair_words.test(conditionalWordinput)){
+				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
+                          conditionalWord.focus();
+                          return false; 
+			}
+       
 		}
+                }
 				
 		</script><!-- end of input validating script-->
 					
 					
 						<!-- copy from last version-->
 					
-						 <form  enctype="multipart/form-data" action="/words/success/" method = "post" onsubmit="return checkForm(this)"><!--action = "/words/success/"-- replaced-->
+						 <form  enctype="multipart/form-data"  method = "post" onsubmit="return checkForm(this)"><!--action = "/words/success/"-- replaced--action="/words/success/">
 						 
 							 <!------->
          
