@@ -71,11 +71,11 @@ def averageArousalTopFive(docs):
 # helper
 def getTopFiveWords(tfidfsDoc):
     result = []
-    tfidfs = tfidfsDoc.copy().items()
+    tfidfs = tfidfsDoc.copy()
     topWord = getTopWord(tfidfs)
     while (topWord != None):
         result.append(topWord)
-        tfidfs.pop(topWord[0])
+        tfidfs.pop(topWord)
     return result
 
 # helper  
