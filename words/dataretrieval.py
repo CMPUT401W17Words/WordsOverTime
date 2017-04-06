@@ -6,17 +6,18 @@
 #django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
+from django.core.exceptions import ObjectDoesNotExist
 
 def getArousal(wd):
     try:
         return float(Sentiment_Dict.objects.get(word=wd).arousal)
-    except DoesNotExist:
+    except ObjectDoesNotExist:
         return None
    
 def getValence(wd):
     try:
         return float(Sentiment_Dict.objects.get(word=wd).valence)
-    except DoesNotExist:
+    except ObjectDoesNotExist:
         return None
     
 # query terms can be id, language, province, city, country, and date
