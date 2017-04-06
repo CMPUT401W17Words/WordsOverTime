@@ -51,6 +51,8 @@ class RequestsExecuteThread(Thread):
                 urlList.append(url)
                 # if the request involved word2vec, email the user a zip file containing matrices for the analysis
                 matrixPath = '/mnt/vol/matrices/' + req.hashStr
+                print(matrixPath)
+                print(os.path.isdir(matrixPath))
                 if (os.path.isdir(matrixPath)):
                     z = zipMatrices(matrixPath, req.hashStr)
                     print(z)
