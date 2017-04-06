@@ -433,6 +433,8 @@ class Result():
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
             for key in self.yValues:
                 print("KEY!!!", key)
+                print(len(self.xValues))
+                print(self.xValues)
                 for i in range(len(self.xValues)):
                     print("for i in range")
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
