@@ -64,11 +64,13 @@ class DataRetrievalTests(TestCase):
         self.assertEqual(words.dataretrieval.getArousal('minors'), 0.57294869)
         self.assertEqual(words.dataretrieval.getArousal('computer'), 0.37374821)
         self.assertEqual(words.dataretrieval.getArousal('response'), 0.36475822)
+        self.assertEqual(words.dataretrieval.getArousal('kitten'), None)
     
     def testGetValence(self):
         self.assertEqual(words.dataretrieval.getValence('minors'), 0.42352934)
         self.assertEqual(words.dataretrieval.getValence('computer'), 0.76485739)
-        self.assertEqual(words.dataretrieval.getValence('response'), 0.77583958)    
+        self.assertEqual(words.dataretrieval.getValence('response'), 0.77583958)
+        self.assertEqual(words.dataretrieval.getArousal('kitten'), None)
 
     def testGetDocuments(self):
         startDate = date(2008, 2, 17)

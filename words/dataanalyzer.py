@@ -48,7 +48,8 @@ def averageValenceTopFive(docs):
                 if (num == item[0]):
                     word = wd
                     break
-            totalDoc = totalDoc + words.dataretrieval.getValence(word)
+            if (words.dataretrieval.getValence(word) != None):
+                totalDoc = totalDoc + words.dataretrieval.getValence(word)
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 
@@ -70,7 +71,8 @@ def averageArousalTopFive(docs):
                 if (num == item[0]):
                     word = wd
                     break
-            totalDoc = totalDoc + words.dataretrieval.getArousal(word)
+            if (words.dataretrieval.getArousal(word) != None):
+                totalDoc = totalDoc + words.dataretrieval.getArousal(word)
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 
