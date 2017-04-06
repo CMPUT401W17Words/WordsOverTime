@@ -272,7 +272,7 @@ class RequestHandlerTests(TestCase):
                 
     # will have to test at a later date
     def testAverageArousalTopFiveOverTime(self):
-        dateRange = (date(2013, 1, 1), date(2011, 12, 31))
+        dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
         request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, ['trees'], '')
         result = request.execute()
