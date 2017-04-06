@@ -90,4 +90,18 @@ def splitDocuments(documents, granularity):
             if month not in result:
                 result[month] = []
             result[month].append(doc)
+    if (granularity == 'Week'):
+        for doc in documents:
+            if (doc.publication_Date.day / 7 <= 1):
+                day = 1
+            elif (doc.publication_Date.day / 7 <= 2):
+                day = 8
+            elif (doc.publication_Date.day / 7 <= 2):
+                day = 15
+            else:
+                day = 22
+            week = date(doc.publication_Date.year, doc.publication_Date.month, day)
+            if week not in result:
+                result[week] = []
+            result[week].append(doc)
     return result

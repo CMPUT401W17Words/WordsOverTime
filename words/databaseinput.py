@@ -237,12 +237,11 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run(sentPath, corpusPath):
-    print "Creating database from ", sentPath, " and ", corpusPath
+    print("Creating database from ", sentPath, " and ", corpusPath)
     enterSentiment(sentPath)
     enterArticles(corpusPath)
     enterData(corpusPath)
     tfidfForFullCorpus()
     
-
 if __name__ == "__main__":
     run()
