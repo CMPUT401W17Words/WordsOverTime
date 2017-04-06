@@ -300,20 +300,21 @@ def success(request):
         relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, relativeHash)
         requestList.append(relReq)
         hashList.append(relativeHash)
+    requests = RequestsExecuteThread(requestList, emailList)
+    requests.start()
 
-    return render(request, 'words/submit.html')
+    #return render(request, 'words/submit.html')
+    
     #For local testing
+    context = {}
+    for index in range (0, len(hashList)):
+        context["Hash%s" %index] = hashList[index]
     
-    #context = {}
-    #for index in range (0, len(hashList)):
-    #    context["Hash%s" %index] = hashList[index]
-    
-    #context["nHashes"] = len(hashList)
+    context["nHashes"] = len(hashList)
 
-    #requests = RequestsExecuteThread(requestList, emailList)
-    #requests.start()
     
-    #return render(request, 'words/success.html', context)
+    
+    return render(request, 'words/success.html', context)
 
 #Handles reading in a csv file from the hash in the url and passing csv information to graph
 def graph(request, hash):
@@ -326,7 +327,8 @@ def graph(request, hash):
     valuesList = []
     keyWords = []
     #Read in csv file and gather information for passing to graph
-    with open(filePath + hash + '.csv', 'r') as csvfile:
+    with open('test.csv', 'r') as csvfile: #For testing
+    #with open(filePath + hash + '.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         xAxis = reader.fieldnames[0]
         yAxis = reader.fieldnames[1]
@@ -340,7 +342,6 @@ def graph(request, hash):
 
     yValuesList = []
     for word in keyWords:
-        yDict[word] = []
         yTempValues = []
         for thing in valuesList:
             if(thing[2] == word):
