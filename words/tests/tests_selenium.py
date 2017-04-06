@@ -48,6 +48,8 @@ import time, re, os
 # Submit nothing, submit w/o a date selected, select w/o an e-mail given,
 # submit w/o picking anything (no words given, etc), select everything possible,
 # upload files, etc.
+# making sure start date !> end date, making sure start/end date are valid (shouldn't
+# go past current date), check valid e-mail
 
 # Tests would be more extensive if it could just go straight to a results page instead
 # of needing an e-mail
@@ -63,7 +65,7 @@ class WordsTest(LiveServerTestCase):
         # Author: Russell Dias / License: CC-BY-SA 3.0
         self.current_path = os.path.dirname(os.path.realpath(__file__))
 
-    # Tests fails - it should pass in final version
+    # Should pass
     def test_submit_nothing(self):
         driver = self.driver
         driver.get(self.base_url + "words")
@@ -71,7 +73,7 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
-    # tests fails
+    # Should pass
     def test_no_email_given(self):
         driver = self.driver
         driver.get(self.base_url + "words")
@@ -82,7 +84,7 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
         
-    # test probably fails
+    # Should pass
     def test_select_no_date(self):
         driver = self.driver
         driver.get(self.base_url + "words")
@@ -92,6 +94,7 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
+    # Should pass
     def test_submit_stuff(self):
         driver = self.driver
         driver.get(self.base_url + "words")
@@ -101,7 +104,7 @@ class WordsTest(LiveServerTestCase):
         print(driver.find_element_by_id("startDate").text)
         #self.assertTrue(driver.find_element_by_id("startDate").text)
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
-        self.assertTrue(2+2, 4)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
 
     # WebDriverException: Message: POST ... did not match a known command
     def test_uploading_files(self):

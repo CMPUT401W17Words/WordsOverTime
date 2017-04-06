@@ -19,7 +19,7 @@ class DataRetrievalTests(TestCase):
         self.docData = []
         self.wordData = []
         
-        with open(r'words\sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open("words/sentiment_mock.csv", 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
@@ -27,7 +27,7 @@ class DataRetrievalTests(TestCase):
         for item in self.sentDict:
             item.save()        
                 
-        with open(r'words\corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
+        with open("words/corpus_mock.csv", 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
                 self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
