@@ -16,17 +16,17 @@ import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
-    #shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
-    zf = zipfile.ZipFile(hashStr+".zip", "w")
-    for dirname, subdirs, files in os.walk(matricesPath):
-        print(dirname)
-        sys.stdout.flush()
-        zf.write(dirname)
-        for filename in files:
-            print(filename)
-            sys.stdout.flush()
-            zf.write(os.path.join(dirname, filename))
-    zf.close()
+    shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
+    #zf = zipfile.ZipFile(hashStr+".zip", "w")
+    #for dirname, subdirs, files in os.walk(matricesPath):
+        #print(dirname)
+        #sys.stdout.flush()
+        #zf.write(dirname)
+        #for filename in files:
+            #print(filename)
+            #sys.stdout.flush()
+            #zf.write(os.path.join(dirname, filename))
+    #zf.close()
 
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
