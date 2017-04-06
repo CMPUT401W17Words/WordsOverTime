@@ -34,17 +34,17 @@ def averageValenceTopFive(docs):
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
     for doc in corpus:
-        print("CHUNK!!!", chunk)
-        print("CORPUS!!!", corpus)
-        print("DOC!!!", doc)
-        print("TFIDF!!!", tfidf[doc])
+        #print("CHUNK!!!", chunk)
+        #print("CORPUS!!!", corpus)
+        #print("DOC!!!", doc)
+        #print("TFIDF!!!", tfidf[doc])
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
-            print("tfidfs", tfidfs)
-            print("tok2id", dictionary.token2id)
+            #print("tfidfs", tfidfs)
+            #print("tok2id", dictionary.token2id)
             for wd,num in dictionary.token2id.items():
-                print("wd and num", wd,num)
+                #print("wd and num", wd,num)
                 if (num == item[0]):
                     word = wd
                     break
@@ -60,11 +60,11 @@ def averageArousalTopFive(docs):
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
-    for doc in chunk:
+    for doc in corpus:
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
-            for wd,num in dictionary.token2id:
+            for wd,num in dictionary.token2id.items():
                 if (num == item[0]):
                     word = wd
                     break
