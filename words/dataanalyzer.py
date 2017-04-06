@@ -62,6 +62,8 @@ def averageArousalTopFive(docs):
     totalChunk = 0.0
     for doc in corpus:
         tfidfs = getTopFiveWords(tfidf[doc])
+        if (len(tfidfs)<1):
+            continue # not sure if this 'solution' is appropriate
         totalDoc = 0.0
         for item in tfidfs:
             for wd,num in dictionary.token2id.items():
