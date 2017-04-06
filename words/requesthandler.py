@@ -54,9 +54,9 @@ class RequestsExecuteThread(Thread):
                 print(matrixPath)
                 print(os.path.isdir(matrixPath))
                 if (os.path.isdir(matrixPath)):
-                    zipMatrices(matrixPath, req.hashStr)
                     matrices = matrixPath+'.zip'
-                    print(matrices)
+                    print(matrices)                    
+                    zipMatrices(matrixPath, req.hashStr)
                     matrixList.append(matrices)
                 #emailUser(req.hashStr)
             except:
