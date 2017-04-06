@@ -286,7 +286,7 @@ class RequestHandlerTests(TestCase):
     # will have to test at a later date
     def testAverageValenceTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
-        granularity = 'Month'
+        granularity = 'Year'
         request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, [], '')
         result = request.execute()
         print('Average Valence Top Five Words over time')
