@@ -71,12 +71,33 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
+    # tests fails
+    def test_no_email_given(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.find_element_by_id("startDate").send_keys("2000-01-01")
+        driver.find_element_by_id("endDate").send_keys("2001-01-01")
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+        
+    # test probably fails
+    def test_select_no_date(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_id("userEmail").send_keys("test@email.net")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+
     def test_submit_stuff(self):
         driver = self.driver
         driver.get(self.base_url + "words")
         driver.find_element_by_id("startDate").send_keys("2000-01-01")
         driver.find_element_by_id("endDate").send_keys("2001-01-01")
-        driver.find_element_by_id("unit").click()
+        #driver.find_element_by_id("unit").click()
         print(driver.find_element_by_id("startDate").text)
         #self.assertTrue(driver.find_element_by_id("startDate").text)
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
@@ -86,7 +107,6 @@ class WordsTest(LiveServerTestCase):
     def test_uploading_files(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        # replace w/ actual sys 
         path = self.current_path + "/text_files/single_words.txt"
         print(path)
         driver.find_element_by_id("text_file").send_keys(path)
