@@ -319,7 +319,7 @@ class RequestHandlerTests(TestCase):
         granularity = 'Year'
         request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['human'], 'test9')
         result = request.execute()
-        result.generateCSV('test9')
+        #result.generateCSV('test9')
         print('Word Frequency over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
