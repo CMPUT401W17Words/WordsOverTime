@@ -207,8 +207,8 @@ def wordNotInChunkException(chunk, word):
     wordCount = 0
     for doc in chunk:
         if word in doc:
-            wordCount = wordCount + 1
-            if (wordCount >= 5):
+            wordCount = wordCount + doc.count(word)
+            if (wordCount >= minWords):
                 return False
     return True
 
