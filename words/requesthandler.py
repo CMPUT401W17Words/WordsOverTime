@@ -434,6 +434,7 @@ class Result():
             for key in self.yValues:
                 print("KEY!!!", key)
                 for i in range(len(self.xValues)):
+                    print("for i in range")
                     resultWriter.writerow([self.xValues[i], self.yValues[key][i], key])
     def saveModel():
         model = ResultModel(params)
