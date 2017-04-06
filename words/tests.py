@@ -5,6 +5,7 @@ from django.test import TestCase
 import words.dataretrieval
 import words.requesthandler
 import words.databaseinput
+from words.emailsending import *
 from words.models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
 import csv
 import decimal
@@ -209,7 +210,7 @@ class RequestHandlerTests(TestCase):
     def testCosDistanceOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, '123123')
+        request = words.requesthandler.CosDistanceOverTimeRequest(dateRange, granularity, [('human', 'system')], False, 'test1')
         result = request.execute()
         print('Cos Distance over time')
         print(result.xTitle, result.xValues)
@@ -223,7 +224,7 @@ class RequestHandlerTests(TestCase):
     def testTfidfOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, ['human'], '')
+        request = words.requesthandler.TfidfOverTimeRequest(dateRange, granularity, ['human'], 'test2')
         result = request.execute()
         print('Average Tfidf over time')
         print(result.xTitle, result.xValues)
@@ -237,7 +238,7 @@ class RequestHandlerTests(TestCase):
     def testNClosestNeighboursOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, '')
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, 'test3')
         result = request.execute()
         print('N Closest Neighbours over time')
         print(result.xTitle, result.xValues)
@@ -250,7 +251,7 @@ class RequestHandlerTests(TestCase):
     def testAverageArousalOverTime(self):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], '')
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
         result = request.execute()
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)
@@ -263,7 +264,7 @@ class RequestHandlerTests(TestCase):
     def testAverageValenceOverTime(self):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['tomato'], '')
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['tomato'], 'test5')
         result = request.execute()
         print('Average Valence over time')
         print(result.xTitle, result.xValues)
@@ -276,7 +277,7 @@ class RequestHandlerTests(TestCase):
     def testAverageArousalTopFiveOverTime(self):
         dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
-        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, ['trees'], '')
+        request = words.requesthandler.AverageArousalFiveWordsOverTimeRequest(dateRange, granularity, ['trees'], 'test6')
         result = request.execute()
         print('Average Arousal Top Five Words over time')
         print(result.xTitle, result.xValues)
@@ -289,7 +290,7 @@ class RequestHandlerTests(TestCase):
     def testAverageValenceTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, [], '')
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, [], 'test7')
         result = request.execute()
         print('Average Valence Top Five Words over time')
         print(result.xTitle, result.xValues)
@@ -303,7 +304,7 @@ class RequestHandlerTests(TestCase):
     def testPairwiseProbabilities(self):
         dateRange = (date(2008, 2, 17), date(2010, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , '')
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'test8')
         result = request.execute()
         print('Pairwise Probabilities over time')
         print(result.xTitle, result.xValues)
@@ -316,7 +317,7 @@ class RequestHandlerTests(TestCase):
     def testWordFrequency(self):
         dateRange = (date(2008, 1, 1), date(2010, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['human'], '')
+        request = words.requesthandler.WordFrequencyOverTimeRequest(dateRange, granularity, ['human'], 'test9')
         result = request.execute()
         print('Word Frequency over time')
         print(result.xTitle, result.xValues)
@@ -330,7 +331,7 @@ class RequestHandlerTests(TestCase):
     def testRelativeWordFrequency(self):
         dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
-        request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, ['human', 'tomato'], '')
+        request = words.requesthandler.RelativeWordFrequencyOverTimeRequest(dateRange, granularity, ['human', 'tomato'], 'test10')
         result = request.execute()
         print('Relative Word Frequency over time')
         print(result.xTitle, result.xValues)
@@ -340,7 +341,16 @@ class RequestHandlerTests(TestCase):
         print()
         
     def testRequestsExecuteThread(self):
-        pass
+        reqs = []
+        dateRange = (date(2008, 2, 17), date(2010, 12, 31))
+        granularity = 'Year'
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'test8')
+        reqs.append(request)
+        dateRange = (date(2008, 2, 17), date(2010, 11, 11))
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, 'test3')
+        reqs.append(request)       
+        ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
+        ret.start()
     
     def testZipMatrices(self):
         pass
