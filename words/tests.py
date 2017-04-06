@@ -262,9 +262,9 @@ class RequestHandlerTests(TestCase):
         
     # should be working; might want to recheck later    
     def testAverageValenceOverTime(self):
-        dateRange = (date(2008, 1, 1), date(2012, 12, 31))
+        dateRange = (date(2008, 1, 1), date(2011, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['tomato'], 'test5')
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['user'], 'test5')
         result = request.execute()
         print('Average Valence over time')
         print(result.xTitle, result.xValues)
