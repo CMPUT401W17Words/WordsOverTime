@@ -43,7 +43,8 @@ def averageValenceTopFive(docs):
         for item in tfidfs:
             print("tfidfs", tfidfs)
             print("tok2id", dictionary.token2id)
-            for wd,num in dictionary.token2id:
+            for wd,num in dictionary.token2id.items():
+                print("wd and num", wd,num)
                 if (num == item[0]):
                     word = wd
                     break
