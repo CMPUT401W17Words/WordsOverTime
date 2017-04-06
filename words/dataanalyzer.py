@@ -41,6 +41,8 @@ def averageValenceTopFive(docs):
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
+            print("tfidfs", tfidfs)
+            print("tok2id", dictionary.token2id)
             for wd,num in dictionary.token2id:
                 if (num == item[0]):
                     word = wd
