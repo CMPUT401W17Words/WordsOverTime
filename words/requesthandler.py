@@ -41,22 +41,22 @@ class RequestsExecuteThread(Thread):
         allhashstr = ''
         for req in self.requests:
             print('thread start')
-            #try:
-            res = req.execute()
-            errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
-            res.generateCSV(req.hashStr)
-            url = "http://199.116.235.204/words/success/graph/" + req.hashStr
-            csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
-            csvList.append(csv)
-            urlList.append(url)
-            # if the request involved word2vec, email the user a zip file containing matrices for the analysis
-            matrixPath = '/mnt/vol/matrices/' + req.hashStr
-            if (os.path.isdir(matrixPath)):    
-                matrices = zipMatrices(matrixPath, req.hashStr)
-                matrixList.append(matrices)
-            #emailUser(req.hashStr)
-            #except:
-            #    pass
+            try:
+                res = req.execute()
+                errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
+                res.generateCSV(req.hashStr)
+                url = "http://199.116.235.204/words/success/graph/" + req.hashStr
+                csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
+                csvList.append(csv)
+                urlList.append(url)
+                # if the request involved word2vec, email the user a zip file containing matrices for the analysis
+                matrixPath = '/mnt/vol/matrices/' + req.hashStr
+                if (os.path.isdir(matrixPath)):    
+                    matrices = zipMatrices(matrixPath, req.hashStr)
+                    matrixList.append(matrices)
+                #emailUser(req.hashStr)
+            except:
+                pass
             print('thread done')
         send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
@@ -412,6 +412,8 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             yDict[(pair, "YGivenX")] = yValsYGivenX
             yDict[(pair, "XGivenNotY")] = yValsXGivenNotY
             yDict[(pair, "YGivenNotX")] = yValsYGivenNotX
+            
+            print("XVALUES1", xValues1)
     
         return Result(self.granularity, 'Pairwise Probabilities', xValues1, yDict, errors)
 
