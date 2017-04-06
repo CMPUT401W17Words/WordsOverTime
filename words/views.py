@@ -15,6 +15,8 @@ GRANULARITY_WEEKLY = 'Week'
 GRANULARITY_MONTHLY = 'Month'
 GRANULARITY_YEARLY = 'Year'
 
+#This function generates a random hash to give to each graph.
+#While it is not strictly unique, there is a very low chance of getting the same one twice.
 def genHash():
     randomNum1 = random.randint(1, 100)
     randomNum2 = random.randint(1, 6)
@@ -22,6 +24,7 @@ def genHash():
     start = int((start + randomNum1) / randomNum2)
     return str(start)
 
+#This function takes in a text file and returns a list of all the words contained in it
 #http://stackoverflow.com/questions/13259288/returning-a-list-of-words-after-reading-a-file-in-python
 def read_words(words_file):
     return [word for line in words_file for word in line.split()]
@@ -29,8 +32,9 @@ def read_words(words_file):
 # Create your views here.
 def index(request):
     return render(request, 'words/index.html')
-    #return HttpResponse("Hello world")
 
+#This function handles taking form data from the index page, and passing relevant information
+#To the appropriate requests
 def success(request):
     #Get Form Data!
     if "startDate" in request.POST:
@@ -71,8 +75,6 @@ def success(request):
     closeCBOW = False
     if(skipOrCBOW1 == 'CBow'):
         closeCBOW = True
-    #TODO: read in file and create list of strings from it
-    #How to separate words?
 
     #Form data for cosine distance
     if "wordPairs" in request.POST:
@@ -91,8 +93,6 @@ def success(request):
     cosCBOW = False
     if(skipOrCBOW2 == 'CBow'):
         cosCBOW = True
-    #TODO: read in file and create list of strings from it
-    #How to separate words?
     
     #Form data for tfidf
     if "tfidfWord" in request.POST:
@@ -112,8 +112,6 @@ def success(request):
         fileConditional = request.FILES["fileConditional"]
     else:
         fileConditional = ''
-    #TODO: read in file and create list of strings from it
-    #How to separate words?
 
     #Form data from checkboxes
     if "Average valence" in request.POST:
@@ -153,8 +151,6 @@ def success(request):
     else:
         wordFrequencyFile = ''
         freqFileWords = []
-    #TODO: read in file and create list of strings from it
-    #How to separate words?
 
     #Form data for relative word frequency
     if "relativeWord" in request.POST:
@@ -169,22 +165,17 @@ def success(request):
     else:
         relativeFile = ''
         relativeFileWords = []
-    #TODO: read in file and create list of strings from it
-    #How to separate words?
 
     #Form data for email
     if "userEmail" in request.POST:
         email = request.POST["userEmail"]
         emailList = email.split()
     else:
-        #error
         email = ''
         emailList = []
-    #print(keyWordsList)  
     
     hashList = []
     requestList = []
-    #print(textFileWords)
 
     #Handle N closest neighbor request
     if(n != '' and (keyWordsList or textFileWords)):
@@ -198,8 +189,6 @@ def success(request):
                 word = word.decode("utf-8")
                 decodedList.append(word)
             nClosestReq = NClosestNeighboursOverTimeRequest((startDate, endDate), granularity, decodedList, n, closeCBOW, closeHash)
-        #nClosestResult = nClosestReq.execute()
-        #nClosestResult.generateCSV(closeHash)
         requestList.append(nClosestReq)
         hashList.append(closeHash)
 
@@ -221,8 +210,6 @@ def success(request):
             temp = newList[i].split(",")
             wordPairTuples.append((temp[0], temp[1]))
         cosReq = CosDistanceOverTimeRequest((startDate, endDate), granularity, wordPairTuples, cosCBOW, cosHash)
-        #cosResult = cosReq.execute()
-        #cosResult.generateCSV(cosHash)
         requestList.append(cosReq)
         hashList.append(cosHash)
 
@@ -230,8 +217,6 @@ def success(request):
     if (tfidfWord != ''):
         tfidfHash = genHash()
         tfidfReq = TfidfOverTimeRequest((startDate, endDate), granularity, tfidfWordList, tfidfHash)
-        #tfidfResult = tfidfReq.execute()
-        #tfidfResult.generateCSV(tfidfHash)
         requestList.append(tfidfReq)
         hashList.append(tfidfHash)
 
@@ -252,13 +237,6 @@ def success(request):
             temp = newList[i].split(",")
             wordPairTuples.append((temp[0], temp[1]))
         pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, newList, pairHash)
-        #pairResult = pairReq.execute()
-        #for key in pairResult:
-        #    pairHash = genHash()
-        #    pairResult[key].generateCSV(pairHash)
-        #    hashList.append(pairHash)
-        #pairResult = pairReq.execute()
-        #pairResult.generateCSV(pairHash)
         requestList.append(pairReq)
         hashList.append(pairHash)
 
@@ -267,8 +245,6 @@ def success(request):
     if (averageValence == '1'):
         avgValHash = genHash()       
         avgValReq = AverageValenceOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgValHash)
-        #avgValResult = avgValReq.execute()
-        #avgValResult.generateCSV(avgValHash)
         requestList.append(avgValReq)
         hashList.append(avgValHash)
 
@@ -276,8 +252,6 @@ def success(request):
     if (averageArousal == '1'):
         avgAroHash = genHash()  
         avgAroReq = AverageArousalOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgAroHash)
-        #avgAroResult = avgAroReq.execute()
-        #avgAroResult.generateCSV(avgAroHash)
         requestList.append(avgAroReq)
         hashList.append(avgAroHash)  
 
@@ -285,8 +259,6 @@ def success(request):
     if (top5averageValence == '1'):
         avgVal5Hash = genHash()      
         avgVal5Req = AverageValenceFiveWordsOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgVal5Hash)
-        #avgVal5Result = avgVal5Req.execute()
-        #avgVal5Result.generateCSV(avgVal5Hash)
         requestList.append(avgVal5Req)
         hashList.append(avgVal5Hash)   
 
@@ -294,8 +266,6 @@ def success(request):
     if (top5averageArousal == '1'):
         avgAro5Hash = genHash()      
         avgAro5Req = AverageArousalFiveWordsOverTimeRequest((startDate, endDate), granularity, averageWordsList, avgAro5Hash)
-        #avgAro5Result = avgAro5Req.execute()
-        #avgAro5Result.generateCSV(avgAro5Hash) 
         requestList.append(avgAro5Req)
         hashList.append(avgAro5Hash)  
     
@@ -312,8 +282,6 @@ def success(request):
                 decodedList.append(word)
             newList = decodedList
         freqReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, frequencyHash)
-        #freqResult = freqReq.execute()
-        #freqResult.generateCSV(frequencyHash)
         requestList.append(freqReq)
         hashList.append(frequencyHash)
 
@@ -330,34 +298,26 @@ def success(request):
                 decodedList.append(word)
             newList = decodedList
         relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, relativeHash)
-        #relResult = freqReq.execute()
-        #relResult.generateCSV(relativeHash)
         requestList.append(relReq)
         hashList.append(relativeHash)
-    
-    #req = CosDistanceOverTimeRequest(hashStr, (startDate, endDate), 'Year', keyWordsList[0], keyWordsList[1], True)
-    
-    #result = req.execute()
-    #result.generateCSV(hashStr)
-
-    #print(hashList)
-
-    context = {}
-    for index in range (0, len(hashList)):
-        context["Hash%s" %index] = hashList[index]
-    
-    context["nHashes"] = len(hashList)
-
-    requests = RequestsExecuteThread(requestList, emailList)
-    requests.start()
 
     return render(request, 'words/submit.html')
+    #For local testing
+    
+    #context = {}
+    #for index in range (0, len(hashList)):
+    #    context["Hash%s" %index] = hashList[index]
+    
+    #context["nHashes"] = len(hashList)
+
+    #requests = RequestsExecuteThread(requestList, emailList)
+    #requests.start()
+    
     #return render(request, 'words/success.html', context)
 
+#Handles reading in a csv file from the hash in the url and passing csv information to graph
 def graph(request, hash):
     filePath = '/mnt/vol/csvs/'
-    #keyWords = ["bird", "thing"]
-    #valuesList = [(2009, 0.8, 'bird'), (2010, 0.8, 'bird'), (2009, 0.1, 'thing'), (2010, 0.1, 'thing')]
     yValues = []
     xValues = []
     xAxis = ''
@@ -365,42 +325,31 @@ def graph(request, hash):
     thing = []
     valuesList = []
     keyWords = []
-    #with open(filePath + hash + '.csv', 'r') as csvfile:
+    #Read in csv file and gather information for passing to graph
     with open(filePath + hash + '.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         xAxis = reader.fieldnames[0]
         yAxis = reader.fieldnames[1]
         keyword = reader.fieldnames[2]
         for row in reader:
-            #xValues.append(row[xAxis])
-            #thing = row[yAxis]
-            #yValues.append(thing[1])
-            #keyWords.append(thing[0])
             valuesList.append((row[xAxis], row[yAxis], row[keyword]))
-
-    #print(valuesList)
 
     for item in valuesList:
         if(item[2] not in keyWords):
             keyWords.append(item[2])
 
-    #print(keyWords)
-
-    yDict = {}
     yValuesList = []
     for word in keyWords:
         yDict[word] = []
         yTempValues = []
         for thing in valuesList:
-            #print(thing)
             if(thing[2] == word):
                 try:
-                    yDict[word].append(float(thing[1]))
                     yTempValues.append(float(thing[1]))
                 except ValueError:
-                    #yDict[word].append(float(0.5))
                     yTempValues.append(-200)
                     pass
+                #Convert date to a format that can be sent to javascript
                 date = datetime.strptime(thing[0], '%Y-%m-%d').date()
                 timestamp = int(time.mktime(date.timetuple())) * 1000
                 if(timestamp not in xValues):
@@ -415,31 +364,4 @@ def graph(request, hash):
         'yValues': yValuesList,
     }
 
-
-    #generateCSV(xAxis, yAxis, xValues, yDict, hash)
-    #for index in range (0, len(keyWords)):
-    #    context["yValues%s" %index] = int(hashList[index])
-    #with open(hash + '.csv', 'w') as csvfile:
-    #    resultWriter = csv.writer(csvfile, dialect='excel')
-    #    resultWriter.writerow([xAxis, yAxis, 'keyword'])
-    #    for item in valuesList:
-    #        resultWriter.writerow([item[0], item[1], item[2]])
-        #for j in range(0, len(keyWords)):
-        #    for i in range(0, len(xValues)):
-        #        resultWriter.writerow([xValues[i], yValues[j][i], keyWords[j]])
-        #for i in range(len(self.xValues)):
-        #    resultWriter.writerow([self.xValues[i], self.yValues[i]])
-
     return render(request, 'words/graph2.html', context)
- 
-#class IndexView(generic.DetailView):
-  #template_name = "words/index.html"
-  
-def results(request):
-  if request.method == 'POST':
-    form = ContactForm(request.POST) 
-    if form.is_valid():
-      data = myform.cleaned_data
-      #process data with field = data['field']
-      #generate a Request object (see requesthandler.py)
-  return HttpResponseRedirect()
