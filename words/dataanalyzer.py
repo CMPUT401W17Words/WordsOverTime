@@ -76,6 +76,8 @@ def getTopFiveWords(tfidfsDoc):
     topWord = getTopWord(tfidfs)
     while (topWord != None):
         result.append(topWord)
+        print('tfidfs', tfidfs)
+        print('topword', topWord)
         tfidfs.remove(topWord)
     return result
 
