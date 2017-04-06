@@ -33,6 +33,7 @@ def averageValenceTopFive(docs):
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
     for doc in corpus:
+        print("CHUNK!!!", chunk)
         print("CORPUS!!!", corpus)
         print("DOC!!!", doc)
         print("TFIDF!!!", tfidf[doc])
