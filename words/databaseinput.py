@@ -21,7 +21,7 @@ import dataretrieval
 
 from collections import Counter
 from decimal import *
-from words.models import Sentiment_Dict, Document_Data, Word_Data
+from words.models import Sentiment_Dict, Document_Data, Word_Data, Articles_Can, Corpus_Data
 from django.db.models import F
 from django.db import transaction
 from django.db import connection
@@ -40,8 +40,8 @@ def enterSentiment(dictpath):
 
 def enterArticles(corpuspath):
     cursor = django.db.connection.cursor()
-    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);" % corpuspath)
-    Articles_Can.objects.filter(publicationdate = None).delete()
+    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (article_ID, language, province, city, country, publicationdate, wordcount, parsed_article);" % corpuspath)
+    Articles_Can.objects.filter(publicationDate = None).delete()
 
 # main function that will input corpus info into the database
 def enterData(corpusCsv):
@@ -84,7 +84,7 @@ def enterData(corpusCsv):
 
                 for eachword in wordscounted: # get sentiment info
                     wrdcnt = wordscounted[eachword]
-                    termfreq = Decimal(math/log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+                    termfreq = Decimal(math.log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
                     word = Word_Data(word=eachword, article_id=line['articleID'], word_count=wrdcnt, term_frequency=termfreq, tfidf=value)
                     word.save()
                     wordvalues = Sentiment_Dict.objects.filter(word=eachword)
@@ -172,7 +172,7 @@ def tfidfForFullCorpus():
                     break
             wordd.tfidf = tfidfvalue
             prelogtf = wordd.term_frequency
-            prelogtf = log(prelogtf)
+            prelogtf = math.log(prelogtf)
             wordd.term_frequency = Decimal(prelogtf).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
             wordd.save(['tfidf','term_frequency'])
             if (count %10000==0):

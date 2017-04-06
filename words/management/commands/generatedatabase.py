@@ -1,6 +1,6 @@
 
 from django.core.management.base import BaseCommand, CommandError
-from words.databaseinput import run, enterdata
+from words.databaseinput import run
 
 class Command(BaseCommand):
     help = 'Creates the database with the files provided. Use '
