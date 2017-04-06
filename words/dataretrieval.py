@@ -8,10 +8,16 @@ from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 
 def getArousal(wd):
-    return float(Sentiment_Dict.objects.get(word=wd).arousal)
+    try:
+        return float(Sentiment_Dict.objects.get(word=wd).arousal)
+    except DoesNotExist:
+        return None
    
 def getValence(wd):
-    return float(Sentiment_Dict.objects.get(word=wd).valence)
+    try:
+        return float(Sentiment_Dict.objects.get(word=wd).valence)
+    except DoesNotExist:
+        return None
     
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
