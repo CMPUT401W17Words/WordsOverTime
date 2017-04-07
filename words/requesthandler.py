@@ -48,7 +48,8 @@ class RequestsExecuteThread(Thread):
                 url = "http://199.116.235.204/words/success/graph/" + req.hashStr
                 csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
                 csvList.append(csv)
-                urlList.append(url)
+                if (req.__class__.__name__ != "NClosestNeighboursOverTimeRequest"):
+                    urlList.append(url)
                 # if the request involved word2vec, email the user a zip file containing matrices for the analysis
                 matrixPath = '/mnt/vol/matrices/' + req.hashStr
                 print(matrixPath)
@@ -59,8 +60,9 @@ class RequestsExecuteThread(Thread):
                     matrixList.append(matrices)
                     zipMatrices(matrixPath, req.hashStr)
                 #emailUser(req.hashStr)
-            except:
-                errorDict[''] = ['Something went quite wrong. We are sorry...']
+            except Exception as e:
+                #errorDict[''] = ['Something went quite wrong. We are sorry...']
+                errorDict[''] = [str(e)]
             print('thread done')
         send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
@@ -358,6 +360,11 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        xValues1 = []
+        xValues2 = []
+        xValues3 = []
+        xValues4 = []
+        xValues5 = []        
         errors = []
         for pair in self.pairList:
             xValues = []

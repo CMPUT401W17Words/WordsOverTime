@@ -9,7 +9,7 @@ import copy
 # docs is a list of Document_Data objects
 
 NNsize = 300
-minWords = 5
+minWords = 1#5
 filePath = '/mnt/vol/matrices/'
 #filePath = 'C:/Users/L/Documents/School/'
 
