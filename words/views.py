@@ -297,7 +297,7 @@ def success(request):
                 word = word.decode("utf-8")
                 decodedList.append(word)
             newList = decodedList
-        relReq = WordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, relativeHash)
+        relReq = RelativeWordFrequencyOverTimeRequest((startDate, endDate), granularity, newList, relativeHash)
         requestList.append(relReq)
         hashList.append(relativeHash)
     requests = RequestsExecuteThread(requestList, emailList)
