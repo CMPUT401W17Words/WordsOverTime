@@ -88,12 +88,14 @@ def enterData(corpusCsv):
                     word = Word_Data(word=eachword, article_id=line['articleID'], word_count=wrdcnt, term_frequency=termfreq, tfidf=value)
                     word.save()
                     wordvalues = Sentiment_Dict.objects.filter(word=eachword)
+                    wordsindictcount = wordsindictcount + wrdcnt
+
                     if wordvalues:
-                        wordsindictcount = wordsindictcount + 1
+#                        wordsindictcount = wordsindictcount + 1
                         currentArousal = wordvalues.values_list("arousal", flat=True)
                         currentValence = wordvalues.values_list("valence", flat=True)
-                        arousal = arousal + currentArousal[0]
-                        valence = valence + currentValence[0]
+                        arousal = arousal + currentArousal[0]*wrdcnt
+                        valence = valence + currentValence[0]*wrdcnt
                             
                 arousal_average_five = 0.0
                 valence_average_five = 0.0          
