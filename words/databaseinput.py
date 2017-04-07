@@ -79,6 +79,7 @@ def enterData(corpusCsv):
 		for eachword in wordscounted: 
 		    wordvalues = Sentiment_Dict.objects.filter(word=eachword)
 		    wrdcnt = wordscounted[eachword]
+		    wordsindictcount = wordsindictcount + wrdcnt
 		    if wordvalues:			
 			currentArousal = wordvalues.values_list("arousal", flat=True)
 			currentValence = wordvalues.values_list("valence", flat=True)
@@ -91,7 +92,7 @@ def enterData(corpusCsv):
                           city = line['city'], country = line['country'], publication_Date = dattte, word_count=wrdcnt,
 		          doc_word_count = doc_word_countt, average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount )
                     word.save()
-                    wordsindictcount = wordsindictcount + wrdcnt
+                    
 		    
 
                             
