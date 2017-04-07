@@ -48,7 +48,8 @@ class RequestsExecuteThread(Thread):
                 url = "http://199.116.235.204/words/success/graph/" + req.hashStr
                 csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
                 csvList.append(csv)
-                urlList.append(url)
+                if (req.__class__.__name__ != "NClosestNeighboursOverTimeRequest"):
+                    urlList.append(url)
                 # if the request involved word2vec, email the user a zip file containing matrices for the analysis
                 matrixPath = '/mnt/vol/matrices/' + req.hashStr
                 print(matrixPath)
