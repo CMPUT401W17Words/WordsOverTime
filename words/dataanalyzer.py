@@ -34,17 +34,10 @@ def averageValenceTopFive(docs):
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
     for doc in corpus:
-        #print("CHUNK!!!", chunk)
-        #print("CORPUS!!!", corpus)
-        #print("DOC!!!", doc)
-        #print("TFIDF!!!", tfidf[doc])
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
-            #print("tfidfs", tfidfs)
-            #print("tok2id", dictionary.token2id)
             for wd,num in dictionary.token2id.items():
-                #print("wd and num", wd,num)
                 if (num == item[0]):
                     word = wd
                     break
@@ -64,7 +57,7 @@ def averageArousalTopFive(docs):
     for doc in corpus:
         tfidfs = getTopFiveWords(tfidf[doc])
         if (len(tfidfs)<1):
-            continue # not sure if this 'solution' is appropriate
+            continue
         totalDoc = 0.0
         for item in tfidfs:
             for wd,num in dictionary.token2id.items():
@@ -98,45 +91,26 @@ def getTopWord(tfidfs):
                 current = item
     return current
 
-# each corpus is a list of documents
-# each document is a list of tuples
-# each tuple is an id,count pair, where id maps to a word and count is the number of times the word appears in the document
-# pass in a chunk as a list of documents, where each document is a list of words, something like [['word', 'word],['word','word']]
-# dictionary = corpora.Dictionary(texts): map each word appearing in the corpus "texts" to an id
-# dictionary.doc2bow(text): using the mapping of the dictionary, convert text to gensim's corpus format where each text is a list of words
-# corpus = [dictionary.doc2bow(text) for text in texts]: pass in texts as a list of lists of words
-# not sure if bugged... seems to be sort of working
 def averageTfidfOfWord(chunk, word):
     dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
-    #print(tfidf)
-    #print(corpus)
     totalTfidf = 0.0
     docCount = 0.0
-    wordId = dictionary.token2id[word] # THIS CAUSES ERROR IF WORD NOT IN CHUNK
+    wordId = dictionary.token2id[word]
     for doc in corpus:
-        #print(doc)
-        #print(tfidf[doc])
         for item in tfidf[doc]:
             if (item[0] == wordId):
                 totalTfidf = totalTfidf + item[1]
                 break
         docCount = docCount + 1
     return totalTfidf/docCount
-    #corpusTfidf = tfidf[corpus]
-    #for doc in corpusTfidf:
-        #for wordd in doc:
-            #if (wordd[0] == wordId):
-                #totalTfidf = totalTfidf + wordd[1]
-                #break
     
 def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
     if (cbow==True):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
-    #model.save(filePath+hashStr+'/'+word1+word2+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/word1word2/somedate. email the user by zipping the somehash folder
     saveMatrix(model, word1+word2, hashStr, chunkDate)
     return model.similarity(word1, word2)
    
@@ -145,7 +119,6 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
-    #model.save(filePath+hashStr+'/'+word+'/'+str(chunkDate)) # save models to /mnt/vol/matrices/somehash/someword/somedate. email the user by zipping the somehash folder
     saveMatrix(model, word, hashStr, chunkDate)
     return model.most_similar(positive=[word], topn=N)
 
@@ -155,17 +128,13 @@ def wordFrequency(chunk, word):
         result = result + doc.count(word)
     return result
 
-# fullFreq is frequency in full corpus
-#def relativeWordFrequency(chunk, word, fullFreq):
-    #return wordFrequency(chunk,word)/fullFreq # MUST CHECK IF fullFreq = 0
-
 def relativeWordFrequency(chunk, word):
     wordCount = 0.0
     totalWordCount = 0.0
     for doc in chunk:
         wordCount = wordCount + doc.count(word)
         totalWordCount = totalWordCount + len(doc)
-    return wordCount/totalWordCount # multiply by 1000000 to get occurences per million
+    return wordCount/totalWordCount
 
 def probX(chunk, x):
     count = 0.0
@@ -175,8 +144,6 @@ def probX(chunk, x):
     return count/len(chunk)
 
 def probXAndY(chunk, x, y):
-    # probability that an article in the chunk has both x and y?
-    # all articles with x and y / total articles
     count = 0.0
     for doc in chunk:
         if ((x in doc) and (y in doc)):
@@ -191,20 +158,11 @@ def probXAndNotY(chunk, x, y):
     return count/len(chunk)
 
 def probXGivenY(chunk, x, y):
-    # probability that an article has x given that it has y?
-    # probXAndY / probY
     return probXAndY(chunk,x,y)/probX(chunk,y)
 
 def probXGivenNotY(chunk, x, y):
     return probXAndNotY(chunk, x, y)/(1.0 - probX(chunk, y))
-    
-    #notY = 1.0 - probX(chunk, y)
-    #if (notY == 0):
-        #return 0.0
-    #xAndNotY = probX(chunk, x)*notY
-    #return xAndNotY/notY
 
-# return 1 if probX = 0, 2 if probX = 1, and 0 if no error
 def probException(chunk, x):
     pX = probX(chunk, x)
     if (pX.is_integer()):
