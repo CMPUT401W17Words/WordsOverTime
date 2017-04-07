@@ -228,7 +228,7 @@ def success(request):
         wordPairTuples = []
         newList = []
         if(conditionalWordPairList):
-            newList = wordPairList
+            newList = conditionalWordPairList
         else:
             decodedList = []
             for word in fileConditionalWords:
