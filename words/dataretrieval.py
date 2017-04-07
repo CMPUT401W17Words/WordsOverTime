@@ -1,9 +1,3 @@
-#import os
-#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-#import sys
-#sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
-#import django
-#django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
@@ -20,10 +14,7 @@ def getValence(wd):
     except ObjectDoesNotExist:
         return None
     
-# query terms can be id, language, province, city, country, and date
-# for now just query by date range
 def getDocuments(startDate, endDate):
-    #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
     docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     words = []
     for doc in docs:
@@ -31,7 +22,6 @@ def getDocuments(startDate, endDate):
     return words
 
 def getDocumentData(startDate, endDate):
-    #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
     docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     return (list(docs))
 
@@ -85,14 +75,12 @@ def splitDocuments(documents, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
         for doc in documents:
-            #year = doc.publication_Date.year
             year = date(doc.publication_Date.year,1,1)
             if year not in result:
                 result[year] = []
             result[year].append(doc)    
     if (granularity == 'Month'):
         for doc in documents:
-            #month = (doc.publication_Date.year, doc.publication_Date.month)
             month = date(doc.publication_Date.year, doc.publication_Date.month, 1)
             if month not in result:
                 result[month] = []
