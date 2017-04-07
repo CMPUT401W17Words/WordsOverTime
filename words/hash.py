@@ -1,5 +1,5 @@
-import random
-import hashlib
+#import random
+#import hashlib
 
 def gen_hash(user_id, length=None):
 

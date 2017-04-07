@@ -1,20 +1,21 @@
-#import os
-#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-#import sys
-#sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
-#import django
-#django.setup()
-from words.models import Document_Data, Word_Data, Sentiment_Dict
-from datetime import date
-from django.core.exceptions import ObjectDoesNotExist
+
+#from words.models import Document_Data, Word_Data, Sentiment_Dict
+#from datetime import date
+#from django.core.exceptions import ObjectDoesNotExist
 
 def getArousal(wd):
+    """
+    Return the arousal of a word, or None if it doesn't appear in the sentiment dictionary
+    """
     try:
         return float(Sentiment_Dict.objects.get(word=wd).arousal)
     except ObjectDoesNotExist:
         return None
    
 def getValence(wd):
+    """
+    Return the valence of a word, or None if it doesn't appear in the sentiment dictionary
+    """    
     try:
         return float(Sentiment_Dict.objects.get(word=wd).valence)
     except ObjectDoesNotExist:
@@ -23,6 +24,9 @@ def getValence(wd):
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
 def getDocuments(startDate, endDate):
+    """
+    Returns a list of documents falling within the date range (inclusive) as nested lists of words, where each nested list is a separate document
+    """     
     #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
     docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     words = []
@@ -31,11 +35,17 @@ def getDocuments(startDate, endDate):
     return words
 
 def getDocumentData(startDate, endDate):
+    """
+    Returns a list of Document_Data objects falling within the date range (inclusive)
+    """      
     #docs = Document_Data.objects.filter(publication_Date__lte=endDate).filter(publication_Date__gte=startDate)
     docs = Document_Data.objects.filter(publication_Date__range=(startDate, endDate))
     return (list(docs))
 
 def getDocumentDataWithWordFilter(startDate, endDate, wordList):
+    """
+    Returns a list of Document_Data objects falling within the date range (inclusive), and only those that contain all the words in the given list of words
+    """         
     if (len(wordList)<1):
         return getDocumentData(startDate, endDate)
     else:
@@ -53,11 +63,17 @@ def getDocumentDataWithWordFilter(startDate, endDate, wordList):
 
 # return all word data objects for a word (each word data will be a different doc with the same word)
 def getWordData(wordIn):
+    """
+    Returns a list of Word_Data objects for a word
+    """
     words = Word_Data.objects.filter(word=wordIn)
     return (list(words))
 
 # returns all words in a document
 def getWordsInDocument(doc):
+    """
+    Returns a list of the words in a document, repeats included
+    """
     words = Word_Data.objects.filter(article_id=doc.article_id)
     result = []
     for w in words:
@@ -66,6 +82,9 @@ def getWordsInDocument(doc):
     return result
 
 def getNumWordsInCorpus(documents):
+    """
+    Returns the number of words in a list of Document_Data objects
+    """
     total = 0
     for doc in documents:
         words = Word_Data.objects.filter(article_id=doc.article_id)
@@ -74,6 +93,9 @@ def getNumWordsInCorpus(documents):
     return total
            
 def getNumWordInCorpus(documents, inputWord):
+    """
+    Returns the number of occurences of a given word in a list of Document_Data objects
+    """    
     total = 0
     for doc in documents:
         words = Word_Data.objects.filter(article_id=doc.article_id, word=inputWord)
@@ -82,6 +104,11 @@ def getNumWordInCorpus(documents, inputWord):
     return total
 
 def splitDocuments(documents, granularity):
+    """
+    Splits a list of Document_Data objects into time bins specified by the granularity
+    Granularity can be 'Year', 'Month', or 'Week'
+    Returns a dictionary mapping lists of documents to their time bins
+    """
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
         for doc in documents:

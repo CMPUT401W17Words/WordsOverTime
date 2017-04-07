@@ -1,15 +1,16 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from django.views import generic
-import random
-from datetime import datetime, date, time, timedelta
-import time
-import csv
 
-from .forms import MainForm
-from .requesthandler import *
-from .hash import *
-from .models import *
+#from django.shortcuts import render, get_object_or_404
+#from django.http import HttpResponse
+#from django.views import generic
+#import random
+#from datetime import datetime, date, time, timedelta
+#import time
+#import csv
+
+#from .forms import MainForm
+#from .requesthandler import *
+#from .hash import *
+#from .models import *
 
 GRANULARITY_WEEKLY = 'Week'
 GRANULARITY_MONTHLY = 'Month'
@@ -18,6 +19,9 @@ GRANULARITY_YEARLY = 'Year'
 #This function generates a random hash to give to each graph.
 #While it is not strictly unique, there is a very low chance of getting the same one twice.
 def genHash():
+    """
+    Generate a hash that can be used to uniquely identify a request
+    """
     randomNum1 = random.randint(1, 100)
     randomNum2 = random.randint(1, 6)
     start = int(time.time())
@@ -27,6 +31,10 @@ def genHash():
 #This function takes in a text file and returns a list of all the words contained in it
 #http://stackoverflow.com/questions/13259288/returning-a-list-of-words-after-reading-a-file-in-python
 def read_words(words_file):
+    """
+    Read a list words from a text file
+    Helper function for processing form data
+    """
     return [word for line in words_file for word in line.split()]
 
 # Create your views here.
@@ -36,6 +44,9 @@ def index(request):
 #This function handles taking form data from the index page, and passing relevant information
 #To the appropriate requests
 def success(request):
+    """
+    Main view for handling form data
+    """    
     #Get Form Data!
     if "startDate" in request.POST:
         startDateString = request.POST["startDate"]
@@ -320,6 +331,9 @@ def success(request):
 
 #Handles reading in a csv file from the hash in the url and passing csv information to graph
 def graph(request, hash):
+    """
+    Renders the graph to a client corresponding to the request identified by the hash
+    """
     filePath = '/mnt/vol/csvs/'
     yValues = []
     xValues = []

@@ -1,50 +1,60 @@
+
+
 # This module inputs the corpus and sentiment CSV files into Django's built-in SQLite database
 # It will not be the final method of database input
 # It can be used for quick testing of the data processing modules
 # Uses the first 1000 corpus entries and 10000 sentiment entries
 
 # 
-from __future__ import division
-import io
+#from __future__ import division
+#import io
 
-import os
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-import math
-import datetime
-import csv 
-import django
-import gensim
-import time
-import dataretrieval
+#import os
+#import sys
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
+#import math
+#import datetime
+#import csv 
+#import django
+#import gensim
+#import time
+#import dataretrieval
 
-from collections import Counter
-from decimal import *
-from words.models import Sentiment_Dict, Document_Data, Word_Data, Articles_Can, Corpus_Data
-from django.db.models import F
-from django.db import transaction
-from django.db import connection
+#from collections import Counter
+#from decimal import *
+#from words.models import Sentiment_Dict, Document_Data, Word_Data, Articles_Can, Corpus_Data
+#from django.db.models import F
+#from django.db import transaction
+#from django.db import connection
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
-django.setup()
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+#sys.path.append(r"C:\Users\L\Documents\School\WordsOverTime\mysite")
+#django.setup()
 
 #load data local infile '/mnt/vol/sentiment_dict_3mil.csv' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);
 def enterSentiment(dictpath):
-    
+    """
+    Helper function that enters the sentiment dictionary into the database
+    """
     cursor = django.db.connection.cursor()
     nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);" % dictpath)
 
 #load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
 
 def enterArticles(corpuspath):
+    """
+    Helper function that enters a corpus into the database
+    """    
     cursor = django.db.connection.cursor()
     nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (article_ID, language, province, city, country, publicationdate, wordcount, parsed_article);" % corpuspath)
     Articles_Can.objects.filter(publicationDate = None).delete()
 
 # main function that will input corpus info into the database
 def enterData(corpusCsv):
+    """
+    Helper function that processes a corpus into metadata to be entered into the database
+    """      
     transaction.set_autocommit(False)
     fullCorpus = MainCorpus(corpusCsv)
     maxInt = sys.maxsize
@@ -68,7 +78,7 @@ def enterData(corpusCsv):
             if Document_Data.objects.filter(article_id = line['articleID']).exists():
                 continue
 	    try:
-                words = line['parsedArticle'].split()
+		words = line['parsedArticle'].split()
                 datte = line['publicationDate']
                 datesplit = datte.split("-")
                 dattte = datetime.datetime(year=int(datesplit[0]),month=int(datesplit[1]),day=int(datesplit[2]))
@@ -124,6 +134,9 @@ def enterData(corpusCsv):
 
 
 def tfidfForFullCorpus():
+    """
+    Helper function that computes tfidfs for all words in the corpus
+    """
     completedtime = time.asctime(time.localtime(time.time()))
     print "Starting tfidf calculations", completedtime
     chunk = Document_Data.objects.all()
@@ -264,6 +277,9 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run(sentPath, corpusPath):
+    """
+    Processes and enters all required information from a sentiment dictionary and corpus into the database
+    """
     print("Creating database from ", sentPath, " and ", corpusPath)
     enterSentiment(sentPath)
     enterArticles(corpusPath)

@@ -1,10 +1,10 @@
 
-import smtplib
-from os.path import basename
-from email.mime.application import MIMEApplication
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
+#import smtplib
+#from os.path import basename
+#from email.mime.application import MIMEApplication
+#from email.mime.multipart import MIMEMultipart
+#from email.mime.text import MIMEText
+#from email.utils import COMMASPACE, formatdate
 
 #depreciated email function, kept as example.
 def SendWordsOverTimeEmail(emailTo, htmlLinks, date, csvList):
@@ -27,6 +27,11 @@ def SendWordsOverTimeEmail(emailTo, htmlLinks, date, csvList):
     
 #send_mail(["dmhamilt@ualberta.ca"], ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"],[],[])    
 def send_mail(send_to_list, htmlLinks, files=None, errors=None, matrices=None):
+    """
+    Sends an email to a list of addresses when an analysis is finished
+    Sends the results of the analyses as links to graphs and CSV files
+    Errors are reported in the message body
+    """
     if isinstance(send_to_list, str):
         send_to_list = [send_to_list]
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -72,6 +77,9 @@ def send_mail(send_to_list, htmlLinks, files=None, errors=None, matrices=None):
 #send_mail(["dmhamilt@ualberta.ca"], ["https://www.google.com", "http://www.sharktank.com"], ["tests.py", "urls.py"])
 
 def send_error_mail(send_to_list, error_type=''):
+    """
+    Sends a catch-all error email if a request fails for an unknown cause
+    """
     if isinstance(send_to_list, str):
         send_to_list = [send_to_list]
     server = smtplib.SMTP('smtp.gmail.com', 587)

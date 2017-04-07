@@ -1,4 +1,4 @@
-from django import forms
+#from django import forms
 
 class MainForm(forms.Form):
     keywords = forms.CharField(label= 'keywords', max_length = 100)

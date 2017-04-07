@@ -1,13 +1,19 @@
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+import sys
+sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+import django
+django.setup()
 from datetime import date
 
 from django.test import TestCase
 #from unittest import TestCase
 
-import words.dataretrieval
-import words.requesthandler
-import words.databaseinput
-from words.emailsending import *
-from words.models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
+import .dataretrieval
+import .requesthandler
+import .databaseinput
+from .emailsending import *
+from .models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
 import csv
 import decimal
 from datetime import date

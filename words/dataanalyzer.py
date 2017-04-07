@@ -1,9 +1,11 @@
-import gensim, logging
-import decimal
+
+
+#import gensim, logging
+#import decimal
 #logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-import words.dataretrieval
-import os
-import copy
+#import words.dataretrieval
+#import os
+#import copy
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
@@ -14,18 +16,27 @@ filePath = '/mnt/vol/matrices/'
 #filePath = 'C:/Users/L/Documents/School/'
 
 def averageValence(docs): # average valence of a list of documents
+    """
+    Computes the average valence of a list of Document_Data objects
+    """
     result = decimal.Decimal(0.0)
     for doc in docs:
         result = result + doc.average_valence_doc
     return result/len(docs)
 
 def averageArousal(docs): # average arousal of a list of documents
+    """
+    Computes the average arousal of a list of Document_Data objects
+    """    
     result = decimal.Decimal(0.0)
     for doc in docs:
         result = result + doc.average_arousal_doc
     return result/len(docs)
     
 def averageValenceTopFive(docs):
+    """
+    Computes the average valence of the five words with the highest tfidfs for a list of Document_Data objects
+    """    
     chunk = []
     for document in docs:
         chunk.append(words.dataretrieval.getWordsInDocument(document))
@@ -54,6 +65,9 @@ def averageValenceTopFive(docs):
     return totalChunk/len(chunk)
 
 def averageArousalTopFive(docs):
+    """
+    Computes the average arousal of the five words with the highest tfidfs for a list of Document_Data objects
+    """      
     chunk = []
     for document in docs:
         chunk.append(words.dataretrieval.getWordsInDocument(document))
@@ -107,6 +121,10 @@ def getTopWord(tfidfs):
 # corpus = [dictionary.doc2bow(text) for text in texts]: pass in texts as a list of lists of words
 # not sure if bugged... seems to be sort of working
 def averageTfidfOfWord(chunk, word):
+    """
+    Compute the average tfidf of a word in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """
     dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
@@ -132,6 +150,12 @@ def averageTfidfOfWord(chunk, word):
                 #break
     
 def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
+    """
+    Compute the cosine distance between two words in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    If cbow is True, the cbow representation is used to train the model. Otherwise skipgram is used
+    The hash and date of the chunk are used to persist the model to disk
+    """    
     if (cbow==True):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
@@ -141,6 +165,12 @@ def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
     return model.similarity(word1, word2)
    
 def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
+    """
+    Compute the N closest neighbors for a word in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    If cbow is True, the cbow representation is used to train the model. Otherwise skipgram is used
+    The hash and date of the chunk are used to persist the model to disk
+    """    
     if (cbow==True):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
@@ -150,6 +180,10 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):
+    """
+    Compute the word frequency for a word in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """
     result = 0.0
     for doc in chunk:
         result = result + doc.count(word)
@@ -160,6 +194,10 @@ def wordFrequency(chunk, word):
     #return wordFrequency(chunk,word)/fullFreq # MUST CHECK IF fullFreq = 0
 
 def relativeWordFrequency(chunk, word):
+    """
+    Compute the relative word frequency for a word in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """    
     wordCount = 0.0
     totalWordCount = 0.0
     for doc in chunk:
@@ -175,6 +213,10 @@ def probX(chunk, x):
     return count/len(chunk)
 
 def probXAndY(chunk, x, y):
+    """
+    Compute the probability that two words appear together in a chunk of the corpus
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """      
     # probability that an article in the chunk has both x and y?
     # all articles with x and y / total articles
     count = 0.0
@@ -191,11 +233,19 @@ def probXAndNotY(chunk, x, y):
     return count/len(chunk)
 
 def probXGivenY(chunk, x, y):
+    """
+    Compute the probability that a word X appears in a chunk of the corpus given word Y has appeared
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """       
     # probability that an article has x given that it has y?
     # probXAndY / probY
     return probXAndY(chunk,x,y)/probX(chunk,y)
 
 def probXGivenNotY(chunk, x, y):
+    """
+    Compute the probability that a word X appears in a chunk of the corpus given word Y has not appeared
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """       
     return probXAndNotY(chunk, x, y)/(1.0 - probX(chunk, y))
     
     #notY = 1.0 - probX(chunk, y)
@@ -206,6 +256,10 @@ def probXGivenNotY(chunk, x, y):
 
 # return 1 if probX = 0, 2 if probX = 1, and 0 if no error
 def probException(chunk, x):
+    """
+    Returns 1 or 2 if an exception would occur for a probability calculation
+    Otherwise returns 0
+    """
     pX = probX(chunk, x)
     if (pX.is_integer()):
         if (pX == 0.0):
@@ -217,6 +271,11 @@ def probException(chunk, x):
         return 0
 
 def wordNotInChunkException(chunk, word):
+    """
+    Returns True if a word does not appear in the chunk
+    Otherwise returns False
+    A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+    """
     wordCount = 0
     for doc in chunk:
         if word in doc:
@@ -226,6 +285,10 @@ def wordNotInChunkException(chunk, word):
     return True
 
 def saveMatrix(model, word, hashStr, chunkDate):
+    """
+    Helper function for cosine distance and n closest neighbors analyses to be able to save their learned models to disk
+    A model can be uniquely identified by the word, hash, and chunk date
+    """
     path = filePath+hashStr+'/'+word+'/'+str(chunkDate)
     try: 
         os.makedirs(path)

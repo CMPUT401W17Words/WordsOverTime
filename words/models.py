@@ -1,10 +1,15 @@
+import django
+django.setup()
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
-from .hash import *
+#from django.utils.encoding import python_2_unicode_compatible
+#from .hash import *
 
 # Create your models here.
   
 class Sentiment_Dict(models.Model):
+  """
+  Model that stores valence and arousal data for words
+  """
   word = models.CharField(primary_key=True, max_length=255)
   valence = models.DecimalField(max_digits=14, decimal_places=12)
   arousal = models.DecimalField(max_digits=14, decimal_places=12) 
@@ -13,6 +18,9 @@ class Sentiment_Dict(models.Model):
   aoa = models.DecimalField(max_digits=14, decimal_places=12)  
   
 class Articles_Can(models.Model):
+  """
+  Model that stores documents from a corpus
+  """
   #id = models.IntegerField(primary_key=True, default=-1)
   article_id = models.IntegerField(primary_key=True, default=-1)
   language = models.CharField(max_length=255)
@@ -24,6 +32,9 @@ class Articles_Can(models.Model):
   parsed_article = models.TextField()
   
 class Document_Data(models.Model):
+  """
+  Model that stores metadata for documents
+  """
   article_id = models.IntegerField(primary_key=True, default=-1)
   language = models.CharField(max_length=255)
   province = models.CharField(max_length=255)
@@ -42,6 +53,9 @@ class Document_Data(models.Model):
   average_valence_words   = models.DecimalField(max_digits=14, decimal_places=12)  
   
 class Word_Data(models.Model):
+  """
+  Model that stores metadata for words
+  """
   word = models.CharField(max_length=255)
   #word = models.CharField(primary_key=True, max_length=255)
   article_id = models.IntegerField()

@@ -1,21 +1,29 @@
 # This is the "coordinator" module that calls on other modules to process a client request
-
-import csv
-from words.models import Document_Data
-import words.dataretrieval
-import words.dataanalyzer
-from words.emailsending import *
+#import os
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+#import sys
+#sys.path.append("C:/Users/L/Documents/School/WordsOverTime/mysite")
+#import django
+#django.setup()
+#import csv
+#from .models import Document_Data
+#from .dataretrieval import *
+#from .dataanalyzer import *
+#from .emailsending import *
 filePath = '/mnt/vol/csvs/'
 
 from threading import Thread
 
-import os
-import zipfile
-import sys
-import shutil
+#import os
+#import zipfile
+#import sys
+#import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
+    """
+    Zips the matrices in the directory corresponding to the hash
+    """
     shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
     #zf = zipfile.ZipFile(hashStr+".zip", "w")
     #for dirname, subdirs, files in os.walk(matricesPath):
@@ -29,6 +37,9 @@ def zipMatrices(matricesPath, hashStr):
     #zf.close()
 
 class RequestsExecuteThread(Thread):
+    """
+    Subclasses threading.Thread to execute a list of Requests
+    """
     def __init__(self, requests, email):
         Thread.__init__(self)
         self.requests = requests
@@ -70,7 +81,13 @@ class RequestsExecuteThread(Thread):
 # requests.run()
 
 class Request(object):
+    """
+    Base class for clients to request an analysis.
+    """
     def execute(self):
+        """
+        Carries out the analysis, returning a Result
+        """
         return Result(None)
     
 class OverTimeRequest(Request):
@@ -82,6 +99,9 @@ class OverTimeRequest(Request):
         return Result(None)
 
 class WordFrequencyOverTimeRequest(OverTimeRequest):
+    """
+    Handles a word frequency request
+    """
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.wordList = wordList
@@ -111,6 +131,9 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Word Frequency Over Time', xValues, yDict)
 
 class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
+    """
+    Handles a relative word frequency request
+    """    
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
@@ -153,6 +176,9 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
   
 class TfidfOverTimeRequest(OverTimeRequest):
+    """
+    Handles an average tfidf request
+    """    
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.wordList = wordList
@@ -189,6 +215,9 @@ class TfidfOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Tfidf Over Time', xValues, yDict, errors) 
 
 class AverageValenceOverTimeRequest(OverTimeRequest):
+    """
+    Handles an average valence request
+    """    
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
@@ -210,6 +239,9 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents', xValues, yDict)
 
 class AverageArousalOverTimeRequest(OverTimeRequest):
+    """
+    Handles an average arousal request
+    """    
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
@@ -231,6 +263,9 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents', xValues, yDict)
     
 class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
+    """
+    Handles an average valence of the top 5 tfidf words request
+    """    
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
@@ -250,6 +285,9 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Valence of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
    
 class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
+    """
+    Handles an average arousal of the top 5 tfidf words request
+    """       
     def __init__(self, dateRange, granularity, wordList, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.hashStr = hashStr
@@ -269,6 +307,9 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Average Arousal of Documents Using Top Five Tfidfs In Each Document', xValues, yDict)
   
 class CosDistanceOverTimeRequest(OverTimeRequest):
+    """
+    Handles a cos distance request
+    """   
     def __init__(self, dateRange, granularity, pairList, cbow, hashStr):
         OverTimeRequest.__init__(self,dateRange, granularity)
         self.pairList = pairList
@@ -311,6 +352,9 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Cosine Distance', xValues, yDict, errors)  
     
 class NClosestNeighboursOverTimeRequest(OverTimeRequest):
+    """
+    Handles an N closest neighbours request
+    """       
     def __init__(self, dateRange, granularity, wordList, n, cbow, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.wordList = wordList
@@ -349,6 +393,9 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'N Closest Neighbours', xValues, yDict, errors)   
 
 class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
+    """
+    Handles a pairwise probabilities request
+    """   
     def __init__(self, dateRange, granularity, pairList, hashStr):
         OverTimeRequest.__init__(self, dateRange, granularity)
         self.pairList = pairList
@@ -427,6 +474,10 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         return Result(self.granularity, 'Pairwise Probabilities', xValues1, yDict, errors)
 
 class Result():
+    """
+    Return object of all Requests
+    Stores the result of an analysis as two parallel lists of xValues and yValues that can be plotted
+    """
     def __init__(self, xTitle, yTitle, xValues, yValues, errors=None):
         self.xTitle = xTitle # string describing the x-axis. basically time frame and granularity
         self.yTitle = yTitle # string describing the y-axis. basically the parameter that was being calculated
@@ -434,6 +485,9 @@ class Result():
         self.yValues = yValues
         self.errors = errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
     def generateCSV(self, hashStr):
+        """
+        Creates a CSV file containg the result data. The file's name should be the hash that uniquely identifies the request that generated the data
+        """
         #with open(filePath + hashStr + '.csv', 'w') as csvfile:
         #    resultWriter = csv.writer(csvfile, dialect='excel')
         #    resultWriter.writerow([self.xTitle, self.yTitle])
@@ -451,6 +505,9 @@ class Result():
 
 # sort parallel lists based on the first list
 def sortXAndY(xValues, yValues):
+    """
+    Helper function that sorts parallel lists based on the first list
+    """
     if (len(xValues) < 1):
         return xValues, yValues
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
