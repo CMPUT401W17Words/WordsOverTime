@@ -65,46 +65,50 @@ def enterData(corpusCsv):
                 words = line['parsedArticle'].split()
                 datte = line['publicationDate']
                 datesplit = datte.split("-")
-                dattte = datetime.datetime(year=int(datesplit[0]),month=int(datesplit[1]),day=int(datesplit[2]))
+                dattte = datetime.datetime(year=int(datesplit[0]),month=int(datesplit[1]),day=int(datesplit[2])) #causes exception and skips document if date is invalid
                 arousal = Decimal('0.0')
                 valence = Decimal('0.0')
-                arousal_five = []
-                valence_five = []
-                tfidf_five =[]
-                value = Decimal(0.0)
-                doc_word_count = len(words)
+                #arousal_five = []
+                #valence_five = []
+                #tfidf_five =[]
+                #value = Decimal(0.0)
+                doc_word_countt = len(words)
                 wordsindictcount = 0
                 wordscounted = Counter(words)
-
-                for eachword in wordscounted: # get sentiment info
+		wordvalues = Sentiment_Dict.objects.filter(word=eachword)
+		for eachword in wordscounted: 
+		    if wordvalues:			
+			currentArousal = wordvalues.values_list("arousal", flat=True)
+			currentValence = wordvalues.values_list("valence", flat=True)
+			arousal = arousal + currentArousal[0]*wrdcnt
+			valence = valence + currentValence[0]*wrdcnt
+                for eachword in wordscounted: 
                     wrdcnt = wordscounted[eachword]
-                    termfreq = Decimal(math.log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
-                    word = Word_Data(word=eachword, article_id=line['articleID'], word_count=wrdcnt, term_frequency=termfreq, tfidf=value)
+                    #termfreq = Decimal(math.log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+                    word = Word_Data(word=eachword, article_id=line['articleID'], language = line['language'], province = line['province'], 
+                          city = line['city'], country = line['country'], publication_Date = dattte, word_count=wrdcnt,
+		          doc_word_count = doc_word_countt, average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount )
                     word.save()
-                    wordvalues = Sentiment_Dict.objects.filter(word=eachword)
                     wordsindictcount = wordsindictcount + wrdcnt
+		    
 
-                    if wordvalues:
-#                        wordsindictcount = wordsindictcount + 1
-                        currentArousal = wordvalues.values_list("arousal", flat=True)
-                        currentValence = wordvalues.values_list("valence", flat=True)
-                        arousal = arousal + currentArousal[0]*wrdcnt
-                        valence = valence + currentValence[0]*wrdcnt
                             
-                arousal_average_five = 0.0
-                valence_average_five = 0.0          
+                #arousal_average_five = 0.0
+                #valence_average_five = 0.0          
 
-                doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
-                          city = line['city'], country = line['country'], publication_Date = dattte, 
-                          word_count = doc_word_count, word_one = "", word_two = "", word_three = "", word_four = "", 
-                          word_five = "", average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount,
-                          average_arousal_words = arousal_average_five, average_valence_words = valence_average_five)  
+                #doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
+                          #city = line['city'], country = line['country'], publication_Date = dattte, 
+                          #word_count = doc_word_count, word_one = "", word_two = "", word_three = "", word_four = "", 
+                          #word_five = "", average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount,
+                          #average_arousal_words = arousal_average_five, average_valence_words = valence_average_five)  
+		doc = Document_Data(article_id = line['articleID'], language = line['language'], province = line['province'], 
+			  city = line['city'], country = line['country'], publication_Date = dattte, 
+			  word_count = doc_word_countt, average_arousal_doc = arousal/wordsindictcount, average_valence_doc = valence/wordsindictcount)			  
+			  
                 doc.save()
 
                 count = count + 1
-                if (count %20000==0): 
-                    #print(count, " documents computed")
-                    sys.stdout.flush()            
+                if (count %20000==0):           
                     transaction.commit()
                     completedtime = time.asctime(time.localtime(time.time()))
                     print(count, " documents computed", completedtime)
@@ -262,7 +266,7 @@ def run(sentPath, corpusPath):
     enterSentiment(sentPath)
     enterArticles(corpusPath)
     enterData(corpusPath)
-    tfidfForFullCorpus()
+    #tfidfForFullCorpus()
     
 if __name__ == "__main__":
     run()
