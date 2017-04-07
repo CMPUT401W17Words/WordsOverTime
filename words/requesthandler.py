@@ -17,16 +17,6 @@ import shutil
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
     shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
-    #zf = zipfile.ZipFile(hashStr+".zip", "w")
-    #for dirname, subdirs, files in os.walk(matricesPath):
-        #print(dirname)
-        #sys.stdout.flush()
-        #zf.write(dirname)
-        #for filename in files:
-            #print(filename)
-            #sys.stdout.flush()
-            #zf.write(os.path.join(dirname, filename))
-    #zf.close()
 
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
@@ -59,15 +49,10 @@ class RequestsExecuteThread(Thread):
                     print(matrices)                    
                     matrixList.append(matrices)
                     zipMatrices(matrixPath, req.hashStr)
-                #emailUser(req.hashStr)
             except Exception as e:
-                #errorDict[''] = ['Something went quite wrong. We are sorry...']
                 errorDict[''] = [str(e)]
             print('thread done')
         send_mail(self.email, urlList, csvList, errorDict, matrixList)
-# make a list of requests
-# requests = RequestsExecuteThread(requests)
-# requests.run()
 
 class Request(object):
     def execute(self):
@@ -130,12 +115,6 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             
             # freqneucy of word in full corpus
             wordData = words.dataretrieval.getWordData(word)
-            #if (len(wordData) == 0):
-            #    errors.append(word+" does not appear in the corpus") # DO EXCEPTION HANDLING
-            #else: # modified to use full frequency in a chunk instead of the whole corpus
-                #fullFreq = 0.0
-                #for thing in wordData:
-                #    fullFreq = fullFreq + thing.word_count
                     
             for k,v in docHistogram.items():
                 # v is a list of Documents
@@ -144,7 +123,6 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
                     wordss = words.dataretrieval.getWordsInDocument(doc)
                     chunk.append(wordss)
                 xValues.append(k)
-                #yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word, fullFreq))
                 yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word))
                 
             xValues, yValues = sortXAndY(xValues, yValues)
@@ -383,7 +361,6 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                     
                 xValues.append(k)
                 yValsXAndY.append(words.dataanalyzer.probXAndY(chunk, pair[0], pair[1]))
-                #yValsXGivenY.append(words.dataanalyzer.probXGivenY(chunk, pair[0], pair[1]))
                 
                 xErrCode = words.dataanalyzer.probException(chunk, pair[0])
                 yErrCode = words.dataanalyzer.probException(chunk, pair[1])
@@ -434,11 +411,6 @@ class Result():
         self.yValues = yValues
         self.errors = errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
     def generateCSV(self, hashStr):
-        #with open(filePath + hashStr + '.csv', 'w') as csvfile:
-        #    resultWriter = csv.writer(csvfile, dialect='excel')
-        #    resultWriter.writerow([self.xTitle, self.yTitle])
-        #    for i in range(len(self.xValues)):
-        #        resultWriter.writerow([self.xValues[i], self.yValues[i]])
         with open(filePath + hashStr + '.csv', 'w') as csvfile:
             resultWriter = csv.writer(csvfile, dialect='excel')
             resultWriter.writerow([self.xTitle, self.yTitle, "keywords"])
@@ -455,18 +427,3 @@ def sortXAndY(xValues, yValues):
         return xValues, yValues
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
-
-# granularity parameter is for now a string that can be Year or Month
-    
-# for now, structure every request as a request for some parameter to be evaluated over time
-# all requests have a date range (choose a section of the corpus), time granularity (week, year, etc), and parameters (examined over time)
-# possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, tfidf, cosine distance for a word pair, N closest neighbors for a word
-# later: word frequency, rel. word frequency, pairwise conditional probabilities
-# a result is therefore a mapping of parameter values to times
-
-# 1 - retrieve documents that fall in the date range
-# 2 - split the documents into chunks based on time granularity
-# 3 - compute the parameter of interest for each chunk
-# 4 - wrap the result
-
-# later the user might also request the raw data. this is a different type of request
