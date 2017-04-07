@@ -4,14 +4,10 @@ import decimal
 import words.dataretrieval
 import os
 import copy
-# possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
-# chunk has the format [['word', 'word],['word','word']]
-# docs is a list of Document_Data objects
 
 NNsize = 300
 minWords = 1#5
 filePath = '/mnt/vol/matrices/'
-#filePath = 'C:/Users/L/Documents/School/'
 
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
@@ -193,5 +189,4 @@ def saveMatrix(model, word, hashStr, chunkDate):
     try:
         model.wv.save_word2vec_format(path+'/model', fvocab=path+'/vocab')
     except:
-        print('model save failed')
-        raise
+        pass
