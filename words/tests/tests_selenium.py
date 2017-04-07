@@ -12,8 +12,8 @@ import time, re, os
 #Note: The webserver MUST be running before running these tests.
 
 # ID classes:
-# startDate
-# endDate
+# startDate (dtp_input1)
+# endDate (dtp_input2)
 # unit -> values: Year/Month/Week
 # ---
 # Nneighbour (int - but field is text, watch for this)
@@ -65,7 +65,7 @@ class WordsTest(LiveServerTestCase):
         # Author: Russell Dias / License: CC-BY-SA 3.0
         self.current_path = os.path.dirname(os.path.realpath(__file__))
 
-    # Should pass
+    # Passes
     def test_submit_nothing(self):
         driver = self.driver
         driver.get(self.base_url + "words")
@@ -73,21 +73,26 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
-    # Should pass
+    # http://sqa.stackexchange.com/questions/3387/set-attribute-of-an-element-using-webdriver-python
+    # Passes
     def test_no_email_given(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        driver.find_element_by_id("startDate").send_keys("2000-01-01")
-        driver.find_element_by_id("endDate").send_keys("2001-01-01")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
         driver.find_element_by_id("tfidfWord").send_keys("apple")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
-        
-    # Should pass
+    
+    # Passes
     def test_select_no_date(self):
         driver = self.driver
         driver.get(self.base_url + "words")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
         driver.find_element_by_id("tfidfWord").send_keys("apple")
         driver.find_element_by_id("userEmail").send_keys("test@email.net")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
@@ -98,12 +103,16 @@ class WordsTest(LiveServerTestCase):
     def test_submit_stuff(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        driver.find_element_by_id("startDate").send_keys("2000-01-01")
-        driver.find_element_by_id("endDate").send_keys("2001-01-01")
-        #driver.find_element_by_id("unit").click()
-        print(driver.find_element_by_id("startDate").text)
-        #self.assertTrue(driver.find_element_by_id("startDate").text)
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_id("userEmail").send_keys("test@email.net")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
+        self.close_alert_and_get_its_text()
+        time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
 
     # WebDriverException: Message: POST ... did not match a known command
@@ -112,6 +121,8 @@ class WordsTest(LiveServerTestCase):
         driver.get(self.base_url + "words")
         path = self.current_path + "/text_files/single_words.txt"
         print(path)
+        driver.find_element_by_id("click1").click()
+        time.sleep(1)
         driver.find_element_by_id("text_file").send_keys(path)
         self.assertTrue(2+2, 4)
 

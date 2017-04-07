@@ -324,10 +324,10 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input1" class="col-md-4 control-label">From</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                    <input class="form-control" size="16" type="date" value="" readonly placeholder="2010-04-01">
+                    <input id="startDate" class="form-control" size="16" type="date" value="" readonly placeholder="2010-04-01">
 										
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    <span class="input-group-addon"><span id="removeCalendarStart" class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span id="getCalendarStart" class="glyphicon glyphicon-calendar"></span></span>
                 </div>
 								<input type="hidden" name="startDate" id="dtp_input1" value="" /><br/>
             </div>
@@ -337,8 +337,8 @@ understand how language is used by the media</p>
                 <label for="dtp_input2" class="col-md-4 control-label">To</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
 										 <input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
-										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										<span class="input-group-addon"><span id="removeCalendarEnd" class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span id="getCalendarEnd" class="glyphicon glyphicon-calendar"></span></span>
 										</div>
 								<input type="hidden" id="dtp_input2" value="" /><br/>
             </div>
@@ -367,7 +367,7 @@ understand how language is used by the media</p>
 							 <div class="panel-group" id="accordion"><!--start of accordion -->
   								<div class="panel panel-default">
 														<div class="panel-heading">
-															<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">N Closest Neighbours</a></h4>
+															<h4 class="panel-title"><a id="click1" data-toggle="collapse" data-parent="#accordion" href="#collapse1">N Closest Neighbours</a></h4>
 														</div>
 														<div id="collapse1" class="panel-collapse collapse">
 															<div class="panel-body">
@@ -389,7 +389,7 @@ understand how language is used by the media</p>
 									<div class="panel panel-default">
 										<div class="panel-heading">
 											<h4 class="panel-title">
-												<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+												<a id="click2" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
 												Cosine Distance of Word Pairs</a>
 											</h4>
 										</div>
@@ -412,7 +412,7 @@ understand how language is used by the media</p>
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Average tfidf</a>
+											<a id="click3" data-toggle="collapse" data-parent="#accordion" href="#collapse3">Average tfidf</a>
 										</h4>
 									</div>
 									<div id="collapse3" class="panel-collapse collapse">
@@ -510,7 +510,7 @@ understand how language is used by the media</p>
 							 <br/>
 				
 							<div id="submission">
-								<input type="email" size=30 id="userEmailid" name = "userEmail" placeholder="User@email.ca">
+								<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="User@email.ca">
 								<br/>
 								<br/>
 								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>		
