@@ -359,10 +359,10 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input1" class="col-md-4 control-label">From</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                    <input id="startDate" class="form-control" size="16" type="date" value="" readonly placeholder="2010-04-01">
+                    <input class="form-control" size="16" type="date" value="" readonly placeholder="2010-04-01">
 										
-                    <span class="input-group-addon"><span id="removeCalendarStart" class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span id="getCalendarStart" class="glyphicon glyphicon-calendar"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
 								<input type="hidden" name="startDate" id="dtp_input1" value="" /><br/>
             </div>
@@ -371,19 +371,21 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input2" class="col-md-4 control-label">To</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-           									<input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
-          									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-          									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-          									</div>
-								<input type="hidden" id="dtp_input2" value="" /><br/>
-	    </div>
+           <input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+          </div>
+<input type="hidden" id="dtp_input2" value="" /><br/>
+</div>
 
-							<!------->		
+<!------->		
 <!--							 					From <input type="date"  class="form-control"id = "startDate" name="startDate" readonly size="10" value="">-->
                     
 <!--                         To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">-->
 							 
-<div class = "form-group">
+							 
+
+<div clas = "form-group">
               <label class="col-md-4 control-label">By</label>	
               <select   class="col-md-2 selectpicker"  type = "select" id="unit" name = "granularity">
                       <option value = "Year">Year</option>
@@ -459,6 +461,7 @@ understand how language is used by the media</p>
 </div>
 </div>
 </div><!--end of the third fold in-->
+
 								 
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -539,20 +542,20 @@ understand how language is used by the media</p>
 </div><!--end of the sixth fold in-->
 </div><!--end of the whole accordion section-->
 					 
-		<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!-- hidden csrf_token -->
+<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!-- hidden csrf_token -->
 
 
-							<br/>
+<br/>
 
-							<div id="submission">
-								<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="User@email.ca">
-								<br/>
-								<br/>
-								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>		
-							</div>
-						</form><!--//from latest version-->
-	</div><!--//container-->
-    </section><!--//analysis-->
+<div id="submission">
+<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="User@email.ca">
+<br/>
+<br/>
+<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>		
+</div>
+</form><!--//from latest version-->
+</div><!--//container-->
+</section><!--//analysis-->
     
     <!--DELETED ******DOCS****** --> 
 <!--DELETED     <section id="docs" class="docs section">-->       
