@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Code taken from: https://github.com/mefeghhi/poll-web
+# Code started from: https://github.com/mefeghhi/poll-web
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -51,9 +51,11 @@ import time, re, os
 # select everything possible (done), upload files (erroring), etc.
 # making sure start date !> end date (done), making sure start/end date are valid (shouldn't
 # go past current date) (done), check valid e-mail (done)
+# invalid inputs (done)
 
-# Tests would be more extensive if it could just go straight to a results page instead
-# of needing an e-mail
+# In order for there to be testing with the results, we would need a way to get
+# around the fact that we're only e-mailed the results page, something I couldn't
+# figure out within the timeframe of writing this.
 
 # References:
 # http://stackoverflow.com/questions/15049182/write-value-to-hidden-element-with-selenium-python-script
@@ -66,7 +68,7 @@ import time, re, os
 
 # TODO: Fix file tests
 
-# TOTAL TESTS: 24 (3 fail, 1 gives an error)
+# TOTAL TESTS: 25 (3 fail, 1 gives an error)
 # Note that these tests will take roughly 5 minutes.
 
 class WordsTest(LiveServerTestCase):
@@ -119,6 +121,20 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
+    # Passes
+    def test_select_one_date(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+    
     # Passes
     def test_select_nothing(self):
         driver = self.driver
