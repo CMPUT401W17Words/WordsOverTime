@@ -320,3 +320,20 @@ ALTER TABLE `table_name` ENABLE KEYS;
  create index article_id on words_document_data (article_id)
 
 sudo scp -i demo-server-key.ppk ubuntu@199.116.235.204:/mnt/vol/WordsOverTime/words/databaseinput.py databaseinput.py
+/wordsOverTime/words/sentiment_mock.csv
+/wordsOverTime/words/corpus_mock.csv
+
+#RENAME TABLE old_db.table TO new_db.table;
+RENAME TABLE Generated_Data.words_articles_can TO backupdata.words_articles_can;
+RENAME TABLE Generated_Data.words_sentiment_dict TO backupdata.words_sentiment_dict;
+RENAME TABLE Generated_Data.words_word_data TO backupdata.words_word_data;
+RENAME TABLE Generated_Data.words_document_data TO backupdata.words_document;
+
+DROP TABLE Generated_Data.words_articles_can;
+DROP TABLE Generated_Data.words_sentiment_dict;
+DROP TABLE Generated_Data.words_word_data;
+DROP TABLE Generated_Data.words_document_data;
+RENAME TABLE backupdata.words_articles_can TO Generated_Data.words_articles_can;
+RENAME TABLE backupdata.words_sentiment_dict TO Generated_Data.words_sentiment_dict;
+RENAME TABLE backupdata.words_word_data TO Generated_Data.words_word_data;
+RENAME TABLE backupdata.words_document_data TO Generated_Data.words_document_data;
