@@ -75,8 +75,9 @@ def enterData(corpusCsv):
                 doc_word_countt = len(words)
                 wordsindictcount = 0
                 wordscounted = Counter(words)
-		wordvalues = Sentiment_Dict.objects.filter(word=eachword)
+		
 		for eachword in wordscounted: 
+		    wordvalues = Sentiment_Dict.objects.filter(word=eachword)
 		    if wordvalues:			
 			currentArousal = wordvalues.values_list("arousal", flat=True)
 			currentValence = wordvalues.values_list("valence", flat=True)
