@@ -151,6 +151,7 @@ $(document).ready(function() {
         dataPoints = [];
         for(var j = 0; j < xValues.length; j++){
             var date = new Date(xValues[j]);
+            date.setTime(date.getTime() + (7*60*60*1000));
             if(yValues[i][j] > -100){
                 dataPoints.push([ date, yValues[i][j] ]);
             }
