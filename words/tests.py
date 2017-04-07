@@ -206,8 +206,7 @@ class RequestHandlerTests(TestCase):
         for item in self.wordData:
             item.save()
     
-    # seems to be working
-    # still need to test exception: word doesn't exist in one of the time chunks
+    # working
     def testCosDistanceOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
@@ -220,8 +219,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()
     
-    # seems to be working
-    # still need to test exception: word doesn't exist in one of the time chunks
+    # working
     def testTfidfOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
@@ -234,8 +232,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()
         
-    # seems to be working
-    # still need to test exception: word doesn't exist in one of the time chunks
+    # working
     def testNClosestNeighboursOverTime(self):
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
         granularity = 'Year'
@@ -248,7 +245,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()
         
-    # should be working; might want to recheck later   
+    # working   
     def testAverageArousalOverTime(self):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
@@ -261,7 +258,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()            
         
-    # should be working; might want to recheck later    
+    # working    
     def testAverageValenceOverTime(self):
         dateRange = (date(2008, 1, 1), date(2011, 12, 31))
         granularity = 'Year'
@@ -274,7 +271,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()
                 
-    # will have to test at a later date
+    # working
     def testAverageArousalTopFiveOverTime(self):
         dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
@@ -287,7 +284,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()
         
-    # will have to test at a later date
+    # working
     def testAverageValenceTopFiveOverTime(self):
         dateRange = (date(2008, 2, 17), date(2011, 11, 11))
         granularity = 'Year'
@@ -300,8 +297,7 @@ class RequestHandlerTests(TestCase):
         print("Errors: " + str(result.errors))
         print()            
     
-    # seems to be working
-    # still need to test exception: word doesn't exist in one of the time chunks    
+    # working    
     def testPairwiseProbabilities(self):
         dateRange = (date(2008, 2, 17), date(2010, 12, 31))
         granularity = 'Year'
@@ -329,7 +325,6 @@ class RequestHandlerTests(TestCase):
         print()
     
     # working
-    # still need to test exception: word doesn't exist in full corpus
     def testRelativeWordFrequency(self):
         dateRange = (date(2013, 1, 1), date(2013, 12, 31))
         granularity = 'Month'
@@ -354,15 +349,6 @@ class RequestHandlerTests(TestCase):
         reqs.append(request)       
         ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
         ret.run()
-        
-    def testGenerateCSV(self):
-        pass
-    
-    def testZipMatrices(self):
-        pass
-    
-    def testEmail(self):
-        pass
     
 # will be implemented once there is a clearer way to test the analysis process. probably with help from client
 class DataAnalyzerTests(TestCase):
