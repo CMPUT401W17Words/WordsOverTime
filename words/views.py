@@ -110,8 +110,10 @@ def success(request):
         conditionalWordPairList = []
     if "fileConditional" in request.FILES:
         fileConditional = request.FILES["fileConditional"]
+        fileConditionalWords = read_words(fileConditional)
     else:
         fileConditional = ''
+        fileConditionalWords = []
 
     #Form data from checkboxes
     if "Average valence" in request.POST:
@@ -221,7 +223,7 @@ def success(request):
         hashList.append(tfidfHash)
 
     #Handle Pairwise Probability request
-    if (conditionalWordPairList or fileConditional):
+    if (conditionalWordPairList or fileConditionalWords):
         pairHash = genHash()
         wordPairTuples = []
         newList = []
@@ -229,14 +231,14 @@ def success(request):
             newList = wordPairList
         else:
             decodedList = []
-            for word in textFile2Words:
+            for word in fileConditionalWords:
                 word = word.decode("utf-8")
                 decodedList.append(word)
             newList = decodedList
         for i in range(len(newList)):
             temp = newList[i].split(",")
             wordPairTuples.append((temp[0], temp[1]))
-        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, newList, pairHash)
+        pairReq = PairwiseProbabilitiesOverTimeRequest((startDate, endDate), granularity, wordPairTuples, pairHash)
         requestList.append(pairReq)
         hashList.append(pairHash)
 
