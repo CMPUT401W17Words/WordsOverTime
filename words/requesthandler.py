@@ -359,14 +359,14 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         
         yDict = {}
         xValues = []
+        xValues1 = []
+        xValues2 = []
+        xValues3 = []
+        xValues4 = []
+        xValues5 = []        
         errors = []
         for pair in self.pairList:
             xValues = []
-            xValues1 = []
-            xValues2 = []
-            xValues3 = []
-            xValues4 = []
-            xValues5 = []
             yValsXAndY = []
             yValsXGivenY = []
             yValsYGivenX = []
