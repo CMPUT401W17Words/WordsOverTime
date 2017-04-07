@@ -16,25 +16,26 @@ import time, re, os
 # endDate (dtp_input2)
 # unit -> values: Year/Month/Week
 # ---
-# Nneighbour (int - but field is text, watch for this)
+# Nneighbour (number)
 # keywords (text)
 # text_file (file)
 # output2 -> options: CBow, Skipgram
 # ---
-# wordPairs (text - (a, b), (c,d))
+# wordPairs (text - a,b c,d)
 # fileCos (file)
 # output3 -> options: CBow, Skipgram
 # ---
 # tfidfWord (text)
 # ---
-# conditionalWord (text -> (a, b), (c, d))
+# conditionalWord (text -> a,b c,d)
 # fileConditional (file)
 # ---
 # checkboxes:
-# name: Average valence
-# name: Average arousal
-# name: 5 Words Average valence
-# name: 5 Words Average arousal
+# averageWords (text)
+# name: Average valence (AV)
+# name: Average arousal (AA)
+# name: 5 Words Average valence (5AV)
+# name: 5 Words Average arousal (5AA)
 # ---
 # frequencyWord (text)
 # fileFrequency (file)
@@ -49,10 +50,19 @@ import time, re, os
 # submit w/o picking anything (no words given, etc) (done), normal selection (done),
 # select everything possible (done), upload files (erroring), etc.
 # making sure start date !> end date (done), making sure start/end date are valid (shouldn't
-# go past current date), check valid e-mail
+# go past current date) (done), check valid e-mail (done)
 
 # Tests would be more extensive if it could just go straight to a results page instead
 # of needing an e-mail
+
+# References:
+# http://stackoverflow.com/questions/15049182/write-value-to-hidden-element-with-selenium-python-script
+# Author: Hui Zheng
+# http://stackoverflow.com/questions/21422548/how-to-select-the-date-picker-in-selenium-webdriver
+# Author: Shoaib Shaikh
+# http://stackoverflow.com/questions/7867537/selenium-python-drop-down-menu-option-value
+# Author: alanning
+# All 3 under license CC-BY-SA 3.0
 
 class WordsTest(LiveServerTestCase):
     def setUp(self):
@@ -218,16 +228,72 @@ class WordsTest(LiveServerTestCase):
         time.sleep(3)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
-    # WebDriverException: Message: POST ... did not match a known command
+    # Fails - website fails to cover this
+    def test_invalid_dates(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='3001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='3001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='3002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='3002-01-01'")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_id("userEmail").send_keys("test@email.net")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(5)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+
+    # Fails - website fails to cover this
+    def test_invalid_email(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_id("userEmail").send_keys("rebel")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(5)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+
+    # Error - WebDriverException: Message: POST ... did not match a known command
+    # Regardless, it would fail, as the website doesn't support having just a file
     def test_uploading_files(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        path = self.current_path + "/text_files/single_words.txt"
-        print(path)
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        pathSingle = self.current_path + "/text_files/single_words.txt"
+        pathPair = self.current_path + "/text_files/pair_words.txt"
         driver.find_element_by_id("click1").click()
         time.sleep(1)
-        driver.find_element_by_id("text_file").send_keys(path)
-        self.assertTrue(2+2, 4)
+        driver.find_element_by_id("Nneighbor").send_keys(3)
+        driver.find_element_by_id("text_file").send_keys(pathSingle)
+        driver.find_element_by_id("click2").click()
+        time.sleep(1)
+        driver.find_element_by_id("fileCos").send_keys(pathPair)
+        driver.find_element_by_id("click4").click()
+        time.sleep(1)
+        driver.find_element_by_id("fileConditional").send_keys(pathPair)
+        driver.find_element_by_id("click6").click()
+        time.sleep(1)
+        driver.find_element_by_id("text_file").send_keys(pathSingle)
+        driver.find_element_by_id("click7").click()
+        time.sleep(1)
+        driver.find_element_by_id("text_file").send_keys(pathSingle)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
