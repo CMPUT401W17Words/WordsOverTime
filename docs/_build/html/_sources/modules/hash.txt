@@ -1,0 +1,4 @@
+Hash
+======
+.. automodule:: WordsOverTime.words.hash
+    :members:

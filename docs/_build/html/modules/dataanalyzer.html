@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DataAnalyzer &#8212; WordsOverTime 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="WordsOverTime 0.1 documentation" href="../index.html" />
+    <link rel="next" title="DatabaseInput" href="databaseinput.html" />
+    <link rel="prev" title="Welcome to WordsOverTime’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dataanalyzer">
+<h1>DataAnalyzer<a class="headerlink" href="#dataanalyzer" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-WordsOverTime.words.dataanalyzer"></span><dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.averageArousal">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">averageArousal</code><span class="sig-paren">(</span><em>docs</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.averageArousal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the average arousal of a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.averageArousalTopFive">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">averageArousalTopFive</code><span class="sig-paren">(</span><em>docs</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.averageArousalTopFive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the average arousal of the five words with the highest tfidfs for a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.averageTfidfOfWord">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">averageTfidfOfWord</code><span class="sig-paren">(</span><em>chunk</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.averageTfidfOfWord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the average tfidf of a word in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.averageValence">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">averageValence</code><span class="sig-paren">(</span><em>docs</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.averageValence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the average valence of a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.averageValenceTopFive">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">averageValenceTopFive</code><span class="sig-paren">(</span><em>docs</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.averageValenceTopFive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the average valence of the five words with the highest tfidfs for a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.cosDistanceOfPair">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">cosDistanceOfPair</code><span class="sig-paren">(</span><em>chunk</em>, <em>word1</em>, <em>word2</em>, <em>cbow</em>, <em>hashStr</em>, <em>chunkDate</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.cosDistanceOfPair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cosine distance between two words in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+If cbow is True, the cbow representation is used to train the model. Otherwise skipgram is used
+The hash and date of the chunk are used to persist the model to disk</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.nClosestNeighboursOfWord">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">nClosestNeighboursOfWord</code><span class="sig-paren">(</span><em>chunk</em>, <em>word</em>, <em>N</em>, <em>cbow</em>, <em>hashStr</em>, <em>chunkDate</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.nClosestNeighboursOfWord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the N closest neighbors for a word in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document
+If cbow is True, the cbow representation is used to train the model. Otherwise skipgram is used
+The hash and date of the chunk are used to persist the model to disk</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.probException">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">probException</code><span class="sig-paren">(</span><em>chunk</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.probException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 1 or 2 if an exception would occur for a probability calculation
+Otherwise returns 0</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.probXAndY">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">probXAndY</code><span class="sig-paren">(</span><em>chunk</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.probXAndY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the probability that two words appear together in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.probXGivenNotY">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">probXGivenNotY</code><span class="sig-paren">(</span><em>chunk</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.probXGivenNotY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the probability that a word X appears in a chunk of the corpus given word Y has not appeared
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.probXGivenY">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">probXGivenY</code><span class="sig-paren">(</span><em>chunk</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.probXGivenY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the probability that a word X appears in a chunk of the corpus given word Y has appeared
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.relativeWordFrequency">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">relativeWordFrequency</code><span class="sig-paren">(</span><em>chunk</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.relativeWordFrequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the relative word frequency for a word in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.saveMatrix">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">saveMatrix</code><span class="sig-paren">(</span><em>model</em>, <em>word</em>, <em>hashStr</em>, <em>chunkDate</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.saveMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for cosine distance and n closest neighbors analyses to be able to save their learned models to disk
+A model can be uniquely identified by the word, hash, and chunk date</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.wordFrequency">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">wordFrequency</code><span class="sig-paren">(</span><em>chunk</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.wordFrequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the word frequency for a word in a chunk of the corpus
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataanalyzer.wordNotInChunkException">
+<code class="descclassname">WordsOverTime.words.dataanalyzer.</code><code class="descname">wordNotInChunkException</code><span class="sig-paren">(</span><em>chunk</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataanalyzer.wordNotInChunkException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if a word does not appear in the chunk
+Otherwise returns False
+A chunk is a list of documents represented as a nested list of words, which each internal list contains the words in one document</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to WordsOverTime&#8217;s documentation!</a></li>
+      <li>Next: <a href="databaseinput.html" title="next chapter">DatabaseInput</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/dataanalyzer.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, WordsOverTime.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/modules/dataanalyzer.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RequestHandler &#8212; WordsOverTime 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="WordsOverTime 0.1 documentation" href="../index.html" />
+    <link rel="next" title="Views" href="views.html" />
+    <link rel="prev" title="Models" href="models.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="requesthandler">
+<h1>RequestHandler<a class="headerlink" href="#requesthandler" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-WordsOverTime.words.requesthandler"></span><dl class="class">
+<dt id="WordsOverTime.words.requesthandler.AverageArousalFiveWordsOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">AverageArousalFiveWordsOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.AverageArousalFiveWordsOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an average arousal of the top 5 tfidf words request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.AverageArousalOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">AverageArousalOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.AverageArousalOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an average arousal request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.AverageValenceFiveWordsOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">AverageValenceFiveWordsOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.AverageValenceFiveWordsOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an average valence of the top 5 tfidf words request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.AverageValenceOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">AverageValenceOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.AverageValenceOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an average valence request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.CosDistanceOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">CosDistanceOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>pairList</em>, <em>cbow</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.CosDistanceOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a cos distance request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.NClosestNeighboursOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">NClosestNeighboursOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>n</em>, <em>cbow</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.NClosestNeighboursOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an N closest neighbours request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.PairwiseProbabilitiesOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">PairwiseProbabilitiesOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>pairList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.PairwiseProbabilitiesOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a pairwise probabilities request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.RelativeWordFrequencyOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">RelativeWordFrequencyOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.RelativeWordFrequencyOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a relative word frequency request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.Request">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">Request</code><a class="headerlink" href="#WordsOverTime.words.requesthandler.Request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for clients to request an analysis.</p>
+<dl class="method">
+<dt id="WordsOverTime.words.requesthandler.Request.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.Request.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Carries out the analysis, returning a Result</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.RequestsExecuteThread">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">RequestsExecuteThread</code><span class="sig-paren">(</span><em>requests</em>, <em>email</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.RequestsExecuteThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclasses threading.Thread to execute a list of Requests</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.Result">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">Result</code><span class="sig-paren">(</span><em>xTitle</em>, <em>yTitle</em>, <em>xValues</em>, <em>yValues</em>, <em>errors=None</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.Result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return object of all Requests
+Stores the result of an analysis as two parallel lists of xValues and yValues that can be plotted</p>
+<dl class="method">
+<dt id="WordsOverTime.words.requesthandler.Result.generateCSV">
+<code class="descname">generateCSV</code><span class="sig-paren">(</span><em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.Result.generateCSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a CSV file containg the result data. The file&#8217;s name should be the hash that uniquely identifies the request that generated the data</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.TfidfOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">TfidfOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.TfidfOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an average tfidf request</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="WordsOverTime.words.requesthandler.WordFrequencyOverTimeRequest">
+<em class="property">class </em><code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">WordFrequencyOverTimeRequest</code><span class="sig-paren">(</span><em>dateRange</em>, <em>granularity</em>, <em>wordList</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.WordFrequencyOverTimeRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a word frequency request</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.requesthandler.sortXAndY">
+<code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">sortXAndY</code><span class="sig-paren">(</span><em>xValues</em>, <em>yValues</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.sortXAndY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function that sorts parallel lists based on the first list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.requesthandler.zipMatrices">
+<code class="descclassname">WordsOverTime.words.requesthandler.</code><code class="descname">zipMatrices</code><span class="sig-paren">(</span><em>matricesPath</em>, <em>hashStr</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.requesthandler.zipMatrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zips the matrices in the directory corresponding to the hash</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="models.html" title="previous chapter">Models</a></li>
+      <li>Next: <a href="views.html" title="next chapter">Views</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/requesthandler.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, WordsOverTime.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/modules/requesthandler.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

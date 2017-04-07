@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DataRetrieval &#8212; WordsOverTime 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="WordsOverTime 0.1 documentation" href="../index.html" />
+    <link rel="next" title="EmailSending" href="emailsending.html" />
+    <link rel="prev" title="DatabaseInput" href="databaseinput.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dataretrieval">
+<h1>DataRetrieval<a class="headerlink" href="#dataretrieval" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-WordsOverTime.words.dataretrieval"></span><dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getArousal">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getArousal</code><span class="sig-paren">(</span><em>wd</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getArousal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the arousal of a word, or None if it doesn&#8217;t appear in the sentiment dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getDocumentData">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getDocumentData</code><span class="sig-paren">(</span><em>startDate</em>, <em>endDate</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getDocumentData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of Document_Data objects falling within the date range (inclusive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getDocumentDataWithWordFilter">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getDocumentDataWithWordFilter</code><span class="sig-paren">(</span><em>startDate</em>, <em>endDate</em>, <em>wordList</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getDocumentDataWithWordFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of Document_Data objects falling within the date range (inclusive), and only those that contain all the words in the given list of words</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getDocuments">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getDocuments</code><span class="sig-paren">(</span><em>startDate</em>, <em>endDate</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getDocuments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of documents falling within the date range (inclusive) as nested lists of words, where each nested list is a separate document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getNumWordInCorpus">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getNumWordInCorpus</code><span class="sig-paren">(</span><em>documents</em>, <em>inputWord</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getNumWordInCorpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of occurences of a given word in a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getNumWordsInCorpus">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getNumWordsInCorpus</code><span class="sig-paren">(</span><em>documents</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getNumWordsInCorpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of words in a list of Document_Data objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getValence">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getValence</code><span class="sig-paren">(</span><em>wd</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getValence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the valence of a word, or None if it doesn&#8217;t appear in the sentiment dictionary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getWordData">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getWordData</code><span class="sig-paren">(</span><em>wordIn</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getWordData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of Word_Data objects for a word</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.getWordsInDocument">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">getWordsInDocument</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.getWordsInDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the words in a document, repeats included</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="WordsOverTime.words.dataretrieval.splitDocuments">
+<code class="descclassname">WordsOverTime.words.dataretrieval.</code><code class="descname">splitDocuments</code><span class="sig-paren">(</span><em>documents</em>, <em>granularity</em><span class="sig-paren">)</span><a class="headerlink" href="#WordsOverTime.words.dataretrieval.splitDocuments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits a list of Document_Data objects into time bins specified by the granularity
+Granularity can be &#8216;Year&#8217;, &#8216;Month&#8217;, or &#8216;Week&#8217;
+Returns a dictionary mapping lists of documents to their time bins</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="databaseinput.html" title="previous chapter">DatabaseInput</a></li>
+      <li>Next: <a href="emailsending.html" title="next chapter">EmailSending</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/dataretrieval.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, WordsOverTime.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/modules/dataretrieval.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
