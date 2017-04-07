@@ -140,7 +140,7 @@ understand how language is used by the media</p>
                     </div>
                     <div class="content">
                         <h3 class="sub-title">Designed for Reseachers</h3>
-                        <p>Designed for researchers who are interested in analyzing word meanings over time.</p>
+                        <p>Designed for researchers who are interested in words meanings over time.</p>
                     </div><!--//content-->
                 </div><!--//item-->
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -202,14 +202,16 @@ understand how language is used by the media</p>
 					
 		<!-- start of input validating-->
 		<script type="text/javascript">
+                var regex_space_words = /^[A-Za-z]+([ (A-Za-z)+])*$/; //fomat like word word word...
+                var regex_pair_words = /^[A-Za-z]+,[A-Za-z]+([ A-Za-z]+,[A-Za-z]+)*$/; //fomat like word，word word，word...
 
 		function ifEmptyNotify(field,alerttxt)
 		{
 		with (field)
 			{
 			if (value==null||value=="")
-				{alert(alerttxt);return false}
-			else {return true}
+				{alert(alerttxt);return false;}
+			else {return true;}
 			}
 		}
 			
@@ -218,76 +220,72 @@ understand how language is used by the media</p>
 		with (field)
 			{
 			if (value==null||value=="")
-				{return false}
-			else {return true}
+				{return false;}
+			else {return true;}
 			}
 		}
 			
 		function ifNCloestEmpty(){
 			if (ifEmptySilent(Nneighbor)==false || ifEmptySilent(keywords) == false){
-				{return false}
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifCosEmpty(){
 			if (ifEmptySilent(wordPairs)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 		
 		function ifTdidfEmpty(){
 			if(ifEmptySilent(tfidfWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifPCPEmpty(){
 			if(ifEmptySilent(conditionalWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 			
 		function ifAAChecked(){
 			if(document.getElementById('AV').checked || document.getElementById('AA').checked || document.getElementById('5AV').checked || document.getElementById('5AA').checked){
-				return true
+				return true;
 			}
-			else { return false}
+			else { return false;}
 		}
 			
 		function ifWFEmpty(){
 			if(ifEmptySilent(frequencyWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
 		
 	
 		function ifRelativeWFEmpty(){
 			if(ifEmptySilent(relativeWord)==false){
-				return false
+				return false;
 			}
-			else {return true}
+			else {return true;}
 		}
-
-		function isValidCSP(commaSeperatedPhase)//regexp practise 
-		{
-				// First check for the pattern
-				var regex_csp = /^\w+(,\w+)*$/;
-
-				if(!regex_csp.test(commaSeperatedPhase))
-				{
-						return false;
-				}
-			}
-		
+     
 		function checkForm(thisform)
-		{
+		{   
 		with (thisform)
 			{
+                          var Neighborinput = thisform.keywords.value;
+                          var tdidfinput = thisform.tfidfWord.value;
+                          var averageWordsinput = thisform.averageWords.value;
+                          var frequencyWordinput = thisform.frequencyWord.value;
+                          var relativeWordinput = thisform.relativeWord.value;
+                          var wordPairsinput = thisform.wordPairs.value;
+                          var conditionalWordinput = thisform.conditionalWord.value;
 				
 			//general slots check
 			if (ifEmptyNotify(startDate,"Starting Date  must be filled!")==false)
@@ -304,20 +302,57 @@ understand how language is used by the media</p>
 				{
 					alert("at least one of the analysis section should be filled !");
 					return false}
-			}
 			
-			// input format check
-			if(ifNCloestEmpty() == true && isValidCSP(keywords)==false ){
-				alert("N neighbor keywords fomat should be comma seperated words like oil,gas ")
+			
+			 //input format check -------> 1. "word word ..." format 
+			if(ifNCloestEmpty() == true && !regex_space_words.test(Neighborinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                                keywords.focus();
+                          return false; 
+			}
+                        if(ifTdidfEmpty() == true && !regex_space_words.test(tdidfinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          tfidfWord.focus();
+                          return false; 
 			} 
+                        if(ifAAChecked() == true && ifEmptySilent(averageWords) == true && !regex_space_words.test(averageWordsinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          averageWords.focus();
+                          return false; 
+			}
+                        if(ifWFEmpty() == true && !regex_space_words.test(frequencyWordinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          frequencyWord.focus();
+                          return false; 
+			}
+                        if(ifRelativeWFEmpty() == true && !regex_space_words.test(relativeWordinput)){
+				alert("input should follow format 'word word ...' and only english letters allowed'"); 
+                          relativeWord.focus();
+                          return false; 
+			} 
+                          
+                        
+                        //input format check -------> 2. "word,word word,word ..." format 
+			if(ifCosEmpty() == true && !regex_pair_words.test(wordPairsinput)){
+				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
+                          wordPairs.focus();
+                          return false; 
+			}
+                        if(ifPCPEmpty() == true && !regex_pair_words.test(conditionalWordinput)){
+				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
+                          conditionalWord.focus();
+                          return false; 
+			}
+       
 		}
+                }
 				
 		</script><!-- end of input validating script-->
 					
 					
 						<!-- copy from last version-->
 					
-						 <form  enctype="multipart/form-data" action="/words/success/" method = "post" onsubmit="return checkForm(this)"><!--action = "/words/success/"-- replaced-->
+						 <form  enctype="multipart/form-data"  action = "/words/success/" method = "post" onsubmit="return checkForm(this)"><!---- replaced--action="/words/success/">
 						 
 							 <!------->
          
@@ -336,179 +371,179 @@ understand how language is used by the media</p>
 						<div class="form-group" >
                 <label for="dtp_input2" class="col-md-4 control-label">To</label>
                 <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-										 <input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
-										<span class="input-group-addon"><span id="removeCalendarEnd" class="glyphicon glyphicon-remove"></span></span>
-										<span class="input-group-addon"><span id="getCalendarEnd" class="glyphicon glyphicon-calendar"></span></span>
-										</div>
+           									<input type="date" id = "endDate" name="endDate" placeholder="2017-04-01" class="form-control" size="16" readonly>
+          									<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+          									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+          									</div>
 								<input type="hidden" id="dtp_input2" value="" /><br/>
-            </div>
-							 
-							 <!------->		
+	    </div>
+
+							<!------->		
 <!--							 					From <input type="date"  class="form-control"id = "startDate" name="startDate" readonly size="10" value="">-->
                     
 <!--                         To <input type="date" id = "endDate" name="endDate" placeholder="2010-01-01" size="10">-->
 							 
-							 
-							 
-								 <div clas = "form-group">
-							 					<label class="col-md-4 control-label">By</label>	
-												<select   class="col-md-2 selectpicker"  type = "select" id="unit" name = "granularity">
-													<option value = "Year">Year</option>
-													<option value = "Month">Month</option>
-													<option value = "Week">Week</option>
-												</select>
-												<!--end of beginning analysing section-->
-							 </div>
-							
-					
-							 	<br/>
-								<br/>
-							 
-							 <div class="panel-group" id="accordion"><!--start of accordion -->
-  								<div class="panel panel-default">
-														<div class="panel-heading">
-															<h4 class="panel-title"><a id="click1" data-toggle="collapse" data-parent="#accordion" href="#collapse1">N Closest Neighbours</a></h4>
-														</div>
-														<div id="collapse1" class="panel-collapse collapse">
-															<div class="panel-body">
-																<div id="NclosestNeighbors">
-																	<p class="intro text-center">The N closest neighbours in each output matrix for a given list of words.</p><br/><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p>
-																		<br/>
-																		<input type="number" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
-																		<input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="word word">
-																		<input type="file" class="fileIn" name = "text_file" id="text_file">
-																			<select id="output2" name="skipOrCBOW1">
-																				<option>CBow</option>
-																				<option>Skipgram</option>
-																			</select>
-																</div>
-															</div>
-  								</div>
-								 </div><!--end of the first fold in-->
+<div class = "form-group">
+              <label class="col-md-4 control-label">By</label>	
+              <select   class="col-md-2 selectpicker"  type = "select" id="unit" name = "granularity">
+                      <option value = "Year">Year</option>
+                      <option value = "Month">Month</option>
+                      <option value = "Week">Week</option>
+              </select>
+              <!--end of beginning analysing section-->
+</div>
+
+
+                                <br/>
+                                <br/>
+
+                         <div class="panel-group" id="accordion"><!--start of accordion -->
+                                <div class="panel panel-default">
+    <div class="panel-heading">
+                                    <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">N Closest Neighbours</a></h4>
+                            </div>
+                            <div id="collapse1" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                            <div id="NclosestNeighbors">
+<p class="intro text-center">The N closest neighbours in each output m  atrix for a given list of words.</p><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p>
+                          <br/>
+                          <input type="number" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
+                          <input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="word word">
+                              <br/>              
+                          <input type="file" class="fileIn" name = "text_file" id="text_file">
+                                              <br/> 
+                          <select id="output2" name="skipOrCBOW1">
+                                  <option>CBow</option>
+                                  <option>Skipgram</option>
+                          </select>
+          </div>
+  </div>
+</div>
+</div><!--end of the first fold in-->
 								
-									<div class="panel panel-default">
-										<div class="panel-heading">
-											<h4 class="panel-title">
-												<a id="click2" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-												Cosine Distance of Word Pairs</a>
-											</h4>
-										</div>
-										<div id="collapse2" class="panel-collapse collapse">
-											<div class="panel-body">
-												<div id="cos">
-													<p class="intro text-center">The cosine distance in each output matrix for a given list of word pairs.</p><br/><p>Format as pairs of words joined by a , with pairs seperated by spaces. Choose either a file upload or use the text box.</p>
-													<input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="word,word word,word">
-													<input class="fileIn" type=file name = "text_file2" id="fileCos">
-												
-													<select id="output3" name="skipOrCBOW2">
-														<option>CBow</option>
-														<option>Skipgram</option>
-													</select>
-												</div>
-											</div>
-								 		</div>
-								 </div><!--end of the second fold in-->
+<div class="panel panel-default">
+<div class="panel-heading">
+        <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                Cosine Distance of Word Pairs</a>
+        </h4>
+</div>                                    <div id="collapse2" class="panel-collapse collapse">
+        <div class="panel-body">
+                <div id="cos">
+<p class="intro text-center">The cosine distance in each output matrix for a given list of word pairs.  Format as pairs of words joined by a , with pairs seperated by spaces. Choose either a file upload or use the text box.</p>
+<input type="text" id = "wordPairs" name="wordPairs"  size="30" placeholder="word,word word,word">
+
+<input class="fileIn" type=file name = "text_file2" id="fileCos">
+                  <br/>
+                        <select id="output3" name="skipOrCBOW2">
+                                <option>CBow</option>
+                                <option>Skipgram</option>
+                        </select>
+                </div>
+        </div>
+</div>
+</div><!--end of the second fold in-->
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Average tfidf</a>
+</h4>
+</div>
+<div id="collapse3" class="panel-collapse collapse">
+<div class="panel-body">
+        <div id="Averagetfidf">
+                <p class="intro text-center">A measure of the average tdidf over time.</p><p>Format as whitespace seperated words.</p>
+                <input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="word word">
+        </div>
+</div>
+</div>
+</div><!--end of the third fold in-->
 								 
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a id="click3" data-toggle="collapse" data-parent="#accordion" href="#collapse3">Average tfidf</a>
-										</h4>
-									</div>
-									<div id="collapse3" class="panel-collapse collapse">
-										<div class="panel-body">
-											<div id="Averagetfidf">
-												<p class="intro text-center">A measure of the average tdidf over time.</p><br/><p>Format as whitespace seperated words.</p>
-												<input type="text" id = "tfidfWord" name="tfidfWord"  size="10" placeholder="word word">
-											</div>
-										</div>
-									</div>
-								</div><!--end of the third fold in-->
-								 
-								 
-								 <div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Pairwise Conditional Probabilities</a>
-										</h4>
-									</div>
-									<div id="collapse4" class="panel-collapse collapse">
-										<div class="panel-body">
-											<div id="pcp"><!--changed id from five to abbr.-->
-												
-												<p class="intro text-center">Pairwise conditional probablities by article for each corpus chunk.</p><br/><p>Format as pairs of words joined by a , with pairs seperated by spaces. Choose either a file upload or use the text box.</p>
-												<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="word,word word,word">
-												<input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
-											</div>
-										</div>
-									</div>
-								</div><!--end of the forth fold in-->
-								 
-								 
-								  <div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Valence and Arousal</a>
-										</h4>
-									</div>
-									<div id="collapse5" class="panel-collapse collapse">
-										<div class="panel-body">
-												<div id="aa" class = "checkbox"><!--changed id from six to abbr.-->
-													        <p class = "intro text-center">The Average valence and arousal of documents, optionally only those containing certain words.</p><br/><p>Format as whitespace seperated words, or leave empty.</p>
-														<input type="text" id = "averageWords" name="averageWords"  size="10" placeholder="word word"><br/>
-														<label><input type="checkbox" id = "AV" name="Average valence" value="1">Average Valence</label>
-														<label><input type="checkbox"  id = "AA" name="Average arousal" value="1">Average Arousal</label>
-														<br/>
-														<label><input type="checkbox"  id = "5AV" name="5 Words Average valence" value="1">Average Valence of Five Words with the Highest tfidf</label>
-														<br/>
-														<label><input type="checkbox" id = "5AA" name="5 Words Average arousal" value="1">Average Arousal of Five Words with the Highest tfidf</label>
-																																										<!--default value1?-->
-							 					</div>
-											</div>
-										</div>
-								</div><!--end of the fifth fold in-->
-										
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Word Frequency</a>
-										</h4>
-									</div>
-									<div id="collapse6" class="panel-collapse collapse">
-										<div class="panel-body">
-												<div id="WordFrequency"><!--changed id from seven to abbr.-->
-													<p class="intro text-center">Measure of word frequency in each corpus chunk.</p><br/><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p>
-								 						<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="word word">
-														<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
-							 					</div>
-										</div>
-									</div>
-								</div><!--end of the sixth fold in-->
-										
-										
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#collapse7">Relative Word Frequency</a>
-										</h4>
-									</div>
-									<div id="collapse7" class="panel-collapse collapse">
-										<div class="panel-body">
-												<div id="ralativeWordFrequency"><!--changed id from seven to abbr.-->
-													<p class="intro text-center">Measure of relative word frequency in each corpus chunk: frequency within a corpus chunk to global word frequency in the entire corpus.</p><br/><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p> box.
-								 						 <input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="word word">
-														 <input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
-							 					</div>
-										</div>
-									</div>
-								</div><!--end of the sixth fold in-->
-							</div><!--end of the whole accordion section-->
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Pairwise Conditional Probabilities</a>
+</h4>
+</div>
+<div id="collapse4" class="panel-collapse collapse">
+<div class="panel-body">
+<div id="pcp"><!--changed id from five to abbr.-->
+
+<p class="intro text-center">Pairwise conditional probablities by article for each corpus chunk.</p><p>Format as pairs of words joined by a , with pairs seperated by spaces. Choose either a file upload or use the text box.</p>
+<input type="text" id = "conditionalWord" name="conditionalWord"  size="30" placeholder="word,word word,word">
+  <input class="fileIn" type=file name = "fileConditional" id="fileCondtitonal" >
+</div>
+</div>
+</div>
+</div><!--end of the forth fold in-->
+
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Valence and Arousal</a>
+</h4>
+</div>
+<div id="collapse5" class="panel-collapse collapse">
+<div class="panel-body">
+<div id="aa" class = "checkbox"><!--changed id from six to abbr.-->
+<p class = "intro text-center">The Average valence and arousal of documents, optionally only those containing certain words.</p><p>Format as whitespace seperated words, or leave empty.</p>
+<input type="text" id = "averageWords" name="averageWords"  size="10" placeholder="word word"><br/>
+  
+<label><input type="checkbox" id = "AV" name="Average valence" value="1">Average Valence</label>
+  <br/>
+<label><input type="checkbox"  id = "AA" name="Average arousal" value="1">Average Arousal</label>
+<br/>
+<label><input type="checkbox"  id = "5AV" name="5 Words Average valence" value="1">Average Valence of Five Words with the Highest tfidf</label>
+<br/>
+<label><input type="checkbox" id = "5AA" name="5 Words Average arousal" value="1">Average Arousal of Five Words with the Highest tfidf</label>
+        </div>
+</div>
+</div>
+</div><!--end of the fifth fold in-->
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Word Frequency</a>
+</h4>
+</div>
+<div id="collapse6" class="panel-collapse collapse">
+<div class="panel-body">
+<div id="WordFrequency"><!--changed id from seven to abbr.-->
+<p class="intro text-center">Measure of word frequency in each corpus chunk.</p><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p>
+<input type="text" id = "frequencyWord" name="frequencyWord"  size="50" placeholder="word word">
+<input class="fileIn" type=file name = "wordFrequencyFile" enctype = "multipart/form-data" id="fileFrequency" >
+</div>
+</div>
+</div>
+</div><!--end of the sixth fold in-->
+
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h4 class="panel-title">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse7">Relative Word Frequency</a>
+</h4>
+</div>
+<div id="collapse7" class="panel-collapse collapse">
+<div class="panel-body">
+<div id="ralativeWordFrequency"><!--changed id from seven to abbr.-->
+<p class="intro text-center">Measure of relative word frequency in each corpus chunk: frequency within a corpus chunk to global word frequency in the entire corpus.</p><p>Format as whitespace seperated words. Choose either a file upload or use the text box.</p>
+<input type="text" id = "relativeWord" name="relativeWord"  size="50" placeholder="word word">
+<input class="fileIn" type=file name = "relativeFile" enctype = "multipart/form-data" id="relativeFile">
+</div>
+</div>
+</div>
+</div><!--end of the sixth fold in-->
+</div><!--end of the whole accordion section-->
 					 
-            	<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!-- hidden csrf_token -->
-												
-													
-							 <br/>
-				
+		<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' /><!-- hidden csrf_token -->
+
+
+							<br/>
+
 							<div id="submission">
 								<input type="email" size=30 id="userEmail" name = "userEmail" placeholder="User@email.ca">
 								<br/>
@@ -516,7 +551,7 @@ understand how language is used by the media</p>
 								<input class="btn btn-cta-secondary" type = "submit" value = "Submit"/>		
 							</div>
 						</form><!--//from latest version-->
-        </div><!--//container-->
+	</div><!--//container-->
     </section><!--//analysis-->
     
     <!--DELETED ******DOCS****** --> 
@@ -541,12 +576,12 @@ understand how language is used by the media</p>
                 <div class="info text-center">
 <!--                    <h4 class="sub-title">Get Connected</h4>-->
                     <ul class="social-icons list-inline">
-                        <li><a href="" target="_blank"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="" target="_blank"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href=""><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href=""><i class="fa fa-instagram"></i></a></li>  
+                        <li><a href="https://twitter.com" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://www.facebook.com" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://www.linkedin.com/feed/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href="https://www.instagram.com" target="_blank"><i class="fa fa-instagram"></i></a></li>  
 <!--                        <li><a href="https://dribbble.com/Xiaoying"><i class="fa fa-dribbble"></i></a></li>   -->
-                        <li class="last"><a href="mailto:hello@3rdwavemedia.com"><i class="fa fa-envelope"></i></a></li>              
+                        <li class="last"><a href="mailto:xingqi1@ualberta.ca"><i class="fa fa-envelope"></i></a></li>              
                     </ul>
                 </div><!--//info-->
             </div><!--//contact-inner-->
