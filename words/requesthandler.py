@@ -59,8 +59,9 @@ class RequestsExecuteThread(Thread):
                     matrixList.append(matrices)
                     zipMatrices(matrixPath, req.hashStr)
                 #emailUser(req.hashStr)
-            except:
-                errorDict[''] = ['Something went quite wrong. We are sorry...']
+            except Exception as e:
+                #errorDict[''] = ['Something went quite wrong. We are sorry...']
+                errorDict[''] = [str(e)]
             print('thread done')
         send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
