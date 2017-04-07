@@ -6,12 +6,19 @@
 #django.setup()
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
+from django.core.exceptions import ObjectDoesNotExist
 
 def getArousal(wd):
-    return float(Sentiment_Dict.objects.get(word=wd).arousal)
+    try:
+        return float(Sentiment_Dict.objects.get(word=wd).arousal)
+    except ObjectDoesNotExist:
+        return None
    
 def getValence(wd):
-    return float(Sentiment_Dict.objects.get(word=wd).valence)
+    try:
+        return float(Sentiment_Dict.objects.get(word=wd).valence)
+    except ObjectDoesNotExist:
+        return None
     
 # query terms can be id, language, province, city, country, and date
 # for now just query by date range
@@ -90,4 +97,18 @@ def splitDocuments(documents, granularity):
             if month not in result:
                 result[month] = []
             result[month].append(doc)
+    if (granularity == 'Week'):
+        for doc in documents:
+            if (doc.publication_Date.day / 7 <= 1):
+                day = 1
+            elif (doc.publication_Date.day / 7 <= 2):
+                day = 8
+            elif (doc.publication_Date.day / 7 <= 2):
+                day = 15
+            else:
+                day = 22
+            week = date(doc.publication_Date.year, doc.publication_Date.month, day)
+            if week not in result:
+                result[week] = []
+            result[week].append(doc)
     return result

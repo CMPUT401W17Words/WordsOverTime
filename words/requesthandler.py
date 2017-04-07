@@ -16,7 +16,7 @@ import shutil
 
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
-    return (shutil.make_archive(matricesPath+hashStr, 'zip', matricesPath, hashStr))
+    shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
     #zf = zipfile.ZipFile(hashStr+".zip", "w")
     #for dirname, subdirs, files in os.walk(matricesPath):
         #print(dirname)
@@ -41,19 +41,26 @@ class RequestsExecuteThread(Thread):
         allhashstr = ''
         for req in self.requests:
             print('thread start')
-            res = req.execute()
-            errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
-            res.generateCSV(req.hashStr)
-            url = "http://199.116.235.204/words/success/graph/" + req.hashStr
-            csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
-            csvList.append(csv)
-            urlList.append(url)
-            # if the request involved word2vec, email the user a zip file containing matrices for the analysis
-            matrixPath = '/mnt/vol/matrices/' + req.hashStr
-            if (os.path.isdir(matrixPath)):    
-                matrices = zipMatrices(matrixPath, req.hashStr)
-                matrixList.append(matrices)
-            #emailUser(req.hashStr)
+            try:
+                res = req.execute()
+                errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
+                res.generateCSV(req.hashStr)
+                url = "http://199.116.235.204/words/success/graph/" + req.hashStr
+                csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
+                csvList.append(csv)
+                urlList.append(url)
+                # if the request involved word2vec, email the user a zip file containing matrices for the analysis
+                matrixPath = '/mnt/vol/matrices/' + req.hashStr
+                print(matrixPath)
+                print(os.path.isdir(matrixPath))
+                if (os.path.isdir(matrixPath)):
+                    matrices = matrixPath+'.zip'
+                    print(matrices)                    
+                    matrixList.append(matrices)
+                    zipMatrices(matrixPath, req.hashStr)
+                #emailUser(req.hashStr)
+            except:
+                errorDict[''] = ['Something went quite wrong. We are sorry...']
             print('thread done')
         send_mail(self.email, urlList, csvList, errorDict, matrixList)
 # make a list of requests
@@ -437,6 +444,8 @@ class Result():
 
 # sort parallel lists based on the first list
 def sortXAndY(xValues, yValues):
+    if (len(xValues) < 1):
+        return xValues, yValues
     xValues, yValues = (list(t) for t in zip(*sorted(zip(xValues, yValues))))
     return xValues, yValues
 

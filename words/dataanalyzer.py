@@ -3,6 +3,7 @@ import decimal
 #logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import words.dataretrieval
 import os
+import copy
 # possible parameters: avg valence, avg arousal, avg valence top 5 words, avg arousal top 5 words, average tfidf of a word in the chunk, cosine distance for a word pair, N closest neighbors for a word
 # chunk has the format [['word', 'word],['word','word']]
 # docs is a list of Document_Data objects
@@ -32,15 +33,23 @@ def averageValenceTopFive(docs):
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
-    for doc in chunk:
+    for doc in corpus:
+        #print("CHUNK!!!", chunk)
+        #print("CORPUS!!!", corpus)
+        #print("DOC!!!", doc)
+        #print("TFIDF!!!", tfidf[doc])
         tfidfs = getTopFiveWords(tfidf[doc])
         totalDoc = 0.0
         for item in tfidfs:
-            for wd,num in dictionary.token2id:
+            #print("tfidfs", tfidfs)
+            #print("tok2id", dictionary.token2id)
+            for wd,num in dictionary.token2id.items():
+                #print("wd and num", wd,num)
                 if (num == item[0]):
                     word = wd
                     break
-            totalDoc = totalDoc + words.dataretrieval.getValence(word)
+            if (words.dataretrieval.getValence(word) != None):
+                totalDoc = totalDoc + words.dataretrieval.getValence(word)
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 
@@ -52,26 +61,30 @@ def averageArousalTopFive(docs):
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
     totalChunk = 0.0
-    for doc in chunk:
+    for doc in corpus:
         tfidfs = getTopFiveWords(tfidf[doc])
+        if (len(tfidfs)<1):
+            continue # not sure if this 'solution' is appropriate
         totalDoc = 0.0
         for item in tfidfs:
-            for wd,num in dictionary.token2id:
+            for wd,num in dictionary.token2id.items():
                 if (num == item[0]):
                     word = wd
                     break
-            totalDoc = totalDoc + words.dataretrieval.getArousal(word)
+            if (words.dataretrieval.getArousal(word) != None):
+                totalDoc = totalDoc + words.dataretrieval.getArousal(word)
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 
 # helper
 def getTopFiveWords(tfidfsDoc):
     result = []
-    tfidfs = tfidfsDoc.copy().items()
+    tfidfs = copy.deepcopy(tfidfsDoc)
     topWord = getTopWord(tfidfs)
-    while (topWord != None):
+    while ((topWord != None) and (len(result)<5)):
         result.append(topWord)
-        tfidfs.pop(topWord[0])
+        tfidfs.remove(topWord)
+        topWord = getTopWord(tfidfs)
     return result
 
 # helper  
@@ -204,9 +217,12 @@ def probException(chunk, x):
         return 0
 
 def wordNotInChunkException(chunk, word):
+    wordCount = 0
     for doc in chunk:
         if word in doc:
-            return False
+            wordCount = wordCount + doc.count(word)
+            if (wordCount >= minWords):
+                return False
     return True
 
 def saveMatrix(model, word, hashStr, chunkDate):
@@ -217,7 +233,7 @@ def saveMatrix(model, word, hashStr, chunkDate):
         if not os.path.isdir(path):
             raise
     try:
-        model.save(path)
+        model.wv.save_word2vec_format(path+'/model', fvocab=path+'/vocab')
     except:
         print('model save failed')
-        #raise
+        raise
