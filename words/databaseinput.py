@@ -1,9 +1,3 @@
-# This module inputs the corpus and sentiment CSV files into Django's built-in SQLite database
-# It will not be the final method of database input
-# It can be used for quick testing of the data processing modules
-# Uses the first 1000 corpus entries and 10000 sentiment entries
-
-# 
 from __future__ import division
 import io
 
