@@ -21,7 +21,7 @@ class DataRetrievalTests(TestCase):
         self.artCan = []
         self.docData = []
         self.wordData = []
-        
+
         with open(r'words/sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
