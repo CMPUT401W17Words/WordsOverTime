@@ -155,7 +155,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'MYAPP': {
+        'words': {
             'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
         },
