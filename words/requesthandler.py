@@ -362,6 +362,11 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         errors = []
         for pair in self.pairList:
             xValues = []
+            xValues1 = []
+            xValues2 = []
+            xValues3 = []
+            xValues4 = []
+            xValues5 = []
             yValsXAndY = []
             yValsXGivenY = []
             yValsYGivenX = []
