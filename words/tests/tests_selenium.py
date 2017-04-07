@@ -46,9 +46,9 @@ import time, re, os
 
 # Some tests:
 # Submit nothing (done), submit w/o a date selected (done), select w/o an e-mail given (done),
-# submit w/o picking anything (no words given, etc), select everything possible,
-# upload files, etc.
-# making sure start date !> end date, making sure start/end date are valid (shouldn't
+# submit w/o picking anything (no words given, etc) (done), normal selection (done),
+# select everything possible (done), upload files (erroring), etc.
+# making sure start date !> end date (done), making sure start/end date are valid (shouldn't
 # go past current date), check valid e-mail
 
 # Tests would be more extensive if it could just go straight to a results page instead
@@ -65,7 +65,6 @@ class WordsTest(LiveServerTestCase):
         # Author: Russell Dias / License: CC-BY-SA 3.0
         self.current_path = os.path.dirname(os.path.realpath(__file__))
 
-
     # Passes
     def test_submit_nothing(self):
         driver = self.driver
@@ -75,6 +74,7 @@ class WordsTest(LiveServerTestCase):
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
     # http://sqa.stackexchange.com/questions/3387/set-attribute-of-an-element-using-webdriver-python
+    # http://stackoverflow.com/questions/21422548/how-to-select-the-date-picker-in-selenium-webdriver
     # Passes
     def test_no_email_given(self):
         driver = self.driver
@@ -104,15 +104,25 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
-    def test_select_nothing(self):
-        pass
-
     # Passes
-    def test_submit_stuff(self):
+    def test_select_nothing(self):
         driver = self.driver
         driver.get(self.base_url + "words")
-        #driver.find_element_by_id("test1").click()
-        #time.sleep(5)
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_id("userEmail").send_keys("test@email.net")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(5)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
+
+    # Passes
+    def test_standard_submit(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
         driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
         driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
         driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
@@ -125,6 +135,69 @@ class WordsTest(LiveServerTestCase):
         driver.find_element_by_id("userEmail").send_keys("test@email.net")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
         time.sleep(5)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
+
+    # Passes
+    def test_submit_everything(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_xpath("//select[@id='unit']/option[text()='Week']").click()
+        driver.find_element_by_id("click1").click()
+        time.sleep(1)
+        driver.find_element_by_id("Nneighbor").send_keys(3)
+        driver.find_element_by_id("keywords").send_keys("apple banana")
+        driver.find_element_by_xpath("//select[@id='output2']/option[text()='Skipgram']").click()
+        driver.find_element_by_id("click2").click()
+        time.sleep(1)
+        driver.find_element_by_id("wordPairs").send_keys("apple,banana strawberry,grape")
+        driver.find_element_by_xpath("//select[@id='output3']/option[text()='Skipgram']").click()
+        driver.find_element_by_id("click3").click()
+        time.sleep(1)
+        driver.find_element_by_id("tfidfWord").send_keys("apple")
+        driver.find_element_by_id("userEmail").send_keys("test@email.net")
+        driver.find_element_by_id("click4").click()
+        time.sleep(1)
+        driver.find_element_by_id("conditionalWord").send_keys("apple,grape banana,strawberry")
+        driver.find_element_by_id("click5").click()
+        time.sleep(1)
+        driver.find_element_by_id("averageWords").send_keys("apple grape")
+        driver.find_element_by_id("AV").click()
+        driver.find_element_by_id("AA").click()
+        driver.find_element_by_id("5AV").click()
+        driver.find_element_by_id("5AA").click()
+        driver.find_element_by_id("click6").click()
+        time.sleep(1)
+        driver.find_element_by_id("frequencyWord").send_keys("apple grape")
+        driver.find_element_by_id("click7").click()
+        time.sleep(1)
+        driver.find_element_by_id("relativeWord").send_keys("apple grape")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(3)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
+
+    # Fails - website fails to cover this
+    def test_negative_n_neighbours(self):
+        driver = self.driver
+        driver.get(self.base_url + "words")
+        driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
+        driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
+        driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
+        driver.find_element_by_xpath("//select[@id='unit']/option[text()='Week']").click()
+        driver.find_element_by_id("click1").click()
+        time.sleep(1)
+        driver.find_element_by_id("Nneighbor").send_keys(-5)
+        driver.find_element_by_id("keywords").send_keys("apple banana")
+        driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
+        time.sleep(1)
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
 
     # Fails - website fails to cover this
@@ -132,8 +205,8 @@ class WordsTest(LiveServerTestCase):
         driver = self.driver
         driver.get(self.base_url + "words")
         driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
-        driver.execute_script("document.getElementById('startDate').value='2001-01-01'")
-        driver.execute_script("document.getElementById('dtp_input1').value='2001-01-01'")
+        driver.execute_script("document.getElementById('startDate').value='2010-01-01'")
+        driver.execute_script("document.getElementById('dtp_input1').value='2010-01-01'")
         driver.execute_script("document.getElementById('endDate').removeAttribute('readonly',0)")
         driver.execute_script("document.getElementById('endDate').value='2002-01-01'")
         driver.execute_script("document.getElementById('dtp_input2').value='2002-01-01'")
@@ -142,9 +215,8 @@ class WordsTest(LiveServerTestCase):
         driver.find_element_by_id("tfidfWord").send_keys("apple")
         driver.find_element_by_id("userEmail").send_keys("test@email.net")
         driver.find_element_by_xpath('//input[@value="Submit" and @type="submit"]').click()
-        time.sleep(5)
-        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/success/")
-
+        time.sleep(3)
+        self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
     # WebDriverException: Message: POST ... did not match a known command
     def test_uploading_files(self):
@@ -156,7 +228,6 @@ class WordsTest(LiveServerTestCase):
         time.sleep(1)
         driver.find_element_by_id("text_file").send_keys(path)
         self.assertTrue(2+2, 4)
-
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
