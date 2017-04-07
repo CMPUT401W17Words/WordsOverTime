@@ -21,7 +21,7 @@ import dataretrieval
 
 from collections import Counter
 from decimal import *
-from words.models import Sentiment_Dict, Document_Data, Word_Data
+from words.models import Sentiment_Dict, Document_Data, Word_Data, Articles_Can, Corpus_Data
 from django.db.models import F
 from django.db import transaction
 from django.db import connection
@@ -40,8 +40,8 @@ def enterSentiment(dictpath):
 
 def enterArticles(corpuspath):
     cursor = django.db.connection.cursor()
-    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);" % corpuspath)
-    Articles_Can.objects.filter(publicationdate = None).delete()
+    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (article_ID, language, province, city, country, publicationdate, wordcount, parsed_article);" % corpuspath)
+    Articles_Can.objects.filter(publicationDate = None).delete()
 
 # main function that will input corpus info into the database
 def enterData(corpusCsv):
@@ -84,7 +84,7 @@ def enterData(corpusCsv):
 
                 for eachword in wordscounted: # get sentiment info
                     wrdcnt = wordscounted[eachword]
-                    termfreq = Decimal(math/log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+                    termfreq = Decimal(math.log(wrdcnt/doc_word_count)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
                     word = Word_Data(word=eachword, article_id=line['articleID'], word_count=wrdcnt, term_frequency=termfreq, tfidf=value)
                     word.save()
                     wordvalues = Sentiment_Dict.objects.filter(word=eachword)
@@ -142,8 +142,8 @@ def tfidfForFullCorpus():
     completedtime = time.asctime(time.localtime(time.time()))
     print "Built list of words", completedtime
     #wordData = Word_Data.objects.all()
-    dictionary = gensim.corpora.Dictionary(chunk)
-    corpus = [dictionary.doc2bow(text) for text in chunk]
+    dictionary = gensim.corpora.Dictionary(words)
+    corpus = [dictionary.doc2bow(text) for text in words]
     tfidffull = gensim.models.TfidfModel(corpus)
     completedtime = time.asctime(time.localtime(time.time()))
     print "Calculated TFIDF", completedtime
@@ -152,14 +152,16 @@ def tfidfForFullCorpus():
     count = 0
     transaction.set_autocommit(False)
     for doc,datadoc in zip(corpus, chunk):
-        print "doc ", doc
-        print "tfidf doc ", tfidf[doc]
+        #print "doc ", doc
+        #print "tfidf doc ", tfidffull[doc]
+        tfidffive = []
         try:
             wordData = Word_Data.objects.filter(article_id = datadoc.article_id)
         except (django.db.utils.OperationalError, django.db.utils.InterfaceError) as e:
             django.db.connection.close()
             wordData = Word_Data.objects.filter(article_id = datadoc.article_id)
-        print "wordd", wordData
+       	#for wordd in wordData:
+        #    print "wordd", wordd.word, wordd.word_count
         #articleId = datadoc.article_id
 
         for wordd in wordData:
@@ -170,11 +172,22 @@ def tfidfForFullCorpus():
                     tfidfvalue = item[1]
                     count = count + 1
                     break
-            wordd.tfidf = tfidfvalue
-            prelogtf = wordd.term_frequency
-            prelogtf = log(prelogtf)
-            wordd.term_frequency = Decimal(prelogtf).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
-            wordd.save(['tfidf','term_frequency'])
+	    insentiment = Sentiment_Dict.objects.filter(word = wordd.word)
+	    if insentiment:
+		    if (len(tfidffive)<5):
+			tfidffive.append([wordd.word,tfidfvalue, insentiment.values_list("valence", flat=True)[0], insentiment.values_list("arousal", flat=True)[0]])
+		    else:
+			tfidffive = sorted(tfidffive, key=lambda entry: entry[1])
+			for i in range(5):
+			    if (tfidffive[i][1]<tfidfvalue):
+				tfidffive[i] = [wordd.word,tfidfvalue, insentiment.values_list("valence", flat=True)[0], insentiment.values_list("arousal", flat=True)[0]]
+				break
+            #wordd.tfidf = tfidfvalue
+            #prelogtf = wordd.term_frequency
+            #prelogtf = math.log(prelogtf)
+            #wordd.term_frequency = Decimal(prelogtf).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+            Word_Data.objects.filter(id=wordd.id).update(tfidf=tfidfvalue)
+            #wordd.save(['tfidf'])
             if (count %10000==0):
                 completedtime = time.asctime(time.localtime(time.time()))
                 print count, " words updated ", completedtime
@@ -183,8 +196,20 @@ def tfidfForFullCorpus():
                 except (django.db.utils.OperationalError, django.db.utils.InterfaceError) as e:
                     django.db.connection.close()
                     transaction.commit()
-            if (count > 0):
-                break
+            #if (count > 0):
+            #    break
+        #get average val for tfidfs, save to docs
+
+	averageValencetfidf = 0
+	averageArousaltfidf = 0
+	for eachword in tfidffive:
+	    averageArousaltfidf = averageArousaltfidf + eachword[3]
+	    averageValencetfidf = averageValencetfidf + eachword[2]
+	averageArousaltfidf = Decimal(averageArousaltfidf/len(tfidffive)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+	averageValencetfidf = Decimal(averageValencetfidf/len(tfidffive)).quantize(Decimal('0.000000000001'), rounding = ROUND_DOWN)
+	while (len(tfidffive)<5):		
+	    tfidffive.append(["",0,0,0])
+	Document_Data.objects.filter(article_id = datadoc.article_id).update(word_one = tfidffive[0][0], word_two = tfidffive[1][0], word_three = tfidffive[2][0], word_four = tfidffive[3][0], word_five = tfidffive[4][0], average_arousal_words = averageArousaltfidf, average_valence_words = averageValencetfidf)
     try:
         transaction.commit()
     except (django.db.utils.OperationalError, django.db.utils.InterfaceError) as e:
@@ -237,12 +262,11 @@ def loadSentiment(sentimentCsv):
     return sentDict
 
 def run(sentPath, corpusPath):
-    print "Creating database from ", sentPath, " and ", corpusPath
+    print("Creating database from ", sentPath, " and ", corpusPath)
     enterSentiment(sentPath)
     enterArticles(corpusPath)
     enterData(corpusPath)
     tfidfForFullCorpus()
     
-
 if __name__ == "__main__":
     run()
