@@ -1,7 +1,7 @@
 # This is the "coordinator" module that calls on other modules to process a client request
 
 import csv
-from words.models import Document_Data
+from words.models import Document_Data, Articles_Can, Sentiment_Dict, Word_Data
 import words.dataretrieval
 import words.dataanalyzer
 from words.emailsending import *
@@ -73,6 +73,13 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         self.hashStr = hashStr
         
     def execute(self):
+
+        #wordData = Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1]))
+        #yDict = {}
+        #xValues = []
+        #for word in self.wordList: 
+            #wordData.values_list('word_count', flat=True)
+        
         # get documents in time range and split by granularity
         docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
         docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)

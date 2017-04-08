@@ -47,13 +47,13 @@ class DataRetrievalTests(TestCase):
                         wordCounts[wd] = 0
                     wordCounts[wd] = wordCounts[wd] + 1
                     
-                for k,v in wordCounts.items():
-                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
-                    
                 avgArousal = avgArousal/len(words)
-                avgValence = avgValence/len(words)
+                avgValence = avgValence/len(words)                
+                    
+                for k,v in wordCounts.items():
+                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=v,doc_word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence))
                 
-                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
+                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence))
                 
         for item in self.artCan:
             item.save()
@@ -165,7 +165,7 @@ class RequestHandlerTests(TestCase):
         self.artCan = []
         self.docData = []
         self.wordData = []
-        
+
         with open(r'words/sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
             file = csv.DictReader(csvfile)
             for line in file:
@@ -191,20 +191,20 @@ class RequestHandlerTests(TestCase):
                         wordCounts[wd] = 0
                     wordCounts[wd] = wordCounts[wd] + 1
                     
-                for k,v in wordCounts.items():
-                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
-                    
                 avgArousal = avgArousal/len(words)
-                avgValence = avgValence/len(words)
+                avgValence = avgValence/len(words)                
+                    
+                for k,v in wordCounts.items():
+                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=v,doc_word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence))
                 
-                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
+                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence))
                 
         for item in self.artCan:
             item.save()
         for item in self.docData:
             item.save()
         for item in self.wordData:
-            item.save()
+            item.save() 
     
     # working
     def testCosDistanceOverTime(self):
@@ -349,51 +349,6 @@ class RequestHandlerTests(TestCase):
         reqs.append(request)       
         ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
         ret.run()
-    
-# will be implemented once there is a clearer way to test the analysis process. probably with help from client
-class DataAnalyzerTests(TestCase):
-    
-    def setUp(self):
-        self.sentDict = []
-        self.artCan = []
-        self.docData = []
-        self.wordData = []
-        
-        with open(r'words/sentiment_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
-            file = csv.DictReader(csvfile)
-            for line in file:
-                self.sentDict.append(Sentiment_Dict(word=line['Word'], valence=line['Valence'],arousal=line['Arousal'],dominance=0.0,concreteness=0.0,aoa=0.0))
-        
-        for item in self.sentDict:
-            item.save()        
-                
-        with open(r'words/corpus_mock.csv', 'r') as csvfile: # iterate over docs in the CSV file
-            file = csv.DictReader(csvfile)
-            for line in file:
-                self.artCan.append(Articles_Can(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publicationDate=line['publicationDate'],wordCount=line['wordCount'],parsed_article=line['parsedArticle']))
-                
-                words = line['parsedArticle'].split()
-                avgArousal = decimal.Decimal(0.0)
-                avgValence = decimal.Decimal(0.0)
-                wordCounts = {}
-                for wd in words:
-                    sent = Sentiment_Dict.objects.get(word=wd)
-                    avgArousal = avgArousal + sent.arousal
-                    avgValence = avgValence + sent.valence
-                    if wd not in wordCounts:
-                        wordCounts[wd] = 0
-                    wordCounts[wd] = wordCounts[wd] + 1
-                    
-                for k,v in wordCounts.items():
-                    self.wordData.append(Word_Data(word=k,article_id=line['articleID'],word_count=v,term_frequency=0,tfidf=0))
-                    
-                avgArousal = avgArousal/len(words)
-                avgValence = avgValence/len(words)
-                
-                self.docData.append(Document_Data(article_id=line['articleID'], language=line['language'],province=line['province'],city=line['city'],country=line['country'],publication_Date=line['publicationDate'],word_count=len(words),average_arousal_doc=avgArousal,average_valence_doc=avgValence,average_arousal_words=0,average_valence_words=0))
-                
-    def testSaveMatrix(self):
-        pass
     
 #class DataInputTests(TestCase):
  
