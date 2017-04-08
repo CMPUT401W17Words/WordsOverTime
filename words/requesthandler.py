@@ -79,16 +79,17 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         wordData = words.dataretrieval.getChunks('Word_Data', self.dateRange, self.granularity) 
         yDict = {}
         xValues = []
-        for word in self.wordList:
+        for wordd in self.wordList:
             xValues = []
             yValues = []            
-            currentWordData = wordData.annotate(wcount=Sum('word_count'))
+            currentWordData = wordData.filter(word=wordd).annotate(wcount=Sum('word_count'))
             print('QUERY for word frequency: ', currentWordData.query)
             for item in currentWordData:
+                print(item)
                 xValues.append(item[chunk])
                 yValues.append(item[wcount])
             xValues, yValues = sortXAndY(xValues, yValues)
-            yDict[word] = yValues                
+            yDict[wordd] = yValues                
         
         # get documents in time range and split by granularity
         #docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
@@ -120,30 +121,47 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
         
     def execute(self):
         
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
-        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
-        
+        wordData = words.dataretrieval.getChunks('Word_Data', self.dateRange, self.granularity)
+        totalWordData = wordData.annotate(wcount=Sum('word_count'))
         yDict = {}
         xValues = []
         errors = []
-        for word in self.wordList:
+        for wordd in self.wordList:
             xValues = []
-            yValues = []
-            
-            # freqneucy of word in full corpus
-            wordData = words.dataretrieval.getWordData(word)
-                    
-            for k,v in docHistogram.items():
-                # v is a list of Documents
-                chunk = []
-                for doc in v:
-                    wordss = words.dataretrieval.getWordsInDocument(doc)
-                    chunk.append(wordss)
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word))
-                
+            yValues = []            
+            currentWordData = totalWordData.filter(word=wordd).annotate(wdcount=Sum('word_count'))
+            print('QUERY for word frequency: ', currentWordData.query)
+            for item in currentWordData:
+                print(item)
+                xValues.append(item[chunk])
+                yValues.append(item[wdcount]/item[wcount])
             xValues, yValues = sortXAndY(xValues, yValues)
-            yDict[word] = yValues
+            yDict[wordd] = yValues      
+        
+        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        
+        #yDict = {}
+        #xValues = []
+        #errors = []
+        #for word in self.wordList:
+            #xValues = []
+            #yValues = []
+            
+            ## freqneucy of word in full corpus
+            #wordData = words.dataretrieval.getWordData(word)
+                    
+            #for k,v in docHistogram.items():
+                ## v is a list of Documents
+                #chunk = []
+                #for doc in v:
+                    #wordss = words.dataretrieval.getWordsInDocument(doc)
+                    #chunk.append(wordss)
+                #xValues.append(k)
+                #yValues.append(words.dataanalyzer.relativeWordFrequency(chunk, word))
+                
+            #xValues, yValues = sortXAndY(xValues, yValues)
+            #yDict[word] = yValues
             
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
   
