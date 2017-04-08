@@ -1,6 +1,7 @@
 from words.models import Document_Data, Word_Data, Sentiment_Dict
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.functions import TruncYear, TruncMonth
 
 def getArousal(wd):
     try:
@@ -99,4 +100,23 @@ def splitDocuments(documents, granularity):
             if week not in result:
                 result[week] = []
             result[week].append(doc)
+    return result
+
+def getChunks(modelType, dateRange, granularity):
+    result = {} # keys are time bins, values are lists of documents falling into that bin
+    if (granularity == 'Year'):
+        if (modelType == 'Word_Data'):
+            return Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncYear('publication_Date'))
+        if (modelType == 'Articles_Can'):
+            return Articles_Can.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncYear('publication_Date'))
+    if (granularity == 'Month'):
+        if (modelType == 'Word_Data'):
+            return Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncMonth('publication_Date'))
+        if (modelType == 'Articles_Can'):
+            return Articles_Can.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncMonth('publication_Date'))
+    if (granularity == 'Week'):
+        if (modelType == 'Word_Data'):
+            pass
+        if (modelType == 'Articles_Can'):
+            pass
     return result

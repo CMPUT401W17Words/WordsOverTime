@@ -6,6 +6,8 @@ import words.dataretrieval
 import words.dataanalyzer
 from words.emailsending import *
 filePath = '/mnt/vol/csvs/'
+from django.db.models import Sum
+from django.db.models.functions import TruncYear
 
 from threading import Thread
 
@@ -73,32 +75,40 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
         self.hashStr = hashStr
         
     def execute(self):
-
-        #wordData = Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1]))
-        #yDict = {}
-        #xValues = []
-        #for word in self.wordList: 
-            #wordData.values_list('word_count', flat=True)
-        
-        # get documents in time range and split by granularity
-        docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
-        docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
-        
+     
+        wordData = words.dataretrieval.getChunks('Word_Data', self.dateRange, self.granularity) 
         yDict = {}
         xValues = []
         for word in self.wordList:
             xValues = []
-            yValues = []
-            for k,v in docHistogram.items():
-                # v is a list of Documents
-                chunk = []
-                for doc in v:
-                    wordss = words.dataretrieval.getWordsInDocument(doc)
-                    chunk.append(wordss)
-                xValues.append(k)
-                yValues.append(words.dataanalyzer.wordFrequency(chunk, word))
+            yValues = []            
+            currentWordData = wordData.annotate(wcount=Sum('word_count'))
+            print('QUERY for word frequency: ', currentWordData.query)
+            for item in currentWordData:
+                xValues.append(item[chunk])
+                yValues.append(item[wcount])
             xValues, yValues = sortXAndY(xValues, yValues)
-            yDict[word] = yValues
+            yDict[word] = yValues                
+        
+        # get documents in time range and split by granularity
+        #docs = words.dataretrieval.getDocumentData(self.dateRange[0], self.dateRange[1])
+        #docHistogram = words.dataretrieval.splitDocuments(docs, self.granularity)
+        
+        #yDict = {}
+        #xValues = []
+        #for word in self.wordList:
+            #xValues = []
+            #yValues = []
+            #for k,v in docHistogram.items():
+                ## v is a list of Documents
+                #chunk = []
+                #for doc in v:
+                    #wordss = words.dataretrieval.getWordsInDocument(doc)
+                    #chunk.append(wordss)
+                #xValues.append(k)
+                #yValues.append(words.dataanalyzer.wordFrequency(chunk, word))
+            #xValues, yValues = sortXAndY(xValues, yValues)
+            #yDict[word] = yValues
             
         return Result(self.granularity, 'Word Frequency Over Time', xValues, yDict)
 

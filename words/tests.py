@@ -250,13 +250,14 @@ class RequestHandlerTests(TestCase):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
         request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
+        #request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
         result = request.execute()
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)
         for k,v in result.yValues.items():
             print(v)
         print("Errors: " + str(result.errors))
-        print()            
+        print()
         
     # working    
     def testAverageValenceOverTime(self):
