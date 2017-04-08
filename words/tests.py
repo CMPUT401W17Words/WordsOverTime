@@ -249,7 +249,7 @@ class RequestHandlerTests(TestCase):
     def testAverageArousalOverTime(self):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
+        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
         result = request.execute()
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)
@@ -299,7 +299,7 @@ class RequestHandlerTests(TestCase):
     
     # working    
     def testPairwiseProbabilities(self):
-        dateRange = (date(2008, 2, 17), date(2010, 12, 31))
+        dateRange = (date(2008, 2, 17), date(2012, 12, 31))
         granularity = 'Year'
         request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'test8')
         result = request.execute()
