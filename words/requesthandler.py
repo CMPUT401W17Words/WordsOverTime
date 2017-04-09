@@ -132,6 +132,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
                         wordCount = 0
                     yValues.append(wordCount/totalWordCount)
             xValues, yValues = sortXAndY(xValues, yValues)
+            print(yValues)
             yDict[wordd] = yValues      
             
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
