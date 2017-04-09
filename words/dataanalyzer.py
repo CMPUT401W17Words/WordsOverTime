@@ -21,10 +21,7 @@ def averageArousal(docs): # average arousal of a list of documents
         result = result + doc.average_arousal_doc
     return result/len(docs)
     
-def averageValenceTopFive(docs):
-    chunk = []
-    for document in docs:
-        chunk.append(words.dataretrieval.getWordsInDocument(document))
+def averageValenceTopFive(chunk):
     dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
@@ -37,15 +34,13 @@ def averageValenceTopFive(docs):
                 if (num == item[0]):
                     word = wd
                     break
-            if (words.dataretrieval.getValence(word) != None):
-                totalDoc = totalDoc + words.dataretrieval.getValence(word)
+            va = words.dataretrieval.getValence(word)
+            if (va != None):
+                totalDoc = totalDoc + va
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 
-def averageArousalTopFive(docs):
-    chunk = []
-    for document in docs:
-        chunk.append(words.dataretrieval.getWordsInDocument(document))
+def averageArousalTopFive(chunk):
     dictionary = gensim.corpora.Dictionary(chunk)
     corpus = [dictionary.doc2bow(text) for text in chunk]
     tfidf = gensim.models.TfidfModel(corpus)
@@ -60,8 +55,9 @@ def averageArousalTopFive(docs):
                 if (num == item[0]):
                     word = wd
                     break
-            if (words.dataretrieval.getArousal(word) != None):
-                totalDoc = totalDoc + words.dataretrieval.getArousal(word)
+            ar = words.dataretrieval.getArousal(word)
+            if (ar != None):
+                totalDoc = totalDoc + ar
         totalChunk = totalChunk + totalDoc/len(tfidfs)
     return totalChunk/len(chunk)
 

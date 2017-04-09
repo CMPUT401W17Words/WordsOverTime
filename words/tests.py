@@ -5,7 +5,7 @@ from django.test import TestCase
 
 import words.dataretrieval
 import words.requesthandler
-import words.databaseinput
+#import words.databaseinput
 from words.emailsending import *
 from words.models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
 import csv
@@ -249,8 +249,7 @@ class RequestHandlerTests(TestCase):
     def testAverageArousalOverTime(self):
         dateRange = (date(2008, 1, 1), date(2012, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.AverageValenceOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
-        #request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
+        request = words.requesthandler.AverageArousalOverTimeRequest(dateRange, granularity, ['human', 'system'], 'test4')
         result = request.execute()
         print('Average Arousal over time')
         print(result.xTitle, result.xValues)

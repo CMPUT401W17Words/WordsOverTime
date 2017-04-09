@@ -1,4 +1,4 @@
-from words.models import Document_Data, Word_Data, Sentiment_Dict
+from words.models import Document_Data, Word_Data, Sentiment_Dict, Articles_Can
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.functions import TruncYear, TruncMonth
@@ -106,14 +106,14 @@ def getChunks(modelType, dateRange, granularity):
     result = {} # keys are time bins, values are lists of documents falling into that bin
     if (granularity == 'Year'):
         if (modelType == 'Word_Data'):
-            return Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncYear('publication_Date'))
+            return Word_Data.objects.filter(publication_Date__range=(dateRange[0], dateRange[1])).annotate(chunk=TruncYear('publication_Date')).values_list('chunk')
         if (modelType == 'Articles_Can'):
-            return Articles_Can.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncYear('publication_Date'))
+            return Articles_Can.objects.filter(publicationDate__range=(dateRange[0], dateRange[1])).annotate(chunk=TruncYear('publicationDate')).values_list('chunk', 'parsed_article')
     if (granularity == 'Month'):
         if (modelType == 'Word_Data'):
-            return Word_Data.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncMonth('publication_Date'))
+            return Word_Data.objects.filter(publication_Date__range=(dateRange[0], dateRange[1])).annotate(chunk=TruncMonth('publication_Date')).values_list('chunk')
         if (modelType == 'Articles_Can'):
-            return Articles_Can.objects.filter(publication_Date__range=(self.dateRange[0], self.dateRange[1])).values(chunk=TruncMonth('publication_Date'))
+            return Articles_Can.objects.filter(publicationDate__range=(dateRange[0], dateRange[1])).annotate(chunk=TruncMonth('publicationDate')).values_list('chunk', 'parsed_article')
     if (granularity == 'Week'):
         if (modelType == 'Word_Data'):
             pass
