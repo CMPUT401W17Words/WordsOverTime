@@ -334,6 +334,8 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
             xValues = []
             yValues = []         
             for k,v in dateToChunk.items():
+                print(k)
+                print(v)
                 xValues.append(k)
                 try:
                     cosDist = words.dataanalyzer.cosDistanceOfPair(v, pair[0], pair[1], self.cbow, self.hashStr, k)
