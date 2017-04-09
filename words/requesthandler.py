@@ -37,7 +37,8 @@ class RequestsExecuteThread(Thread):
                 res = req.execute()
                 errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
                 res.generateCSV(req.hashStr)
-                url = "http://199.116.235.204/words/success/graph/" + req.hashStr
+                #url = "http://199.116.235.204/words/success/graph/" + req.hashStr
+                url = "http://199.116.235.53:8000/words/success/graph/" + req.hashStr
                 csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
                 csvList.append(csv)
                 if (req.__class__.__name__ != "NClosestNeighboursOverTimeRequest"):
