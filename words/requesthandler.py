@@ -130,7 +130,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
                     if (wordCount == None):
                         print('word none')
                         wordCount = 0
-                    yValues.append(wordCount/totalWordCount)
+                    yValues.append(float(wordCount)/totalWordCount)
             print(yValues)
             xValues, yValues = sortXAndY(xValues, yValues)
             print(yValues)
