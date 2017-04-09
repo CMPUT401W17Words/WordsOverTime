@@ -121,11 +121,11 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
                 wordCount = item[2]
                 totalWordCount = item[1]
                 xValues.append(chunkDate)
-                if (totalWordCount is None):
+                if (totalWordCount == None):
                     yValues.append(None)
                     errors.append("at x = " + str(chunkDate) + ": chunk did not contain any words")
                 else:
-                    if (wordCount is None):
+                    if (wordCount == None):
                         wordCount = 0
                     yValues.append(wordCount/totalWordCount)
             xValues, yValues = sortXAndY(xValues, yValues)
