@@ -83,7 +83,7 @@ class WordFrequencyOverTimeRequest(OverTimeRequest):
             xValues = []
             yValues = []            
             currentWordData = wordData.annotate(wcount=Sum(Case(When(word=wordd, then='word_count'))))
-            print('QUERY for word frequency: ', currentWordData.query)
+            #print('QUERY for word frequency: ', currentWordData.query)
             for item in currentWordData:
                 print(item)
                 xValues.append(item[0])
@@ -114,7 +114,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             xValues = []
             yValues = []
             currentWordData = totalWordData.annotate(wdcount=Sum(Case(When(word=wordd, then='word_count'))))
-            print('QUERY for relative word frequency: ', currentWordData.query)
+            #print('QUERY for relative word frequency: ', currentWordData.query)
             for item in currentWordData:
                 print(item)
                 chunkDate = item[0]
@@ -142,7 +142,7 @@ class TfidfOverTimeRequest(OverTimeRequest):
     def execute(self):
         
         docs = words.dataretrieval.getChunks('Articles_Can', self.dateRange, self.granularity)
-        print('QUERY for tfidf: ', docs.query)
+        #print('QUERY for tfidf: ', docs.query)
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in docs:
             dateToChunk[doc[0]].append(doc[1].split())
@@ -185,7 +185,7 @@ class AverageValenceOverTimeRequest(OverTimeRequest):
                 filteredArticles = filteredArticles.filter(article_id__in=fil)
             filteredArticles = filteredArticles.annotate(chunk=Trunc('publication_Date', self.granularity.lower())).values_list('chunk').annotate(avg_val=Avg('average_valence_doc'))
         
-        print('QUERY for valence: ', filteredArticles.query)
+        #print('QUERY for valence: ', filteredArticles.query)
         
         xValues = []
         yValues = []        
@@ -218,7 +218,7 @@ class AverageArousalOverTimeRequest(OverTimeRequest):
                 filteredArticles = filteredArticles.filter(article_id__in=fil)
             filteredArticles = filteredArticles.annotate(chunk=Trunc('publication_Date', self.granularity.lower())).values_list('chunk').annotate(avg_val=Avg('average_arousal_doc'))
         
-        print('QUERY for arousal: ', filteredArticles.query)
+        #print('QUERY for arousal: ', filteredArticles.query)
         
         xValues = []
         yValues = []        
@@ -251,7 +251,7 @@ class AverageValenceFiveWordsOverTimeRequest(OverTimeRequest):
                 filteredArticles = filteredArticles.filter(article_id__in=fil)
             filteredArticles = filteredArticles.annotate(chunk=Trunc('publicationDate', self.granularity.lower())).values_list('chunk', 'parsed_article')
         
-        print('QUERY for valence 5: ', filteredArticles.query)
+        #print('QUERY for valence 5: ', filteredArticles.query)
         
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in filteredArticles:
@@ -292,7 +292,7 @@ class AverageArousalFiveWordsOverTimeRequest(OverTimeRequest):
                 filteredArticles = filteredArticles.filter(article_id__in=fil)
             filteredArticles = filteredArticles.annotate(chunk=Trunc('publicationDate', self.granularity.lower())).values_list('chunk', 'parsed_article')
         
-        print('QUERY for arousal 5: ', filteredArticles.query)
+        #print('QUERY for arousal 5: ', filteredArticles.query)
         
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in filteredArticles:
@@ -324,7 +324,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
     def execute(self):
         
         docs = words.dataretrieval.getChunks('Articles_Can', self.dateRange, self.granularity)
-        print('QUERY for cos distance: ', docs.query)
+        #print('QUERY for cos distance: ', docs.query)
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in docs:
             dateToChunk[doc[0]].append(doc[1].split())
@@ -358,7 +358,7 @@ class NClosestNeighboursOverTimeRequest(OverTimeRequest):
     def execute(self):
 
         docs = words.dataretrieval.getChunks('Articles_Can', self.dateRange, self.granularity)
-        print('QUERY for n closest: ', docs.query)
+        #print('QUERY for n closest: ', docs.query)
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in docs:
             dateToChunk[doc[0]].append(doc[1].split())
@@ -405,7 +405,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
         baseQuery = preQuery.annotate(chunk=Trunc('publication_Date', self.granularity.lower())).values_list('chunk')
         
         totalArticles = baseQuery.annotate(art_count=Count('article_id', distinct=True))
-        print('QUERY for total articles: ', totalArticles.query)
+        #print('QUERY for total articles: ', totalArticles.query)
             
         for pair in self.pairList:
             xValsXAndY = []
@@ -420,22 +420,22 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             yValsYGivenNotX = []
             
             w1Count = baseQuery.filter(word=pair[0]).annotate(w1_count=Count('article_id'))
-            print('QUERY for w1: ', w1Count.query)
+            #print('QUERY for w1: ', w1Count.query)
                 
             w2Count = baseQuery.filter(word=pair[1]).annotate(w2_count=Count('article_id'))
-            print('QUERY for w2: ', w2Count.query)
+            #print('QUERY for w2: ', w2Count.query)
             
             w1Articles = preQuery.filter(word=pair[0]).values_list('article_id')
             w2Articles = preQuery.filter(word=pair[1]).values_list('article_id')
             
             w1Andw2Count = Articles_Can.objects.filter(Q(article_id__in=w1Articles)).filter(Q(article_id__in=w2Articles)).annotate(chunk=Trunc('publicationDate', self.granularity.lower())).values_list('chunk').annotate(w1w2_count=Count('article_id'))
-            print('QUERY for w1w2: ', w1Andw2Count.query)
+            #print('QUERY for w1w2: ', w1Andw2Count.query)
             
             w1Notw2Count = Articles_Can.objects.filter(Q(article_id__in=w1Articles)).exclude(Q(article_id__in=w2Articles)).annotate(chunk=Trunc('publicationDate', self.granularity.lower())).values_list('chunk').annotate(w1notw2_count=Count('article_id'))
-            print('QUERY for w1notw2: ', w1Notw2Count.query)
+            #print('QUERY for w1notw2: ', w1Notw2Count.query)
                 
             w2Notw1Count = Articles_Can.objects.filter(Q(article_id__in=w2Articles)).exclude(Q(article_id__in=w1Articles)).annotate(chunk=Trunc('publicationDate', self.granularity.lower())).values_list('chunk').annotate(w2notw1_count=Count('article_id'))
-            print('QUERY for w2notw1: ', w2Notw1Count.query)
+            #print('QUERY for w2notw1: ', w2Notw1Count.query)
                          
             for itemA in totalArticles:
                 xValsXAndY.append(itemA[0])
