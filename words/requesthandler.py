@@ -115,6 +115,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             yValues = []
             currentWordData = totalWordData.annotate(wdcount=Sum(Case(When(word=wordd, then='word_count'))))
             #print('QUERY for relative word frequency: ', currentWordData.query)
+            print(wordd)
             for item in currentWordData:
                 print(item)
                 chunkDate = item[0]
