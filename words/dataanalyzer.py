@@ -103,7 +103,10 @@ def cosDistanceOfPair(chunk, word1, word2, cbow, hashStr, chunkDate):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
-    saveMatrix(model, word1+word2, hashStr, chunkDate)
+    try:
+        saveMatrix(model, word1+word2, hashStr, chunkDate)
+    except:
+        pass
     return model.similarity(word1, word2)
    
 def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
@@ -111,7 +114,10 @@ def nClosestNeighboursOfWord(chunk, word, N, cbow, hashStr, chunkDate):
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=0)
     else:
         model = gensim.models.Word2Vec(chunk, size=NNsize, min_count=minWords, sg=1)
-    saveMatrix(model, word, hashStr, chunkDate)
+    try:
+        saveMatrix(model, word, hashStr, chunkDate)
+    except:
+        pass
     return model.most_similar(positive=[word], topn=N)
 
 def wordFrequency(chunk, word):

@@ -326,7 +326,7 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
         #print('QUERY for cos distance: ', docs.query)
         dateToChunk = initDict(self.dateRange, self.granularity)
         for doc in docs:
-            dateToChunk[doc[0]].append(doc[1].encode('ascii','ignore').split())
+            dateToChunk[doc[0]].append(doc[1].split())#.encode('ascii','ignore')
         yDict = {}
         xValues = []
         errors = []
