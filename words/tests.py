@@ -340,7 +340,7 @@ class RequestHandlerTests(TestCase):
     # django does not support testing this concurrently, but it does seem to work    
     def testRequestsExecuteThread(self):
         reqs = []
-        dateRange = (date(2008, 2, 17), date(2010, 12, 31))
+        dateRange = (date(2008, 2, 17), date(2014,12, 31))
         granularity = 'Year'
         request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'testA')
         reqs.append(request)
