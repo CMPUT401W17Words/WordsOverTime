@@ -342,11 +342,17 @@ class RequestHandlerTests(TestCase):
         reqs = []
         dateRange = (date(2008, 2, 17), date(2010, 12, 31))
         granularity = 'Year'
-        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'test11')
+        request = words.requesthandler.PairwiseProbabilitiesOverTimeRequest(dateRange, granularity, [('human', 'user')] , 'testA')
         reqs.append(request)
         dateRange = (date(2008, 2, 17), date(2010, 11, 11))
-        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, 'test12')
-        reqs.append(request)       
+        request = words.requesthandler.NClosestNeighboursOverTimeRequest(dateRange, granularity, ['human', 'system', 'interface'], 2, True, 'testB')
+        reqs.append(request)
+        dateRange = (date(2008, 2, 17), date(2013, 1, 11))
+        request = words.requesthandler.AverageValenceFiveWordsOverTimeRequest(dateRange, granularity, ['graph'], 'testC')
+        reqs.append(request)
+        dateRange = (date(2008, 2, 17), date(2012, 1, 11))
+        request = words.requesthandler.TfidfOverTimeRequest(dateRange, 'Month', ['system', 'eps'], 'testD')
+        reqs.append(request)        
         ret = words.requesthandler.RequestsExecuteThread(reqs, r'tommy3@ualberta.ca')
         ret.run()
     
