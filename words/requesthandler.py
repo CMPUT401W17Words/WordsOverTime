@@ -131,6 +131,7 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
                         print('word none')
                         wordCount = 0
                     yValues.append(wordCount/totalWordCount)
+            print(yValues)
             xValues, yValues = sortXAndY(xValues, yValues)
             print(yValues)
             yDict[wordd] = yValues      
