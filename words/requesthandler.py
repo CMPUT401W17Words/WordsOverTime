@@ -115,25 +115,19 @@ class RelativeWordFrequencyOverTimeRequest(OverTimeRequest):
             yValues = []
             currentWordData = totalWordData.annotate(wdcount=Sum(Case(When(word=wordd, then='word_count'))))
             #print('QUERY for relative word frequency: ', currentWordData.query)
-            print(wordd)
             for item in currentWordData:
-                print(item)
                 chunkDate = item[0]
                 wordCount = item[2]
                 totalWordCount = item[1]
                 xValues.append(chunkDate)
                 if (totalWordCount == None):
-                    print('total words none')
                     yValues.append(None)
                     errors.append("at x = " + str(chunkDate) + ": chunk did not contain any words")
                 else:
                     if (wordCount == None):
-                        print('word none')
                         wordCount = 0
                     yValues.append(float(wordCount)/totalWordCount)
-            print(yValues)
             xValues, yValues = sortXAndY(xValues, yValues)
-            print(yValues)
             yDict[wordd] = yValues      
             
         return Result(self.granularity, 'Relative Word Frequency Over Time', xValues, yDict, errors)
