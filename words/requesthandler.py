@@ -442,7 +442,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
                 for itemB in w1Andw2Count:
                     if (itemB[0] == itemA[0]):
                         try:
-                            prob = itemB[1]/itemA[1]
+                            prob = float(itemB[1])/itemA[1]
                         except:
                             prob = None
                             errors.append("at x = " + str(itemA[0]) + "no words found")
@@ -463,7 +463,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             
             for itemA,itemB in zip(w1Andw2Count, w2Count):
                 try:
-                    prob = itemA[1]/itemB[1]
+                    prob = float(itemA[1])/itemB[1]
                 except:
                     if (itemB[1] == None or itemB[1] == 0):
                         prob = None
@@ -476,7 +476,7 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             
             for itemA,itemB in zip(w1Andw2Count, w1Count):
                 try:
-                    prob = itemA[1]/itemB[1]
+                    prob = float(itemA[1])/itemB[1]
                 except:
                     if (itemB[1] == None or itemB[1] == 0):
                         prob = None
@@ -489,8 +489,8 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             
             for itemA,itemB,itemC in zip(w1Notw2Count, w2Count, totalArticles):
                 try:
-                    diff = itemC[1]-itemB[1]
-                    prob = itemA[1]/diff
+                    diff = float(itemC[1])-float(itemB[1])
+                    prob = float(itemA[1])/diff
                 except:
                     if (diff == 0 or itemB[1] == None or itemC[1] == None):
                         prob = None
@@ -503,8 +503,8 @@ class PairwiseProbabilitiesOverTimeRequest(OverTimeRequest):
             
             for itemA,itemB,itemC in zip(w2Notw1Count, w1Count, totalArticles):
                 try:
-                    diff = itemC[1]-itemB[1]
-                    prob = itemA[1]/diff
+                    diff = float(itemC[1])-float(itemB[1])
+                    prob = float(itemA[1])/diff
                 except:
                     if (diff == 0 or itemB[1] == None or itemC[1] == None):
                         prob = None
