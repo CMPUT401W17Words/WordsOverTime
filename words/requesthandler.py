@@ -339,7 +339,8 @@ class CosDistanceOverTimeRequest(OverTimeRequest):
                 xValues.append(k)
                 try:
                     cosDist = words.dataanalyzer.cosDistanceOfPair(v, pair[0], pair[1], self.cbow, self.hashStr, k)
-                except:
+                except Exception as e:
+                    print(e)
                     cosDist = None
                     errors.append("at x = " + str(k) + ": chunk did not contain " + pair[0] + " or " + pair[1])
                 yValues.append(cosDist)
