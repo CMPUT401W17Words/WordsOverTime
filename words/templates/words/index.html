@@ -225,24 +225,12 @@ understand how language is used by the media</p>
 			else {return true;}
 			}
 		}
-                  
-//                function ifFileUploaded(aTextField) {
-//                  if ((aTextField.value.length==0) ||
-//                  (aTextField.value==null)) {
-//                  return false;
-//                  }
-//                  else { return true; }
-//                }
-	    
+
 		function ifNCloestEmpty(){
-			if (ifEmptySilent(Nneighbor)==false){
-		            return false;
-                        }
-                        if (ifEmptySilent(keywords) == false){
-                            return false;
-			}
-		        return true;
-		}
+			if (ifEmptySilent(Nneighbor)==false || (ifEmptySilent(keywords) == false && ifEmptySilent(text_file)==false)){return false;}
+                        else{return true;}
+                }
+                
 			
 		function ifCosEmpty(){
 			if (ifEmptySilent(wordPairs)==false){
@@ -302,8 +290,10 @@ understand how language is used by the media</p>
                           var endDateinput = new Date(thisform.endDate.value);
 				
 			//general slots check
+                        
 			if (ifEmptyNotify(startDate,"Starting Date  must be filled!")==false)
 				{startDate.focus();return false}
+                          
 				
 			if (ifEmptyNotify(endDate,"Ending Date must be filled!")==false)
 				{endDate.focus();return false}
@@ -312,6 +302,8 @@ understand how language is used by the media</p>
                           alert("start Date should not larger than endDate");
                           return false;
                         }
+                          
+                          
             	
 			if (ifEmptyNotify(userEmail,"Email must be filled!")==false)
 				{userEmail.focus();return false}
@@ -322,29 +314,28 @@ understand how language is used by the media</p>
 					alert("at least one of the analysis section should be filled !");
 					return false}
 			
-			
 			 //input format check -------> 1. "word word ..." format 
-			if(ifNCloestEmpty() == true && !regex_space_words.test(Neighborinput)){
+			if(ifEmptySilent(keywords) == true && !regex_space_words.test(Neighborinput)){
 				alert("input should follow format 'word word ...' and only english letters allowed'"); 
                                 keywords.focus();
                           return false; 
 			}
-                        if(ifTdidfEmpty() == true && !regex_space_words.test(tdidfinput)){
+                        if(ifEmptySilent(tfidfWord) == true && !regex_space_words.test(tdidfinput)){
 				alert("input should follow format 'word word ...' and only english letters allowed'"); 
                           tfidfWord.focus();
                           return false; 
 			} 
-                        if(ifAAChecked() == true && ifEmptySilent(averageWords) == true && !regex_space_words.test(averageWordsinput)){
+                        if(ifEmptySilent(averageWords) == true && ifEmptySilent(averageWords) == true && !regex_space_words.test(averageWordsinput)){
 				alert("input should follow format 'word word ...' and only english letters allowed'"); 
                           averageWords.focus();
                           return false; 
 			}
-                        if(ifWFEmpty() == true && !regex_space_words.test(frequencyWordinput)){
+                        if(ifEmptySilent(frequencyWord) == true && !regex_space_words.test(frequencyWordinput)){
 				alert("input should follow format 'word word ...' and only english letters allowed'"); 
                           frequencyWord.focus();
                           return false; 
 			}
-                        if(ifRelativeWFEmpty() == true && !regex_space_words.test(relativeWordinput)){
+                        if(ifEmptySilent(relativeWord) == true && !regex_space_words.test(relativeWordinput)){
 				alert("input should follow format 'word word ...' and only english letters allowed'"); 
                           relativeWord.focus();
                           return false; 
@@ -352,12 +343,12 @@ understand how language is used by the media</p>
                           
                         
                         //input format check -------> 2. "word,word word,word ..." format 
-			if(ifCosEmpty() == true && !regex_pair_words.test(wordPairsinput)){
+			if(ifEmptySilent(wordPairs) == true && !regex_pair_words.test(wordPairsinput)){
 				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
                           wordPairs.focus();
                           return false; 
 			}
-                        if(ifPCPEmpty() == true && !regex_pair_words.test(conditionalWordinput)){
+                        if(ifEmptySilent(conditionalWord) == true && !regex_pair_words.test(conditionalWordinput)){
 				alert("input should follow format 'word,word word,word ...', only english letters and commas allowed'"); 
                           conditionalWord.focus();
                           return false; 
