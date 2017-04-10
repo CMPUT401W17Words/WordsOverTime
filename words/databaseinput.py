@@ -28,7 +28,7 @@ django.setup()
 def enterSentiment(dictpath):
     
     cursor = django.db.connection.cursor()
-    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);" % dictpath)
+    nr_records_inserted = cursor.execute("load data local infile '%s' into table Generated_Data.words_sentiment_dict FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (Word, Valence, Arousal, Dominance, Concreteness, AoA);" % dictpath)
 
 #load data local infile "/mnt/vol/articles-can.csv" into table Client_Generated_Data.articles_can FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 LINES (articleID, language, province, city, country, publication_date, wordcount, parsed_article);
 
@@ -111,12 +111,12 @@ def enterData(corpusCsv):
                 doc.save()
 
                 count = count + 1
-                if (count %20000==0):           
+                if (count %10000==0):           
                     transaction.commit()
                     completedtime = time.asctime(time.localtime(time.time()))
                     print(count, " documents computed", completedtime)
                     sys.stdout.flush()
-
+                    
             except Exception as e:    
                 print str(e)
         transaction.commit()
