@@ -214,6 +214,7 @@ understand how language is used by the media</p>
 			else {return true;}
 			}
 		}
+                  
 			
 		function ifEmptySilent(field)
 		{
@@ -224,12 +225,23 @@ understand how language is used by the media</p>
 			else {return true;}
 			}
 		}
-			
+                  
+//                function ifFileUploaded(aTextField) {
+//                  if ((aTextField.value.length==0) ||
+//                  (aTextField.value==null)) {
+//                  return false;
+//                  }
+//                  else { return true; }
+//                }
+	    
 		function ifNCloestEmpty(){
-			if (ifEmptySilent(Nneighbor)==false || ifEmptySilent(keywords) == false){
-				return false;
+			if (ifEmptySilent(Nneighbor)==false){
+		            return false;
+                        }
+                        if (ifEmptySilent(keywords) == false){
+                            return false;
 			}
-			else {return true;}
+		        return true;
 		}
 			
 		function ifCosEmpty(){
@@ -286,6 +298,8 @@ understand how language is used by the media</p>
                           var relativeWordinput = thisform.relativeWord.value;
                           var wordPairsinput = thisform.wordPairs.value;
                           var conditionalWordinput = thisform.conditionalWord.value;
+                          var startDateinput = new Date(thisform.startDate.value);
+                          var endDateinput = new Date(thisform.endDate.value);
 				
 			//general slots check
 			if (ifEmptyNotify(startDate,"Starting Date  must be filled!")==false)
@@ -293,7 +307,12 @@ understand how language is used by the media</p>
 				
 			if (ifEmptyNotify(endDate,"Ending Date must be filled!")==false)
 				{endDate.focus();return false}
-				
+                  
+                        if(startDateinput > endDateinput){
+                          alert("start Date should not larger than endDate");
+                          return false;
+                        }
+            	
 			if (ifEmptyNotify(userEmail,"Email must be filled!")==false)
 				{userEmail.focus();return false}
 			
@@ -343,6 +362,8 @@ understand how language is used by the media</p>
                           conditionalWord.focus();
                           return false; 
 			}
+                          
+            
        
 		}
                 }
@@ -352,7 +373,7 @@ understand how language is used by the media</p>
 					
 						<!-- copy from last version-->
 					
-						 <form  enctype="multipart/form-data"  action = "/words/success/" method = "post" onsubmit="return checkForm(this)"><!---- replaced--action="/words/success/">
+						 <form  enctype="multipart/form-data"   method = "post" onsubmit="return checkForm(this)"><!---- replaced--action="/words/success/">
 						 
 							 <!------->
          
@@ -412,7 +433,7 @@ understand how language is used by the media</p>
                           <input type="number" id = "Nneighbor" name="Nneighbor" size="2" placeholder="N">
                           <input type="text" id = "keywords" name="keywords" value="" size="50" placeholder="word word">
                               <br/>              
-                          <input type="file" class="fileIn" name = "text_file" id="text_file">
+                          <input type="file" class="fileIn" name = "text_file" id="text_file" >
                                               <br/> 
                           <select id="output2" name="skipOrCBOW1">
                                   <option>CBow</option>
