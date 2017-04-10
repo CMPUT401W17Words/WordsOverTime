@@ -322,7 +322,7 @@ class WordsTest(LiveServerTestCase):
         self.assertTrue(str(driver.current_url) == "http://127.0.0.1:8000/words/")
 
     # Passes
-    def test_single_pairwise(self):
+    def test_bad_pairwise(self):
         driver = self.driver
         driver.get(self.base_url + "words")
         driver.execute_script("document.getElementById('startDate').removeAttribute('readonly',0)")
