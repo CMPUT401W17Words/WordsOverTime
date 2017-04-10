@@ -5,8 +5,8 @@ import words.dataretrieval
 import os
 import copy
 
-NNsize = 300
-minWords = 1#5
+NNsize = 100#300
+minWords = 5#1
 filePath = '/mnt/vol/matrices/'
 
 def averageValence(docs): # average valence of a list of documents
