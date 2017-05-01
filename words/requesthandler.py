@@ -5,7 +5,7 @@ from words.models import Document_Data, Articles_Can, Sentiment_Dict, Word_Data
 import words.dataretrieval
 import words.dataanalyzer
 from words.emailsending import *
-filePath = '/mnt/vol/csvs/'
+filePath = '/var/WordsOverTime/csvs/'
 from django.db.models import Sum, When, IntegerField, Case, Count, Avg, Q
 from django.db.models.functions import Trunc
 from datetime import date
@@ -18,7 +18,7 @@ import shutil
         
 # http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/
 def zipMatrices(matricesPath, hashStr):
-    shutil.make_archive(matricesPath, 'zip', matricesPath, hashStr)
+    shutil.make_archive(matricesPath, 'zip', matricesPath) #, hashStr)
 
 class RequestsExecuteThread(Thread):
     def __init__(self, requests, email):
@@ -38,17 +38,17 @@ class RequestsExecuteThread(Thread):
                 errorDict[req.hashStr] = res.errors # List of strings in the format: "Error at x = someDate: chunk did not contain someWord". List is empty or None if there are no errors
                 res.generateCSV(req.hashStr)
                 #url = "http://199.116.235.204/words/success/graph/" + req.hashStr
-                url = "http://199.116.235.53:8000/words/success/graph/" + req.hashStr
-                csv = "/mnt/vol/csvs/" + req.hashStr + ".csv"
+                url = "https://heidi.psych.ualberta.ca/words/success/graph/" + req.hashStr
+                csv = "/var/WordsOverTime/csvs/" + req.hashStr + ".csv"
                 csvList.append(csv)
                 if (req.__class__.__name__ != "NClosestNeighboursOverTimeRequest"):
                     urlList.append(url)
                 # if the request involved word2vec, email the user a zip file containing matrices for the analysis
-                matrixPath = '/mnt/vol/matrices/' + req.hashStr
+                matrixPath = '/var/WordsOverTime/matrices/' + req.hashStr
                 print(matrixPath)
                 print(os.path.isdir(matrixPath))
                 if (os.path.isdir(matrixPath)):
-                    matrices = matrixPath+'.zip'
+                    matrices = '/matrices/'+ req.hashStr +'.zip'
                     print(matrices)                    
                     matrixList.append(matrices)
                     zipMatrices(matrixPath, req.hashStr)

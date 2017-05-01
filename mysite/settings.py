@@ -25,7 +25,7 @@ SECRET_KEY = '%!pqqlf%*ux9+18k#13^t)mrk$yap@#%aet(!2kt0$)up%%dx2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['199.116.235.53']
+ALLOWED_HOSTS = ['heidi.psych.ualberta.ca', '129.128.52.233']
 
 
 # Application definition
@@ -81,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Generated_Data',
-        'USER': 'projectuser',
-        'PASSWORD': '12345',
+        'USER': 'chris',
+        'PASSWORD': 'psychology120a',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -115,5 +115,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    '/var/WordsOverTime/words/static/',
+)
 
 

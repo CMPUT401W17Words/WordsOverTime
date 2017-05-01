@@ -320,7 +320,7 @@ def success(request):
 
 #Handles reading in a csv file from the hash in the url and passing csv information to graph
 def graph(request, hash):
-    filePath = '/mnt/vol/csvs/'
+    filePath = '/var/WordsOverTime/csvs/'
     yValues = []
     xValues = []
     xAxis = ''

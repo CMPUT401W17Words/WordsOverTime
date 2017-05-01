@@ -50,6 +50,11 @@ def send_mail(send_to_list, htmlLinks, files=None, errors=None, matrices=None):
             if (error != None):
                 for e in error:
                     msgbody = msgbody + "Error in analysis " + analysis + ": " + e + "\n"
+    
+    #Link to the zip of the matrice.
+    for f in matrices or []:
+        msgbody = msgbody + "Matrice can be downloaded at: https://heidi.psych.ualberta.ca" + f + " \n"
+
 
     for f in files or []:
         ff = open(f)
@@ -58,7 +63,8 @@ def send_mail(send_to_list, htmlLinks, files=None, errors=None, matrices=None):
         msg.attach(part)
     
     # Attach a zip folder containing matrices from cos distance and N closest neighbors analyses    
-    for f in matrices or []:
+    #for f in matrices or []:
+    if False:
         ff = open(f)
         part = MIMEText(ff.read())
         part.add_header('Content-Disposition', 'attachment', filename = f)

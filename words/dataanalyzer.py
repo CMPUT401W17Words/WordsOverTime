@@ -7,7 +7,7 @@ import copy
 
 NNsize = 100#300
 minWords = 5#1
-filePath = '/mnt/vol/matrices/'
+filePath = '/var/WordsOverTime/matrices/'
 
 def averageValence(docs): # average valence of a list of documents
     result = decimal.Decimal(0.0)
