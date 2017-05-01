@@ -6,7 +6,7 @@ several articles, and outputting the results of those requests to the user.
 
 More info can be found in the [WordsOverTime GitHub Wiki](https://github.com/CMPUT401W17Words/WordsOverTime/wiki) page, such as our client and testing documentation, work breakdown, etc.
 
-The WordsOverTime website ran on the Cybera server can be found at http://199.116.235.204/words
+The WordsOverTime website ran on the Cybera server can be found at https://heidi.psych.ualberta.ca/words/
 
 Project Clients
 =================
